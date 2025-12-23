@@ -2,305 +2,303 @@
 <html lang="ca">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Meteorologia</title>
     
     <style>
-        .content-group { transition: transform 0.8s ease-in-out !important; }
+        /* RESET TOTAL - zero espais */
+        * { margin:0; padding:0; box-sizing:border-box; }
         
-        /* MÒBIL VERTICAL: Caixes en columna */
-        @media (max-width: 600px) {
+        body {
+            background:#fff;
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            min-height:100vh;
+            font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;
+            padding:0;
+        }
+        
+        /* CONTENIDOR - ajustat */
+        .weather-container {
+            width:100%;
+            max-width:500px;
+            background:white;
+            overflow:hidden;
+            box-shadow:0 2px 6px rgba(0,0,0,0.08);
+            border-radius:4px;
+        }
+        
+        /* SCROLL - altura mínima */
+        .scroll-container {
+            position:relative;
+            height:250px;
+            overflow:hidden;
+        }
+        
+        /* GRUPS */
+        .content-group {
+            position:absolute;
+            width:100%;
+            height:250px;
+            left:0;
+            transition:transform 0.8s ease;
+            background:white;
+        }
+        .active { transform:translateY(0); }
+        .next { transform:translateY(-100%); }
+        .out { transform:translateY(100%); }
+        
+        /* CAPÇALERA - compacta */
+        .location-header {
+            background:#c00;
+            color:white;
+            padding:0 10px;
+            height:45px;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+        }
+        .location-name {
+            font-size:18px;
+            font-weight:bold;
+            text-transform:uppercase;
+            letter-spacing:0.5px;
+        }
+        
+        /* CAIXES - ultra compactes */
+        .data-container {
+            display:flex;
+            padding:8px;
+            gap:6px;
+            height:130px;
+        }
+        .data-box {
+            flex:1;
+            background:#fff;
+            border:1px solid #e0e0e0;
+            border-radius:3px;
+            padding:6px 4px;
+            display:flex;
+            flex-direction:column;
+            justify-content:center;
+            text-align:center;
+        }
+        .data-title {
+            font-size:11px;
+            font-weight:600;
+            color:#333;
+            margin-bottom:3px;
+            line-height:1.1;
+            text-transform:uppercase;
+        }
+        .data-value {
+            font-size:24px;
+            font-weight:800;
+            color:#000;
+            margin:2px 0;
+        }
+        .data-unit {
+            font-size:16px;
+            font-weight:700;
+            margin-left:1px;
+        }
+        
+        /* PEU - sense espais */
+        .footer {
+            padding:6px 8px;
+            text-align:center;
+            background:#fff;
+            border-top:1px solid #eee;
+            height:55px;
+            display:flex;
+            flex-direction:column;
+            justify-content:center;
+            position:absolute;
+            bottom:0;
+            width:100%;
+        }
+        .update-info {
+            font-size:11px;
+            color:#333;
+            margin-bottom:1px;
+            font-weight:700;
+        }
+        .source {
+            font-size:10px;
+            color:#666;
+            font-weight:600;
+        }
+        
+        /* ========== MÒBIL VERTICAL ========== */
+        @media (max-width: 600px) and (orientation: portrait) {
+            .weather-container { max-width:95vw; }
+            .scroll-container, .content-group { height:280px; }
             .data-container { 
-                flex-direction: column !important; 
-                gap: 6px !important; 
-                padding: 10px !important;
-                height: 190px !important; /* ESPAI FIX per 3 caixes en columna */
+                flex-direction:column;
+                height:165px;
+                padding:8px;
+                gap:4px;
             }
             .data-box { 
-                width: 100% !important; 
-                flex: none !important; 
-                height: 55px !important; /* ALTURA FIXA per cada caixa */
-                min-height: 55px !important;
-                padding: 8px !important;
-            }
-            .scroll-container, .content-group { 
-                height: 310px !important; /* TOTAL: 55px(capç) + 190px(caixes) + 65px(peu) = 310px */
-            }
-            .location-header { 
-                height: 50px !important; 
-                padding: 0 10px !important; 
-            }
-            .location-name { 
-                font-size: 20px !important; 
-                line-height: 1.1 !important;
+                height:50px;
+                padding:5px 4px;
+                flex-direction:row;
+                align-items:center;
+                justify-content:space-between;
             }
             .data-title { 
-                font-size: 12px !important; 
-                margin-bottom: 2px !important;
-                line-height: 1.1 !important;
+                font-size:10px;
+                margin:0;
+                text-align:left;
+                flex:1;
             }
             .data-value { 
-                font-size: 24px !important; 
-                margin: 3px 0 !important;
-            }
-            .data-unit { 
-                font-size: 16px !important; 
+                font-size:20px;
+                margin:0;
+                flex-shrink:0;
             }
             .footer { 
-                height: 65px !important; /* ESPAI GARANTIT per dues línies */
-                padding: 6px 10px !important; 
-            }
-            .update-info { 
-                font-size: 12px !important;
-                margin-bottom: 1px !important;
-            }
-            .source { 
-                font-size: 11px !important; 
+                height:60px;
+                padding:5px 8px;
             }
         }
         
-        /* MÒBIL HORITZONTAL: Caixes en fila */
-        @media (min-width: 601px) and (max-width: 900px) and (orientation: landscape) {
-            .scroll-container, .content-group { 
-                height: 240px !important; /* MÉS BAIX per horitzontal */
-            }
+        /* ========== MÒBIL HORITZONTAL ========== */
+        @media (max-width: 900px) and (orientation: landscape) {
+            .scroll-container, .content-group { height:200px; }
             .data-container { 
-                padding: 10px 12px !important; 
-                height: 120px !important; /* Menys alt */
-                gap: 8px !important;
+                height:100px;
+                padding:6px;
+                gap:4px;
             }
-            .data-box { 
-                padding: 8px 6px !important;
-                min-height: 100px !important;
-            }
-            .data-title { 
-                font-size: 11px !important;
-                margin-bottom: 4px !important;
-            }
-            .data-value { 
-                font-size: 26px !important;
-            }
+            .data-box { padding:4px 3px; }
+            .data-title { font-size:9px; margin-bottom:2px; }
+            .data-value { font-size:20px; }
+            .data-unit { font-size:14px; }
             .footer { 
-                height: 60px !important;
-                padding: 8px 10px !important;
+                height:50px;
+                padding:4px 6px;
             }
-            .update-info { 
-                font-size: 12px !important;
-            }
+            .update-info { font-size:10px; }
+            .source { font-size:9px; }
         }
         
-        /* TABLETS I PC */
+        /* ========== TABLET/PC ========== */
         @media (min-width: 901px) {
-            .scroll-container, .content-group { 
-                height: 280px !important;
-            }
-            .data-container { 
-                height: 150px !important;
-            }
-        }
-        
-        @supports (-webkit-touch-callout: none) {
-            * { -webkit-font-smoothing: antialiased !important; }
+            .weather-container { max-width:450px; }
+            .scroll-container, .content-group { height:230px; }
+            .data-container { height:120px; }
         }
     </style>
 </head>
-<body style="margin:0;padding:0;background-color:#ffffff;display:flex;justify-content:center;align-items:center;min-height:100vh;overflow:hidden;font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;">
-    
-    <div class="weather-container" style="width:95vw;max-width:600px;min-width:280px;background-color:white;overflow:hidden;position:relative;box-shadow:0 2px 8px rgba(0,0,0,0.06);margin:0 auto;border-radius:4px;">
-        
-        <div class="scroll-container" style="position:relative;height:280px;overflow:hidden;">
+<body>
+    <div class="weather-container">
+        <div class="scroll-container">
             
-            <!-- GRUP 1: GIRONA -->
-            <div class="content-group active" id="group1" style="position:absolute;width:100%;height:280px;left:0;background-color:white;transform:translateY(0);">
-                
-                <div class="location-header" style="background-color:#c00;color:white;padding:0 12px;text-align:center;height:50px;display:flex;align-items:center;justify-content:center;">
-                    <div class="location-name" style="font-size:22px;font-weight:bold;text-transform:uppercase;letter-spacing:0.2px;display:flex;align-items:center;justify-content:center;height:100%;width:100%;">
-                        GIRONA
+            <!-- GIRONA -->
+            <div class="content-group active" id="group1">
+                <div class="location-header">
+                    <div class="location-name">GIRONA</div>
+                </div>
+                <div class="data-container">
+                    <div class="data-box">
+                        <div class="data-title">Temp. màxima</div>
+                        <div class="data-value">14.5<span class="data-unit">°C</span></div>
+                    </div>
+                    <div class="data-box">
+                        <div class="data-title">Temp. mínima</div>
+                        <div class="data-value">7.3<span class="data-unit">°C</span></div>
+                    </div>
+                    <div class="data-box">
+                        <div class="data-title">Pluja</div>
+                        <div class="data-value">2.8<span class="data-unit">mm</span></div>
                     </div>
                 </div>
-                
-                <div class="data-container" style="display:flex;justify-content:space-between;padding:12px;gap:8px;background-color:white;height:150px;">
-                    
-                    <div class="data-box" style="flex:1;background-color:#fff;border:1px solid #ddd;border-radius:4px;padding:10px 6px;text-align:center;display:flex;flex-direction:column;justify-content:center;box-shadow:0 1px 3px rgba(0,0,0,0.04);">
-                        <div class="data-title" style="font-size:13px;font-weight:700;color:#333;margin-bottom:5px;text-transform:uppercase;line-height:1.1;">
-                            Temp. màxima
-                        </div>
-                        <div class="data-value" style="font-size:30px;font-weight:800;color:#000;margin:6px 0;">
-                            14.5<span class="data-unit" style="font-size:18px;color:#000;font-weight:700;margin-left:1px;">°C</span>
-                        </div>
-                    </div>
-                    
-                    <div class="data-box" style="flex:1;background-color:#fff;border:1px solid #ddd;border-radius:4px;padding:10px 6px;text-align:center;display:flex;flex-direction:column;justify-content:center;box-shadow:0 1px 3px rgba(0,0,0,0.04);">
-                        <div class="data-title" style="font-size:13px;font-weight:700;color:#333;margin-bottom:5px;text-transform:uppercase;line-height:1.1;">
-                            Temp. mínima
-                        </div>
-                        <div class="data-value" style="font-size:30px;font-weight:800;color:#000;margin:6px 0;">
-                            7.3<span class="data-unit" style="font-size:18px;color:#000;font-weight:700;margin-left:1px;">°C</span>
-                        </div>
-                    </div>
-                    
-                    <div class="data-box" style="flex:1;background-color:#fff;border:1px solid #ddd;border-radius:4px;padding:10px 6px;text-align:center;display:flex;flex-direction:column;justify-content:center;box-shadow:0 1px 3px rgba(0,0,0,0.04);">
-                        <div class="data-title" style="font-size:13px;font-weight:700;color:#333;margin-bottom:5px;text-transform:uppercase;line-height:1.1;">
-                            Pluja
-                        </div>
-                        <div class="data-value" style="font-size:30px;font-weight:800;color:#000;margin:6px 0;">
-                            2.8<span class="data-unit" style="font-size:18px;color:#000;font-weight:700;margin-left:1px;">mm</span>
-                        </div>
-                    </div>
-                    
+                <div class="footer">
+                    <div class="update-info">Actualitzat: 13:45 - Data: 23/12/2025</div>
+                    <div class="source">Font: https://www.meteo.cat/</div>
                 </div>
-                
-                <div class="footer" style="padding:8px 12px;text-align:center;background-color:#fff;border-top:1px solid #eee;height:80px;display:flex;flex-direction:column;justify-content:center;position:absolute;bottom:0;width:100%;box-sizing:border-box;">
-                    <div class="update-info" style="font-size:13px;color:#333;margin-bottom:3px;font-weight:800;">
-                        Actualitzat: 13:45 - Data: 23/12/2025
-                    </div>
-                    <div class="source" style="font-size:12px;color:#666;font-weight:700;">
-                        Font: https://www.meteo.cat/
-                    </div>
-                </div>
-                
             </div>
             
-            <!-- GRUP 2: FORNELLS DE LA SELVA -->
-            <div class="content-group next" id="group2" style="position:absolute;width:100%;height:280px;left:0;background-color:white;transform:translateY(-100%);">
-                
-                <div class="location-header" style="background-color:#c00;color:white;padding:0 12px;text-align:center;height:50px;display:flex;align-items:center;justify-content:center;">
-                    <div class="location-name" style="font-size:20px;font-weight:bold;text-transform:uppercase;letter-spacing:0.2px;display:flex;align-items:center;justify-content:center;height:100%;width:100%;">
-                        FORNELLS DE LA SELVA
+            <!-- FORNELLS -->
+            <div class="content-group next" id="group2">
+                <div class="location-header">
+                    <div class="location-name">FORNELLS DE LA SELVA</div>
+                </div>
+                <div class="data-container">
+                    <div class="data-box">
+                        <div class="data-title">Temp. màxima</div>
+                        <div class="data-value">13.8<span class="data-unit">°C</span></div>
+                    </div>
+                    <div class="data-box">
+                        <div class="data-title">Temp. mínima</div>
+                        <div class="data-value">6.5<span class="data-unit">°C</span></div>
+                    </div>
+                    <div class="data-box">
+                        <div class="data-title">Pluja</div>
+                        <div class="data-value">1.2<span class="data-unit">mm</span></div>
                     </div>
                 </div>
-                
-                <div class="data-container" style="display:flex;justify-content:space-between;padding:12px;gap:8px;background-color:white;height:150px;">
-                    
-                    <div class="data-box" style="flex:1;background-color:#fff;border:1px solid #ddd;border-radius:4px;padding:10px 6px;text-align:center;display:flex;flex-direction:column;justify-content:center;box-shadow:0 1px 3px rgba(0,0,0,0.04);">
-                        <div class="data-title" style="font-size:13px;font-weight:700;color:#333;margin-bottom:5px;text-transform:uppercase;line-height:1.1;">
-                            Temp. màxima
-                        </div>
-                        <div class="data-value" style="font-size:30px;font-weight:800;color:#000;margin:6px 0;">
-                            13.8<span class="data-unit" style="font-size:18px;color:#000;font-weight:700;margin-left:1px;">°C</span>
-                        </div>
-                    </div>
-                    
-                    <div class="data-box" style="flex:1;background-color:#fff;border:1px solid #ddd;border-radius:4px;padding:10px 6px;text-align:center;display:flex;flex-direction:column;justify-content:center;box-shadow:0 1px 3px rgba(0,0,0,0.04);">
-                        <div class="data-title" style="font-size:13px;font-weight:700;color:#333;margin-bottom:5px;text-transform:uppercase;line-height:1.1;">
-                            Temp. mínima
-                        </div>
-                        <div class="data-value" style="font-size:30px;font-weight:800;color:#000;margin:6px 0;">
-                            6.5<span class="data-unit" style="font-size:18px;color:#000;font-weight:700;margin-left:1px;">°C</span>
-                        </div>
-                    </div>
-                    
-                    <div class="data-box" style="flex:1;background-color:#fff;border:1px solid #ddd;border-radius:4px;padding:10px 6px;text-align:center;display:flex;flex-direction:column;justify-content:center;box-shadow:0 1px 3px rgba(0,0,0,0.04);">
-                        <div class="data-title" style="font-size:13px;font-weight:700;color:#333;margin-bottom:5px;text-transform:uppercase;line-height:1.1;">
-                            Pluja
-                        </div>
-                        <div class="data-value" style="font-size:30px;font-weight:800;color:#000;margin:6px 0;">
-                            1.2<span class="data-unit" style="font-size:18px;color:#000;font-weight:700;margin-left:1px;">mm</span>
-                        </div>
-                    </div>
-                    
+                <div class="footer">
+                    <div class="update-info">Actualitzat: 13:45 - Data: 23/12/2025</div>
+                    <div class="source">Font: https://www.meteo.cat/</div>
                 </div>
-                
-                <div class="footer" style="padding:8px 12px;text-align:center;background-color:#fff;border-top:1px solid #eee;height:80px;display:flex;flex-direction:column;justify-content:center;position:absolute;bottom:0;width:100%;box-sizing:border-box;">
-                    <div class="update-info" style="font-size:13px;color:#333;margin-bottom:3px;font-weight:800;">
-                        Actualitzat: 13:45 - Data: 23/12/2025
-                    </div>
-                    <div class="source" style="font-size:12px;color:#666;font-weight:700;">
-                        Font: https://www.meteo.cat/
-                    </div>
-                </div>
-                
             </div>
             
         </div>
     </div>
 
     <script>
-        function inicialitzarBanner() {
-            const grup1 = document.getElementById('group1');
-            const grup2 = document.getElementById('group2');
-            
-            if (!grup1 || !grup2) return;
-            
-            grup1.style.transform = 'translateY(0)';
-            grup2.style.transform = 'translateY(-100%)';
-            
-            void grup1.offsetWidth;
-            void grup2.offsetWidth;
-            
-            setTimeout(iniciarScroll, 800);
+        // INICIALITZACIÓ SIMPLE
+        function init() {
+            const g1 = document.getElementById('group1');
+            const g2 = document.getElementById('group2');
+            if (g1 && g2) {
+                g1.className = 'content-group active';
+                g2.className = 'content-group next';
+            }
         }
+        document.addEventListener('DOMContentLoaded', init);
         
-        let grupActual = 1;
-        let intervalId;
-        let enTransicio = false;
-        
-        function canviarPoblacio() {
-            if (enTransicio) return;
-            enTransicio = true;
+        // SCROLL AUTOMÀTIC
+        let current = 1, timer;
+        function change() {
+            const g1 = document.getElementById('group1');
+            const g2 = document.getElementById('group2');
             
-            const grup1 = document.getElementById('group1');
-            const grup2 = document.getElementById('group2');
-            
-            if (grupActual === 1) {
-                grup1.classList.remove('active');
-                grup1.classList.add('out');
-                grup1.style.transform = 'translateY(100%)';
-                
-                grup2.classList.remove('next');
-                grup2.classList.add('active');
-                grup2.style.transform = 'translateY(0)';
-                
-                grupActual = 2;
+            if (current === 1) {
+                g1.classList.replace('active', 'out');
+                g2.classList.replace('next', 'active');
+                current = 2;
             } else {
-                grup2.classList.remove('active');
-                grup2.classList.add('out');
-                grup2.style.transform = 'translateY(100%)';
-                
-                grup1.classList.remove('next');
-                grup1.classList.add('active');
-                grup1.style.transform = 'translateY(0)';
-                
-                grupActual = 1;
+                g2.classList.replace('active', 'out');
+                g1.classList.replace('next', 'active');
+                current = 1;
             }
             
-            setTimeout(function() {
-                if (grupActual === 1) {
-                    grup2.classList.remove('active', 'out');
-                    grup2.classList.add('next');
-                    grup2.style.transform = 'translateY(-100%)';
-                    grup2.style.transition = 'none';
-                    grup1.style.zIndex = '2';
-                    grup2.style.zIndex = '1';
-                    
-                    void grup2.offsetWidth;
-                    grup2.style.transition = '';
+            setTimeout(() => {
+                if (current === 1) {
+                    g2.className = 'content-group next';
+                    g1.style.zIndex = '2';
+                    g2.style.zIndex = '1';
                 } else {
-                    grup1.classList.remove('active', 'out');
-                    grup1.classList.add('next');
-                    grup1.style.transform = 'translateY(-100%)';
-                    grup1.style.transition = 'none';
-                    grup1.style.zIndex = '1';
-                    grup2.style.zIndex = '2';
-                    
-                    void grup1.offsetWidth;
-                    grup1.style.transition = '';
+                    g1.className = 'content-group next';
+                    g1.style.zIndex = '1';
+                    g2.style.zIndex = '2';
                 }
-                enTransicio = false;
             }, 800);
         }
         
-        function iniciarScroll() {
-            if (intervalId) clearInterval(intervalId);
-            intervalId = setInterval(canviarPoblacio, 15000);
+        function startScroll() {
+            if (timer) clearInterval(timer);
+            timer = setInterval(change, 15000);
         }
         
-        document.addEventListener('DOMContentLoaded', inicialitzarBanner);
-        setTimeout(inicialitzarBanner, 100);
-        
-        document.addEventListener('visibilitychange', function() {
-            if (document.hidden && intervalId) clearInterval(intervalId);
-            else iniciarScroll();
+        setTimeout(startScroll, 1000);
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden) clearInterval(timer);
+            else startScroll();
         });
     </script>
 </body>
