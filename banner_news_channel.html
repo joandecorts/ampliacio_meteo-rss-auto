@@ -134,7 +134,7 @@
             margin-left: 4px;
         }
         
-        /* PEU DE PÀGINA - RESPONSIVE amb lletres MÉS GRUIXUDES */
+        /* PEU DE PÀGINA - RESPONSIVE amb TOTES les lletres NEGRETES */
         .footer {
             padding: 15px 20px;
             text-align: center;
@@ -150,55 +150,69 @@
             font-size: clamp(14px, 2vw, 16px);  /* RESPONSIVE */
             color: #333;
             margin-bottom: 3px;
-            font-weight: 700;  /* MÉS GRUIXUT: 700 en lloc de 600 */
+            font-weight: 800;  /* MOLT NEGRETA */
         }
         
         .source {
             font-size: clamp(12px, 1.8vw, 14px);  /* RESPONSIVE */
             color: #666;
-            font-weight: 600;  /* MÉS GRUIXUT: 600 en lloc de 500 */
+            font-weight: 700;  /* NEGRETA */
         }
         
         /* ============================================================================
            MEDIA QUERIES - RESPONSIVE PER TOTS ELS DISPOSITIUS
            ============================================================================ */
         
-        /* MÒBIL VERTICAL (portrait) - Pantalla estreta */
+        /* MÒBIL VERTICAL (portrait) - Pantalla estreta - CORREGIT */
         @media (max-width: 600px) {
             .scroll-container {
-                height: 420px;  /* Una mica més alt per la columna */
+                height: 380px;  /* REDUÏT: abans 420px, ara 380px */
             }
             
             .content-group {
-                height: 420px;
+                height: 380px;  /* REDUÏT: abans 420px, ara 380px */
             }
             
             .data-container {
                 flex-direction: column;  /* Columna en lloc de fila */
-                gap: 12px;
-                padding: 20px 15px;
+                gap: 10px;               /* REDUÏT: abans 12px, ara 10px */
+                padding: 15px 15px;      /* REDUÏT vertical: abans 20px, ara 15px */
                 height: auto;            /* Altura automàtica */
             }
             
             .data-box {
-                min-height: 85px;
-                padding: 15px 10px;
+                min-height: 75px;        /* REDUÏT: abans 85px, ara 75px */
+                padding: 12px 10px;      /* REDUÏT: abans 15px, ara 12px */
                 flex: none;              /* Sense flex per columnes */
                 width: 100%;
             }
             
             .location-header {
-                height: 60px;
-                padding: 0 15px;
+                height: 55px;            /* REDUÏT: abans 60px, ara 55px */
+                padding: 0 10px;         /* REDUÏT: abans 15px, ara 10px */
             }
             
             .footer {
-                padding: 12px 15px;
-                height: 65px;
+                padding: 10px 15px;      /* REDUÏT: abans 12px, ara 10px */
+                height: 60px;            /* REDUÏT: abans 65px, ara 60px */
+            }
+            
+            .data-title {
+                margin-bottom: 5px;      /* REDUÏT: abans 10px, ara 5px */
+                font-size: 13px;         /* Una mica més petit */
+            }
+            
+            .data-value {
+                font-size: 22px;         /* Una mica més petit per mòbil */
+                margin: 3px 0;           /* REDUÏT */
+            }
+            
+            .data-unit {
+                font-size: 16px;         /* Una mica més petit */
             }
             
             .content-group.out {
-                transform: translateY(120%);  /* Una mica més per la columna */
+                transform: translateY(110%);  /* REDUÏT: abans 120%, ara 110% */
             }
         }
         
@@ -215,6 +229,15 @@
             
             .data-title {
                 font-size: 15px;
+            }
+            
+            /* Per iPhone apaisat específicament */
+            .scroll-container {
+                height: 340px;  /* Una mica més baix per apaisat */
+            }
+            
+            .content-group {
+                height: 340px;
             }
         }
         
@@ -265,25 +288,31 @@
         @media (max-height: 600px) and (orientation: landscape) {
             /* Per mòbils apaisats amb poca altura */
             .scroll-container {
-                height: 320px;
+                height: 300px;  /* REDUÏT: abans 320px, ara 300px */
             }
             
             .content-group {
-                height: 320px;
+                height: 300px;
             }
             
             .data-container {
-                padding: 15px;
-                height: 150px;
+                padding: 12px 15px;  /* REDUÏT: abans 15px */
+                height: 140px;       /* REDUÏT: abans 150px */
+                gap: 8px;            /* REDUÏT */
+            }
+            
+            .data-box {
+                min-height: 70px;    /* REDUÏT: abans 75px? */
+                padding: 10px 8px;   /* REDUÏT */
             }
             
             .location-header {
-                height: 55px;
+                height: 50px;        /* REDUÏT: abans 55px */
             }
             
             .footer {
-                height: 60px;
-                padding: 10px 15px;
+                height: 55px;        /* REDUÏT: abans 60px */
+                padding: 8px 12px;   /* REDUÏT */
             }
         }
         
@@ -298,6 +327,14 @@
             
             .data-value, .location-name {
                 -webkit-font-smoothing: subpixel-antialiased;
+            }
+            
+            /* Safe area per iPhone X i superiors (notch) */
+            @media (max-width: 600px) {
+                body {
+                    padding: env(safe-area-inset-top) env(safe-area-inset-right) 
+                            env(safe-area-inset-bottom) env(safe-area-inset-left);
+                }
             }
         }
         
@@ -393,8 +430,6 @@
                     // Força un reflow per evitar problemes de render
                     void grup1.offsetWidth;
                     void grup2.offsetWidth;
-                    
-                    console.log('✅ Preloader: Banner inicialitzat correctament');
                 }
             }, 100);
         });
