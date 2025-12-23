@@ -2,426 +2,194 @@
 <html lang="ca">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Meteorologia</title>
     
-    <!-- CSS carregat de forma crítica (sense retard) -->
+    <!-- CSS només per millores (no crític) -->
     <style>
-        /* ============================================================================
-           SPLASH SCREEN - Amaga tot fins que el CSS estigui carregat (iPhone fix)
-           ============================================================================ */
-        .splash-screen {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: white;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 9999;
-            transition: opacity 0.3s ease;
-        }
-        
-        .splash-screen.hidden {
-            opacity: 0;
-            pointer-events: none;
-        }
-        
-        .loading-text {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            font-size: 18px;
-            color: #333;
-        }
-        
-        /* ============================================================================
-           ESTILS PRINCIPALS (CSS crític - carrega immediatament)
-           ============================================================================ */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
-            background-color: #ffffff;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            overflow: hidden;
-            opacity: 0;  /* Inicialment amagat */
-            transition: opacity 0.5s ease;
-        }
-        
-        body.loaded {
-            opacity: 1;  /* Visible quan tot estigui carregat */
-        }
-        
-        .weather-container {
-            width: 95vw;
-            max-width: 800px;
-            min-width: 300px;
-            background-color: white;
-            overflow: hidden;
-            position: relative;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-            margin: 0 auto;
-        }
-        
-        .scroll-container {
-            position: relative;
-            height: 370px;
-            overflow: hidden;
-        }
-        
+        /* TRANSICIONS I ANIMACIONS (no críticas) */
         .content-group {
-            position: absolute;
-            width: 100%;
-            height: 370px;
-            left: 0;
-            transition: transform 0.8s ease-in-out;
-            background-color: white;
-            opacity: 0;  /* Inicialment amagat */
-            transform: translateY(100%);
+            transition: transform 0.8s ease-in-out !important;
         }
         
-        .content-group.active {
-            opacity: 1;
-            transform: translateY(0);
-        }
-        
-        .content-group.next {
-            opacity: 1;
-            transform: translateY(-100%);
-        }
-        
-        .content-group.out {
-            opacity: 1;
-            transform: translateY(100%);
-        }
-    </style>
-    
-    <!-- CSS no crític (carrega després) -->
-    <style>
-        .location-header {
-            background-color: #c00;
-            color: white;
-            padding: 0 20px;
-            text-align: center;
-            height: 65px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-        
-        .location-name {
-            font-size: clamp(18px, 4vw, 26px);
-            font-weight: bold;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            line-height: 1;
-            padding: 0;
-            margin: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            height: 100%;
-            width: 100%;
-        }
-        
-        .data-container {
-            display: flex;
-            justify-content: space-between;
-            padding: 25px 20px;
-            gap: 20px;
-            background-color: white;
-            height: 180px;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-        
-        .data-box {
-            flex: 1;
-            background-color: #fff;
-            border: 2px solid #e0e0e0;
-            border-radius: 8px;
-            padding: 20px 15px;
-            text-align: center;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            box-shadow: 0 3px 8px rgba(0,0,0,0.08);
-            height: 100%;
-        }
-        
-        .data-title {
-            font-size: clamp(14px, 2vw, 16px);
-            font-weight: 700;
-            color: #333;
-            margin-bottom: 10px;
-            text-transform: uppercase;
-        }
-        
-        .data-value {
-            font-size: clamp(24px, 5vw, 38px);
-            font-weight: 800;
-            color: #000;
-            margin: 5px 0;
-            letter-spacing: -0.5px;
-        }
-        
-        .data-unit {
-            font-size: clamp(18px, 3vw, 22px);
-            color: #000;
-            font-weight: 700;
-            margin-left: 4px;
-        }
-        
-        /* PEU DE PÀGINA - TOT NEGRETA */
-        .footer {
-            padding: 15px 20px;
-            text-align: center;
-            background-color: #fff;
-            border-top: 2px solid #f0f0f0;
-            height: 70px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-        
-        .update-info {
-            font-size: clamp(14px, 2vw, 16px);
-            color: #333;
-            margin-bottom: 3px;
-            font-weight: 800;  /* MOLT NEGRETA */
-        }
-        
-        .source {
-            font-size: clamp(12px, 1.8vw, 14px);
-            color: #666;
-            font-weight: 700;  /* NEGRETA */
-        }
-        
-        /* ============================================================================
-           MEDIA QUERIES
-           ============================================================================ */
+        /* RESPONSIVE (no crític) */
         @media (max-width: 600px) {
-            .scroll-container {
-                height: 380px;
-            }
-            
-            .content-group {
-                height: 380px;
-            }
-            
             .data-container {
-                flex-direction: column;
-                gap: 10px;
-                padding: 15px 15px;
-                height: auto;
+                flex-direction: column !important;
             }
             
             .data-box {
-                min-height: 75px;
-                padding: 12px 10px;
-                flex: none;
-                width: 100%;
-            }
-            
-            .location-header {
-                height: 55px;
-                padding: 0 10px;
-            }
-            
-            .footer {
-                padding: 10px 15px;
-                height: 60px;
-            }
-            
-            .data-title {
-                margin-bottom: 5px;
-                font-size: 13px;
-            }
-            
-            .data-value {
-                font-size: 22px;
-                margin: 3px 0;
-            }
-            
-            .data-unit {
-                font-size: 16px;
-            }
-            
-            .content-group.out {
-                transform: translateY(110%);
-            }
-        }
-        
-        @media (min-width: 601px) and (max-width: 768px) {
-            .weather-container {
-                width: 90vw;
-                max-width: 700px;
-            }
-            
-            .data-value {
-                font-size: clamp(22px, 4vw, 32px);
-            }
-            
-            .data-title {
-                font-size: 15px;
-            }
-            
-            .scroll-container {
-                height: 340px;
-            }
-            
-            .content-group {
-                height: 340px;
+                width: 100% !important;
+                flex: none !important;
             }
         }
         
         /* AJUSTOS IPHONE */
         @supports (-webkit-touch-callout: none) {
-            .weather-container {
-                -webkit-font-smoothing: antialiased;
+            * {
+                -webkit-font-smoothing: antialiased !important;
             }
         }
     </style>
 </head>
-<body>
-    <!-- SPLASH SCREEN (amagat quan tot estigui carregat) -->
-    <div class="splash-screen" id="splashScreen">
-        <div class="loading-text">Carregant...</div>
-    </div>
+<body style="margin:0;padding:0;background-color:#ffffff;display:flex;justify-content:center;align-items:center;min-height:100vh;overflow:hidden;font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;">
     
-    <!-- CONTINGUT PRINCIPAL -->
-    <div class="weather-container">
-        <div class="scroll-container">
+    <!-- CONTENIDOR PRINCIPAL -->
+    <div class="weather-container" style="width:95vw;max-width:800px;min-width:300px;background-color:white;overflow:hidden;position:relative;box-shadow:0 5px 15px rgba(0,0,0,0.1);margin:0 auto;">
+        
+        <div class="scroll-container" style="position:relative;height:380px;overflow:hidden;">
+            
             <!-- GRUP 1: GIRONA -->
-            <div class="content-group active" id="group1">
-                <div class="location-header">
-                    <div class="location-name">GIRONA</div>
-                </div>
+            <div class="content-group active" id="group1" style="position:absolute;width:100%;height:380px;left:0;background-color:white;transform:translateY(0);">
                 
-                <div class="data-container">
-                    <div class="data-box">
-                        <div class="data-title">Temperatura màxima del dia</div>
-                        <div class="data-value">14.5<span class="data-unit">°C</span></div>
-                    </div>
-                    
-                    <div class="data-box">
-                        <div class="data-title">Temperatura mínima del dia</div>
-                        <div class="data-value">7.3<span class="data-unit">°C</span></div>
-                    </div>
-                    
-                    <div class="data-box">
-                        <div class="data-title">Pluja acumulada</div>
-                        <div class="data-value">2.8<span class="data-unit">mm</span></div>
+                <!-- CAPÇALERA VERMELLA -->
+                <div class="location-header" style="background-color:#c00;color:white;padding:0 20px;text-align:center;height:65px;display:flex;align-items:center;justify-content:center;">
+                    <div class="location-name" style="font-size:26px;font-weight:bold;text-transform:uppercase;letter-spacing:0.5px;line-height:1;padding:0;margin:0;display:flex;align-items:center;justify-content:center;height:100%;width:100%;">
+                        GIRONA
                     </div>
                 </div>
                 
-                <div class="footer">
-                    <div class="update-info">Actualitzat: 13:45 - Data: 23/12/2025</div>
-                    <div class="source">Font: https://www.meteo.cat/</div>
+                <!-- CAIXES DE DADES -->
+                <div class="data-container" style="display:flex;justify-content:space-between;padding:20px;gap:15px;background-color:white;height:180px;">
+                    
+                    <div class="data-box" style="flex:1;background-color:#fff;border:2px solid #e0e0e0;border-radius:8px;padding:15px;text-align:center;display:flex;flex-direction:column;justify-content:center;box-shadow:0 3px 8px rgba(0,0,0,0.08);height:100%;">
+                        <div class="data-title" style="font-size:16px;font-weight:700;color:#333;margin-bottom:8px;text-transform:uppercase;">
+                            Temperatura màxima del dia
+                        </div>
+                        <div class="data-value" style="font-size:36px;font-weight:800;color:#000;margin:10px 0;">
+                            14.5<span class="data-unit" style="font-size:22px;color:#000;font-weight:700;margin-left:4px;">°C</span>
+                        </div>
+                    </div>
+                    
+                    <div class="data-box" style="flex:1;background-color:#fff;border:2px solid #e0e0e0;border-radius:8px;padding:15px;text-align:center;display:flex;flex-direction:column;justify-content:center;box-shadow:0 3px 8px rgba(0,0,0,0.08);height:100%;">
+                        <div class="data-title" style="font-size:16px;font-weight:700;color:#333;margin-bottom:8px;text-transform:uppercase;">
+                            Temperatura mínima del dia
+                        </div>
+                        <div class="data-value" style="font-size:36px;font-weight:800;color:#000;margin:10px 0;">
+                            7.3<span class="data-unit" style="font-size:22px;color:#000;font-weight:700;margin-left:4px;">°C</span>
+                        </div>
+                    </div>
+                    
+                    <div class="data-box" style="flex:1;background-color:#fff;border:2px solid #e0e0e0;border-radius:8px;padding:15px;text-align:center;display:flex;flex-direction:column;justify-content:center;box-shadow:0 3px 8px rgba(0,0,0,0.08);height:100%;">
+                        <div class="data-title" style="font-size:16px;font-weight:700;color:#333;margin-bottom:8px;text-transform:uppercase;">
+                            Pluja acumulada
+                        </div>
+                        <div class="data-value" style="font-size:36px;font-weight:800;color:#000;margin:10px 0;">
+                            2.8<span class="data-unit" style="font-size:22px;color:#000;font-weight:700;margin-left:4px;">mm</span>
+                        </div>
+                    </div>
+                    
                 </div>
+                
+                <!-- PEU DE PÀGINA (AMB ESPAI GARANTIT) -->
+                <div class="footer" style="padding:15px 20px;text-align:center;background-color:#fff;border-top:2px solid #f0f0f0;height:70px;display:flex;flex-direction:column;justify-content:center;position:absolute;bottom:0;width:100%;box-sizing:border-box;">
+                    <div class="update-info" style="font-size:16px;color:#333;margin-bottom:3px;font-weight:800;">
+                        Actualitzat: 13:45 - Data: 23/12/2025
+                    </div>
+                    <div class="source" style="font-size:14px;color:#666;font-weight:700;">
+                        Font: https://www.meteo.cat/
+                    </div>
+                </div>
+                
             </div>
             
             <!-- GRUP 2: FORNELLS DE LA SELVA -->
-            <div class="content-group next" id="group2">
-                <div class="location-header">
-                    <div class="location-name">FORNELLS DE LA SELVA</div>
-                </div>
+            <div class="content-group next" id="group2" style="position:absolute;width:100%;height:380px;left:0;background-color:white;transform:translateY(-100%);">
                 
-                <div class="data-container">
-                    <div class="data-box">
-                        <div class="data-title">Temperatura màxima del dia</div>
-                        <div class="data-value">13.8<span class="data-unit">°C</span></div>
-                    </div>
-                    
-                    <div class="data-box">
-                        <div class="data-title">Temperatura mínima del dia</div>
-                        <div class="data-value">6.5<span class="data-unit">°C</span></div>
-                    </div>
-                    
-                    <div class="data-box">
-                        <div class="data-title">Pluja acumulada</div>
-                        <div class="data-value">1.2<span class="data-unit">mm</span></div>
+                <!-- CAPÇALERA VERMELLA -->
+                <div class="location-header" style="background-color:#c00;color:white;padding:0 20px;text-align:center;height:65px;display:flex;align-items:center;justify-content:center;">
+                    <div class="location-name" style="font-size:26px;font-weight:bold;text-transform:uppercase;letter-spacing:0.5px;line-height:1;padding:0;margin:0;display:flex;align-items:center;justify-content:center;height:100%;width:100%;">
+                        FORNELLS DE LA SELVA
                     </div>
                 </div>
                 
-                <div class="footer">
-                    <div class="update-info">Actualitzat: 13:45 - Data: 23/12/2025</div>
-                    <div class="source">Font: https://www.meteo.cat/</div>
+                <!-- CAIXES DE DADES -->
+                <div class="data-container" style="display:flex;justify-content:space-between;padding:20px;gap:15px;background-color:white;height:180px;">
+                    
+                    <div class="data-box" style="flex:1;background-color:#fff;border:2px solid #e0e0e0;border-radius:8px;padding:15px;text-align:center;display:flex;flex-direction:column;justify-content:center;box-shadow:0 3px 8px rgba(0,0,0,0.08);height:100%;">
+                        <div class="data-title" style="font-size:16px;font-weight:700;color:#333;margin-bottom:8px;text-transform:uppercase;">
+                            Temperatura màxima del dia
+                        </div>
+                        <div class="data-value" style="font-size:36px;font-weight:800;color:#000;margin:10px 0;">
+                            13.8<span class="data-unit" style="font-size:22px;color:#000;font-weight:700;margin-left:4px;">°C</span>
+                        </div>
+                    </div>
+                    
+                    <div class="data-box" style="flex:1;background-color:#fff;border:2px solid #e0e0e0;border-radius:8px;padding:15px;text-align:center;display:flex;flex-direction:column;justify-content:center;box-shadow:0 3px 8px rgba(0,0,0,0.08);height:100%;">
+                        <div class="data-title" style="font-size:16px;font-weight:700;color:#333;margin-bottom:8px;text-transform:uppercase;">
+                            Temperatura mínima del dia
+                        </div>
+                        <div class="data-value" style="font-size:36px;font-weight:800;color:#000;margin:10px 0;">
+                            6.5<span class="data-unit" style="font-size:22px;color:#000;font-weight:700;margin-left:4px;">°C</span>
+                        </div>
+                    </div>
+                    
+                    <div class="data-box" style="flex:1;background-color:#fff;border:2px solid #e0e0e0;border-radius:8px;padding:15px;text-align:center;display:flex;flex-direction:column;justify-content:center;box-shadow:0 3px 8px rgba(0,0,0,0.08);height:100%;">
+                        <div class="data-title" style="font-size:16px;font-weight:700;color:#333;margin-bottom:8px;text-transform:uppercase;">
+                            Pluja acumulada
+                        </div>
+                        <div class="data-value" style="font-size:36px;font-weight:800;color:#000;margin:10px 0;">
+                            1.2<span class="data-unit" style="font-size:22px;color:#000;font-weight:700;margin-left:4px;">mm</span>
+                        </div>
+                    </div>
+                    
                 </div>
+                
+                <!-- PEU DE PÀGINA (AMB ESPAI GARANTIT) -->
+                <div class="footer" style="padding:15px 20px;text-align:center;background-color:#fff;border-top:2px solid #f0f0f0;height:70px;display:flex;flex-direction:column;justify-content:center;position:absolute;bottom:0;width:100%;box-sizing:border-box;">
+                    <div class="update-info" style="font-size:16px;color:#333;margin-bottom:3px;font-weight:800;">
+                        Actualitzat: 13:45 - Data: 23/12/2025
+                    </div>
+                    <div class="source" style="font-size:14px;color:#666;font-weight:700;">
+                        Font: https://www.meteo.cat/
+                    </div>
+                </div>
+                
             </div>
+            
         </div>
     </div>
 
     <script>
         // ============================================================================
-        // SISTEMA DE CARREGA - iPhone FIX DEFINITIU
+        // INICIALITZACIÓ SEGURA (espera que tot estigui estable)
         // ============================================================================
-        
-        // 1. Amaga el splash screen quan tot estigui carregat
-        function hideSplashScreen() {
-            const splashScreen = document.getElementById('splashScreen');
-            const body = document.body;
+        function inicialitzarBanner() {
+            console.log('🚀 Inicialitzant banner...');
             
-            // Amaga el splash screen
-            splashScreen.classList.add('hidden');
-            
-            // Mostra el contingut principal
-            body.classList.add('loaded');
-            
-            // Inicialitza correctament els grups
-            initGroups();
-            
-            // Elimina el splash screen del DOM després de l'animació
-            setTimeout(() => {
-                splashScreen.style.display = 'none';
-            }, 500);
-            
-            console.log('✅ Contingut carregat i inicialitzat');
-        }
-        
-        // 2. Inicialitza els grups correctament
-        function initGroups() {
             const grup1 = document.getElementById('group1');
             const grup2 = document.getElementById('group2');
             
-            if (grup1 && grup2) {
-                // Assegura que el grup 1 està actiu i visible
-                grup1.classList.add('active');
-                grup1.classList.remove('next', 'out');
-                grup1.style.opacity = '1';
-                
-                // Assegura que el grup 2 està amagat a dalt
-                grup2.classList.add('next');
-                grup2.classList.remove('active', 'out');
-                grup2.style.opacity = '1';
-                
-                // Força un reflow
-                void grup1.offsetWidth;
-                void grup2.offsetWidth;
+            if (!grup1 || !grup2) {
+                console.error('❌ No es troben els grups');
+                return;
             }
+            
+            // 1. FORÇA les posicions inicials (iPhone necessita això)
+            grup1.style.transform = 'translateY(0)';
+            grup1.style.opacity = '1';
+            grup1.style.zIndex = '2';
+            
+            grup2.style.transform = 'translateY(-100%)';
+            grup2.style.opacity = '1';
+            grup2.style.zIndex = '1';
+            
+            // 2. Força un reflow (critical per iPhone)
+            void grup1.offsetWidth;
+            void grup2.offsetWidth;
+            
+            // 3. Assegura que les classes estan correctes
+            grup1.className = 'content-group active';
+            grup2.className = 'content-group next';
+            
+            console.log('✅ Banner inicialitzat correctament');
+            
+            // 4. Inicia el scroll després d'un moment
+            setTimeout(iniciarScroll, 1000);
         }
         
-        // 3. Espera a que tot estigui carregat
-        window.addEventListener('load', function() {
-            // Espera 300ms extra per assegurar que el CSS està carregat
-            setTimeout(hideSplashScreen, 300);
-        });
-        
-        // 4. Backup: Si el load event no funciona, fer-ho amb DOMContentLoaded
-        document.addEventListener('DOMContentLoaded', function() {
-            setTimeout(hideSplashScreen, 500);
-        });
-        
         // ============================================================================
-        // SISTEMA DE SCROLL AUTOMÀTIC (només comença quan tot està carregat)
+        // SISTEMA DE SCROLL
         // ============================================================================
         let grupActual = 1;
         let intervalId;
@@ -438,18 +206,22 @@
                 // GIRONA → FORNELLS
                 grup1.classList.remove('active');
                 grup1.classList.add('out');
+                grup1.style.transform = 'translateY(100%)';
                 
                 grup2.classList.remove('next');
                 grup2.classList.add('active');
+                grup2.style.transform = 'translateY(0)';
                 
                 grupActual = 2;
             } else {
                 // FORNELLS → GIRONA
                 grup2.classList.remove('active');
                 grup2.classList.add('out');
+                grup2.style.transform = 'translateY(100%)';
                 
                 grup1.classList.remove('next');
                 grup1.classList.add('active');
+                grup1.style.transform = 'translateY(0)';
                 
                 grupActual = 1;
             }
@@ -460,6 +232,7 @@
                     // Girona visible, Fornells amagat a dalt
                     grup2.classList.remove('active', 'out');
                     grup2.classList.add('next');
+                    grup2.style.transform = 'translateY(-100%)';
                     grup2.style.transition = 'none';
                     grup2.style.zIndex = '1';
                     grup1.style.zIndex = '2';
@@ -470,6 +243,7 @@
                     // Fornells visible, Girona amagat a dalt
                     grup1.classList.remove('active', 'out');
                     grup1.classList.add('next');
+                    grup1.style.transform = 'translateY(-100%)';
                     grup1.style.transition = 'none';
                     grup1.style.zIndex = '1';
                     grup2.style.zIndex = '2';
@@ -483,26 +257,52 @@
         
         function iniciarScroll() {
             if (intervalId) clearInterval(intervalId);
-            // Comença el scroll 2 segons després de carregar (per seguretat)
-            setTimeout(() => {
-                intervalId = setInterval(canviarPoblacio, 15000);
-                console.log('🔄 Scroll automàtic iniciat');
-            }, 2000);
+            intervalId = setInterval(canviarPoblacio, 15000);
+            console.log('🔄 Scroll automàtic activat (15s)');
         }
         
-        // Inicia el scroll quan tot estigui carregat
-        window.addEventListener('load', function() {
-            setTimeout(iniciarScroll, 1000);
+        function aturarScroll() {
+            if (intervalId) {
+                clearInterval(intervalId);
+                intervalId = null;
+            }
+        }
+        
+        // ============================================================================
+        // CARREGA DE LA PÀGINA
+        // ============================================================================
+        
+        // Mètode 1: DOMContentLoaded (ràpid)
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('📄 DOM carregat');
+            setTimeout(inicialitzarBanner, 50);
         });
+        
+        // Mètode 2: window.load (més lent però segur)
+        window.addEventListener('load', function() {
+            console.log('🖼️ Pàgina completament carregada');
+            // Backup: si DOMContentLoaded no ho ha fet, ho fem ara
+            setTimeout(inicialitzarBanner, 100);
+        });
+        
+        // Mètode 3: Timeout final (ultim backup)
+        setTimeout(inicialitzarBanner, 500);
         
         // Control de visibilitat
         document.addEventListener('visibilitychange', function() {
             if (document.hidden) {
-                if (intervalId) clearInterval(intervalId);
+                aturarScroll();
             } else {
-                iniciarScroll();
+                setTimeout(iniciarScroll, 1000);
             }
         });
+        
+        window.addEventListener('blur', aturarScroll);
+        window.addEventListener('focus', function() {
+            setTimeout(iniciarScroll, 1000);
+        });
+        
+        console.log('👨‍💻 Script carregat, esperant inicialització...');
     </script>
 </body>
 </html>
