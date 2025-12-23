@@ -4,12 +4,44 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Meteorologia</title>
+    
+    <!-- CSS carregat de forma crítica (sense retard) -->
     <style>
+        /* ============================================================================
+           SPLASH SCREEN - Amaga tot fins que el CSS estigui carregat (iPhone fix)
+           ============================================================================ */
+        .splash-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.3s ease;
+        }
+        
+        .splash-screen.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+        
+        .loading-text {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-size: 18px;
+            color: #333;
+        }
+        
+        /* ============================================================================
+           ESTILS PRINCIPALS (CSS crític - carrega immediatament)
+           ============================================================================ */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
         
         body {
@@ -19,18 +51,23 @@
             align-items: center;
             min-height: 100vh;
             overflow: hidden;
+            opacity: 0;  /* Inicialment amagat */
+            transition: opacity 0.5s ease;
         }
         
-        /* CONTENIDOR PRINCIPAL - RESPONSIVE */
+        body.loaded {
+            opacity: 1;  /* Visible quan tot estigui carregat */
+        }
+        
         .weather-container {
-            width: 95vw;                     /* 95% de l'amplada de pantalla */
-            max-width: 800px;                /* Màxim com abans */
-            min-width: 300px;                /* Mínim per mòbils */
+            width: 95vw;
+            max-width: 800px;
+            min-width: 300px;
             background-color: white;
             overflow: hidden;
             position: relative;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-            margin: 0 auto;                  /* Centrat automàticament */
+            margin: 0 auto;
         }
         
         .scroll-container {
@@ -46,21 +83,28 @@
             left: 0;
             transition: transform 0.8s ease-in-out;
             background-color: white;
+            opacity: 0;  /* Inicialment amagat */
+            transform: translateY(100%);
         }
         
         .content-group.active {
+            opacity: 1;
             transform: translateY(0);
         }
         
         .content-group.next {
+            opacity: 1;
             transform: translateY(-100%);
         }
         
         .content-group.out {
+            opacity: 1;
             transform: translateY(100%);
         }
-        
-        /* CAPÇALERA VERMELLA - RESPONSIVE */
+    </style>
+    
+    <!-- CSS no crític (carrega després) -->
+    <style>
         .location-header {
             background-color: #c00;
             color: white;
@@ -70,10 +114,11 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
         
         .location-name {
-            font-size: clamp(18px, 4vw, 26px);  /* RESPONSIVE: min 18px, max 26px */
+            font-size: clamp(18px, 4vw, 26px);
             font-weight: bold;
             text-transform: uppercase;
             letter-spacing: 0.5px;
@@ -87,7 +132,6 @@
             width: 100%;
         }
         
-        /* CAIXES DE DADES - RESPONSIVE */
         .data-container {
             display: flex;
             justify-content: space-between;
@@ -95,6 +139,7 @@
             gap: 20px;
             background-color: white;
             height: 180px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
         
         .data-box {
@@ -112,7 +157,7 @@
         }
         
         .data-title {
-            font-size: clamp(14px, 2vw, 16px);  /* RESPONSIVE */
+            font-size: clamp(14px, 2vw, 16px);
             font-weight: 700;
             color: #333;
             margin-bottom: 10px;
@@ -120,7 +165,7 @@
         }
         
         .data-value {
-            font-size: clamp(24px, 5vw, 38px);  /* RESPONSIVE: min 24px, max 38px */
+            font-size: clamp(24px, 5vw, 38px);
             font-weight: 800;
             color: #000;
             margin: 5px 0;
@@ -128,13 +173,13 @@
         }
         
         .data-unit {
-            font-size: clamp(18px, 3vw, 22px);  /* RESPONSIVE */
+            font-size: clamp(18px, 3vw, 22px);
             color: #000;
             font-weight: 700;
             margin-left: 4px;
         }
         
-        /* PEU DE PÀGINA - RESPONSIVE amb TOTES les lletres NEGRETES */
+        /* PEU DE PÀGINA - TOT NEGRETA */
         .footer {
             padding: 15px 20px;
             text-align: center;
@@ -144,79 +189,77 @@
             display: flex;
             flex-direction: column;
             justify-content: center;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
         
         .update-info {
-            font-size: clamp(14px, 2vw, 16px);  /* RESPONSIVE */
+            font-size: clamp(14px, 2vw, 16px);
             color: #333;
             margin-bottom: 3px;
             font-weight: 800;  /* MOLT NEGRETA */
         }
         
         .source {
-            font-size: clamp(12px, 1.8vw, 14px);  /* RESPONSIVE */
+            font-size: clamp(12px, 1.8vw, 14px);
             color: #666;
             font-weight: 700;  /* NEGRETA */
         }
         
         /* ============================================================================
-           MEDIA QUERIES - RESPONSIVE PER TOTS ELS DISPOSITIUS
+           MEDIA QUERIES
            ============================================================================ */
-        
-        /* MÒBIL VERTICAL (portrait) - Pantalla estreta - CORREGIT */
         @media (max-width: 600px) {
             .scroll-container {
-                height: 380px;  /* REDUÏT: abans 420px, ara 380px */
+                height: 380px;
             }
             
             .content-group {
-                height: 380px;  /* REDUÏT: abans 420px, ara 380px */
+                height: 380px;
             }
             
             .data-container {
-                flex-direction: column;  /* Columna en lloc de fila */
-                gap: 10px;               /* REDUÏT: abans 12px, ara 10px */
-                padding: 15px 15px;      /* REDUÏT vertical: abans 20px, ara 15px */
-                height: auto;            /* Altura automàtica */
+                flex-direction: column;
+                gap: 10px;
+                padding: 15px 15px;
+                height: auto;
             }
             
             .data-box {
-                min-height: 75px;        /* REDUÏT: abans 85px, ara 75px */
-                padding: 12px 10px;      /* REDUÏT: abans 15px, ara 12px */
-                flex: none;              /* Sense flex per columnes */
+                min-height: 75px;
+                padding: 12px 10px;
+                flex: none;
                 width: 100%;
             }
             
             .location-header {
-                height: 55px;            /* REDUÏT: abans 60px, ara 55px */
-                padding: 0 10px;         /* REDUÏT: abans 15px, ara 10px */
+                height: 55px;
+                padding: 0 10px;
             }
             
             .footer {
-                padding: 10px 15px;      /* REDUÏT: abans 12px, ara 10px */
-                height: 60px;            /* REDUÏT: abans 65px, ara 60px */
+                padding: 10px 15px;
+                height: 60px;
             }
             
             .data-title {
-                margin-bottom: 5px;      /* REDUÏT: abans 10px, ara 5px */
-                font-size: 13px;         /* Una mica més petit */
+                margin-bottom: 5px;
+                font-size: 13px;
             }
             
             .data-value {
-                font-size: 22px;         /* Una mica més petit per mòbil */
-                margin: 3px 0;           /* REDUÏT */
+                font-size: 22px;
+                margin: 3px 0;
             }
             
             .data-unit {
-                font-size: 16px;         /* Una mica més petit */
+                font-size: 16px;
             }
             
             .content-group.out {
-                transform: translateY(110%);  /* REDUÏT: abans 120%, ara 110% */
+                transform: translateY(110%);
             }
         }
         
-        /* MÒBIL APAISAT (landscape) i TABLETS PETITS */
         @media (min-width: 601px) and (max-width: 768px) {
             .weather-container {
                 width: 90vw;
@@ -231,9 +274,8 @@
                 font-size: 15px;
             }
             
-            /* Per iPhone apaisat específicament */
             .scroll-container {
-                height: 340px;  /* Una mica més baix per apaisat */
+                height: 340px;
             }
             
             .content-group {
@@ -241,112 +283,21 @@
             }
         }
         
-        /* TABLETS I PORTÀTILS */
-        @media (min-width: 769px) and (max-width: 1024px) {
-            .weather-container {
-                width: 85vw;
-                max-width: 750px;
-            }
-        }
-        
-        /* PANTALLES GRANS (PC) */
-        @media (min-width: 1025px) and (max-width: 1440px) {
-            .weather-container {
-                width: 80vw;
-                max-width: 800px;  /* El màxim original */
-            }
-        }
-        
-        /* TV I PANTALLES MOLT GRANS (4K, etc.) */
-        @media (min-width: 1441px) {
-            .weather-container {
-                max-width: 900px;  /* Una mica més gran per TV */
-            }
-            
-            .location-name {
-                font-size: 28px;
-            }
-            
-            .data-value {
-                font-size: 42px;
-            }
-            
-            .data-unit {
-                font-size: 24px;
-            }
-            
-            .scroll-container {
-                height: 400px;  /* Una mica més alt */
-            }
-            
-            .content-group {
-                height: 400px;
-            }
-        }
-        
-        /* ALTRES AJUSTOS ESPECÍFICS */
-        @media (max-height: 600px) and (orientation: landscape) {
-            /* Per mòbils apaisats amb poca altura */
-            .scroll-container {
-                height: 300px;  /* REDUÏT: abans 320px, ara 300px */
-            }
-            
-            .content-group {
-                height: 300px;
-            }
-            
-            .data-container {
-                padding: 12px 15px;  /* REDUÏT: abans 15px */
-                height: 140px;       /* REDUÏT: abans 150px */
-                gap: 8px;            /* REDUÏT */
-            }
-            
-            .data-box {
-                min-height: 70px;    /* REDUÏT: abans 75px? */
-                padding: 10px 8px;   /* REDUÏT */
-            }
-            
-            .location-header {
-                height: 50px;        /* REDUÏT: abans 55px */
-            }
-            
-            .footer {
-                height: 55px;        /* REDUÏT: abans 60px */
-                padding: 8px 12px;   /* REDUÏT */
-            }
-        }
-        
-        /* ============================================================================
-           AJUSTOS ESPECÍFICS PER IPHONE/IOS
-           ============================================================================ */
+        /* AJUSTOS IPHONE */
         @supports (-webkit-touch-callout: none) {
             .weather-container {
                 -webkit-font-smoothing: antialiased;
-                -moz-osx-font-smoothing: grayscale;
-            }
-            
-            .data-value, .location-name {
-                -webkit-font-smoothing: subpixel-antialiased;
-            }
-            
-            /* Safe area per iPhone X i superiors (notch) */
-            @media (max-width: 600px) {
-                body {
-                    padding: env(safe-area-inset-top) env(safe-area-inset-right) 
-                            env(safe-area-inset-bottom) env(safe-area-inset-left);
-                }
-            }
-        }
-        
-        /* Prevenir zoom en input a iOS */
-        @media screen and (max-width: 768px) {
-            input, select, textarea {
-                font-size: 16px !important;
             }
         }
     </style>
 </head>
 <body>
+    <!-- SPLASH SCREEN (amagat quan tot estigui carregat) -->
+    <div class="splash-screen" id="splashScreen">
+        <div class="loading-text">Carregant...</div>
+    </div>
+    
+    <!-- CONTINGUT PRINCIPAL -->
     <div class="weather-container">
         <div class="scroll-container">
             <!-- GRUP 1: GIRONA -->
@@ -411,31 +362,66 @@
 
     <script>
         // ============================================================================
-        // PRELOADER - Evita problemes visuals en carregar la pàgina (iPhone fix)
+        // SISTEMA DE CARREGA - iPhone FIX DEFINITIU
         // ============================================================================
-        document.addEventListener('DOMContentLoaded', function() {
-            // Espera 100ms per assegurar que el CSS està carregat
-            setTimeout(function() {
-                const grup1 = document.getElementById('group1');
-                const grup2 = document.getElementById('group2');
+        
+        // 1. Amaga el splash screen quan tot estigui carregat
+        function hideSplashScreen() {
+            const splashScreen = document.getElementById('splashScreen');
+            const body = document.body;
+            
+            // Amaga el splash screen
+            splashScreen.classList.add('hidden');
+            
+            // Mostra el contingut principal
+            body.classList.add('loaded');
+            
+            // Inicialitza correctament els grups
+            initGroups();
+            
+            // Elimina el splash screen del DOM després de l'animació
+            setTimeout(() => {
+                splashScreen.style.display = 'none';
+            }, 500);
+            
+            console.log('✅ Contingut carregat i inicialitzat');
+        }
+        
+        // 2. Inicialitza els grups correctament
+        function initGroups() {
+            const grup1 = document.getElementById('group1');
+            const grup2 = document.getElementById('group2');
+            
+            if (grup1 && grup2) {
+                // Assegura que el grup 1 està actiu i visible
+                grup1.classList.add('active');
+                grup1.classList.remove('next', 'out');
+                grup1.style.opacity = '1';
                 
-                // Assegura que el grup 1 està actiu i el 2 amagat a dalt
-                if (grup1 && grup2) {
-                    grup1.classList.add('active');
-                    grup1.classList.remove('next', 'out');
-                    
-                    grup2.classList.add('next');
-                    grup2.classList.remove('active', 'out');
-                    
-                    // Força un reflow per evitar problemes de render
-                    void grup1.offsetWidth;
-                    void grup2.offsetWidth;
-                }
-            }, 100);
+                // Assegura que el grup 2 està amagat a dalt
+                grup2.classList.add('next');
+                grup2.classList.remove('active', 'out');
+                grup2.style.opacity = '1';
+                
+                // Força un reflow
+                void grup1.offsetWidth;
+                void grup2.offsetWidth;
+            }
+        }
+        
+        // 3. Espera a que tot estigui carregat
+        window.addEventListener('load', function() {
+            // Espera 300ms extra per assegurar que el CSS està carregat
+            setTimeout(hideSplashScreen, 300);
         });
-
+        
+        // 4. Backup: Si el load event no funciona, fer-ho amb DOMContentLoaded
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(hideSplashScreen, 500);
+        });
+        
         // ============================================================================
-        // SISTEMA DE SCROLL AUTOMÀTIC
+        // SISTEMA DE SCROLL AUTOMÀTIC (només comença quan tot està carregat)
         // ============================================================================
         let grupActual = 1;
         let intervalId;
@@ -478,7 +464,7 @@
                     grup2.style.zIndex = '1';
                     grup1.style.zIndex = '2';
                     
-                    void grup2.offsetWidth;  // Força reflow
+                    void grup2.offsetWidth;
                     grup2.style.transition = '';
                 } else {
                     // Fornells visible, Girona amagat a dalt
@@ -488,7 +474,7 @@
                     grup1.style.zIndex = '1';
                     grup2.style.zIndex = '2';
                     
-                    void grup1.offsetWidth;  // Força reflow
+                    void grup1.offsetWidth;
                     grup1.style.transition = '';
                 }
                 enTransicio = false;
@@ -497,35 +483,26 @@
         
         function iniciarScroll() {
             if (intervalId) clearInterval(intervalId);
-            intervalId = setInterval(canviarPoblacio, 15000);
+            // Comença el scroll 2 segons després de carregar (per seguretat)
+            setTimeout(() => {
+                intervalId = setInterval(canviarPoblacio, 15000);
+                console.log('🔄 Scroll automàtic iniciat');
+            }, 2000);
         }
         
-        function aturarScroll() {
-            if (intervalId) {
-                clearInterval(intervalId);
-                intervalId = null;
-            }
-        }
-        
-        // Iniciar quan la pàgina estigui completament carregada
+        // Inicia el scroll quan tot estigui carregat
         window.addEventListener('load', function() {
-            setTimeout(iniciarScroll, 500);  // Espera extra per seguretat
+            setTimeout(iniciarScroll, 1000);
         });
         
         // Control de visibilitat
         document.addEventListener('visibilitychange', function() {
             if (document.hidden) {
-                aturarScroll();
+                if (intervalId) clearInterval(intervalId);
             } else {
                 iniciarScroll();
             }
         });
-        
-        window.addEventListener('blur', aturarScroll);
-        window.addEventListener('focus', iniciarScroll);
-        
-        // Inici final (backup)
-        setTimeout(iniciarScroll, 1000);
     </script>
 </body>
 </html>
