@@ -8,24 +8,95 @@
     <style>
         .content-group { transition: transform 0.8s ease-in-out !important; }
         
+        /* MÒBIL VERTICAL: Caixes en columna */
         @media (max-width: 600px) {
-            .data-container { flex-direction: column !important; gap: 8px !important; }
-            .data-box { width: 100% !important; flex: none !important; min-height: 70px !important; }
-            .scroll-container, .content-group { height: 320px !important; }
-            .location-header { height: 50px !important; padding: 0 10px !important; }
-            .location-name { font-size: 20px !important; }
-            .data-title { font-size: 13px !important; margin-bottom: 4px !important; }
-            .data-value { font-size: 28px !important; margin: 6px 0 !important; }
-            .data-unit { font-size: 18px !important; }
-            .footer { height: 55px !important; padding: 8px 12px !important; }
-            .update-info { font-size: 13px !important; }
-            .source { font-size: 11px !important; }
+            .data-container { 
+                flex-direction: column !important; 
+                gap: 6px !important; 
+                padding: 10px !important;
+                height: 190px !important; /* ESPAI FIX per 3 caixes en columna */
+            }
+            .data-box { 
+                width: 100% !important; 
+                flex: none !important; 
+                height: 55px !important; /* ALTURA FIXA per cada caixa */
+                min-height: 55px !important;
+                padding: 8px !important;
+            }
+            .scroll-container, .content-group { 
+                height: 310px !important; /* TOTAL: 55px(capç) + 190px(caixes) + 65px(peu) = 310px */
+            }
+            .location-header { 
+                height: 50px !important; 
+                padding: 0 10px !important; 
+            }
+            .location-name { 
+                font-size: 20px !important; 
+                line-height: 1.1 !important;
+            }
+            .data-title { 
+                font-size: 12px !important; 
+                margin-bottom: 2px !important;
+                line-height: 1.1 !important;
+            }
+            .data-value { 
+                font-size: 24px !important; 
+                margin: 3px 0 !important;
+            }
+            .data-unit { 
+                font-size: 16px !important; 
+            }
+            .footer { 
+                height: 65px !important; /* ESPAI GARANTIT per dues línies */
+                padding: 6px 10px !important; 
+            }
+            .update-info { 
+                font-size: 12px !important;
+                margin-bottom: 1px !important;
+            }
+            .source { 
+                font-size: 11px !important; 
+            }
         }
         
-        @media (min-width: 601px) and (max-width: 768px) {
-            .scroll-container, .content-group { height: 300px !important; }
-            .data-container { padding: 12px 15px !important; height: 140px !important; }
-            .footer { height: 60px !important; }
+        /* MÒBIL HORITZONTAL: Caixes en fila */
+        @media (min-width: 601px) and (max-width: 900px) and (orientation: landscape) {
+            .scroll-container, .content-group { 
+                height: 240px !important; /* MÉS BAIX per horitzontal */
+            }
+            .data-container { 
+                padding: 10px 12px !important; 
+                height: 120px !important; /* Menys alt */
+                gap: 8px !important;
+            }
+            .data-box { 
+                padding: 8px 6px !important;
+                min-height: 100px !important;
+            }
+            .data-title { 
+                font-size: 11px !important;
+                margin-bottom: 4px !important;
+            }
+            .data-value { 
+                font-size: 26px !important;
+            }
+            .footer { 
+                height: 60px !important;
+                padding: 8px 10px !important;
+            }
+            .update-info { 
+                font-size: 12px !important;
+            }
+        }
+        
+        /* TABLETS I PC */
+        @media (min-width: 901px) {
+            .scroll-container, .content-group { 
+                height: 280px !important;
+            }
+            .data-container { 
+                height: 150px !important;
+            }
         }
         
         @supports (-webkit-touch-callout: none) {
@@ -35,52 +106,52 @@
 </head>
 <body style="margin:0;padding:0;background-color:#ffffff;display:flex;justify-content:center;align-items:center;min-height:100vh;overflow:hidden;font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;">
     
-    <div class="weather-container" style="width:95vw;max-width:700px;min-width:280px;background-color:white;overflow:hidden;position:relative;box-shadow:0 3px 10px rgba(0,0,0,0.08);margin:0 auto;border-radius:6px;">
+    <div class="weather-container" style="width:95vw;max-width:600px;min-width:280px;background-color:white;overflow:hidden;position:relative;box-shadow:0 2px 8px rgba(0,0,0,0.06);margin:0 auto;border-radius:4px;">
         
-        <div class="scroll-container" style="position:relative;height:320px;overflow:hidden;">
+        <div class="scroll-container" style="position:relative;height:280px;overflow:hidden;">
             
             <!-- GRUP 1: GIRONA -->
-            <div class="content-group active" id="group1" style="position:absolute;width:100%;height:320px;left:0;background-color:white;transform:translateY(0);">
+            <div class="content-group active" id="group1" style="position:absolute;width:100%;height:280px;left:0;background-color:white;transform:translateY(0);">
                 
-                <div class="location-header" style="background-color:#c00;color:white;padding:0 15px;text-align:center;height:55px;display:flex;align-items:center;justify-content:center;border-radius:6px 6px 0 0;">
-                    <div class="location-name" style="font-size:22px;font-weight:bold;text-transform:uppercase;letter-spacing:0.3px;line-height:1;display:flex;align-items:center;justify-content:center;height:100%;width:100%;">
+                <div class="location-header" style="background-color:#c00;color:white;padding:0 12px;text-align:center;height:50px;display:flex;align-items:center;justify-content:center;">
+                    <div class="location-name" style="font-size:22px;font-weight:bold;text-transform:uppercase;letter-spacing:0.2px;display:flex;align-items:center;justify-content:center;height:100%;width:100%;">
                         GIRONA
                     </div>
                 </div>
                 
-                <div class="data-container" style="display:flex;justify-content:space-between;padding:15px;gap:10px;background-color:white;height:145px;">
+                <div class="data-container" style="display:flex;justify-content:space-between;padding:12px;gap:8px;background-color:white;height:150px;">
                     
-                    <div class="data-box" style="flex:1;background-color:#fff;border:1.5px solid #e0e0e0;border-radius:6px;padding:12px 8px;text-align:center;display:flex;flex-direction:column;justify-content:center;box-shadow:0 2px 6px rgba(0,0,0,0.05);height:100%;">
-                        <div class="data-title" style="font-size:14px;font-weight:700;color:#333;margin-bottom:6px;text-transform:uppercase;line-height:1.2;">
-                            Temperatura màxima
+                    <div class="data-box" style="flex:1;background-color:#fff;border:1px solid #ddd;border-radius:4px;padding:10px 6px;text-align:center;display:flex;flex-direction:column;justify-content:center;box-shadow:0 1px 3px rgba(0,0,0,0.04);">
+                        <div class="data-title" style="font-size:13px;font-weight:700;color:#333;margin-bottom:5px;text-transform:uppercase;line-height:1.1;">
+                            Temp. màxima
                         </div>
-                        <div class="data-value" style="font-size:32px;font-weight:800;color:#000;margin:8px 0;">
-                            14.5<span class="data-unit" style="font-size:20px;color:#000;font-weight:700;margin-left:2px;">°C</span>
+                        <div class="data-value" style="font-size:30px;font-weight:800;color:#000;margin:6px 0;">
+                            14.5<span class="data-unit" style="font-size:18px;color:#000;font-weight:700;margin-left:1px;">°C</span>
                         </div>
                     </div>
                     
-                    <div class="data-box" style="flex:1;background-color:#fff;border:1.5px solid #e0e0e0;border-radius:6px;padding:12px 8px;text-align:center;display:flex;flex-direction:column;justify-content:center;box-shadow:0 2px 6px rgba(0,0,0,0.05);height:100%;">
-                        <div class="data-title" style="font-size:14px;font-weight:700;color:#333;margin-bottom:6px;text-transform:uppercase;line-height:1.2;">
-                            Temperatura mínima
+                    <div class="data-box" style="flex:1;background-color:#fff;border:1px solid #ddd;border-radius:4px;padding:10px 6px;text-align:center;display:flex;flex-direction:column;justify-content:center;box-shadow:0 1px 3px rgba(0,0,0,0.04);">
+                        <div class="data-title" style="font-size:13px;font-weight:700;color:#333;margin-bottom:5px;text-transform:uppercase;line-height:1.1;">
+                            Temp. mínima
                         </div>
-                        <div class="data-value" style="font-size:32px;font-weight:800;color:#000;margin:8px 0;">
-                            7.3<span class="data-unit" style="font-size:20px;color:#000;font-weight:700;margin-left:2px;">°C</span>
+                        <div class="data-value" style="font-size:30px;font-weight:800;color:#000;margin:6px 0;">
+                            7.3<span class="data-unit" style="font-size:18px;color:#000;font-weight:700;margin-left:1px;">°C</span>
                         </div>
                     </div>
                     
-                    <div class="data-box" style="flex:1;background-color:#fff;border:1.5px solid #e0e0e0;border-radius:6px;padding:12px 8px;text-align:center;display:flex;flex-direction:column;justify-content:center;box-shadow:0 2px 6px rgba(0,0,0,0.05);height:100%;">
-                        <div class="data-title" style="font-size:14px;font-weight:700;color:#333;margin-bottom:6px;text-transform:uppercase;line-height:1.2;">
-                            Pluja acumulada
+                    <div class="data-box" style="flex:1;background-color:#fff;border:1px solid #ddd;border-radius:4px;padding:10px 6px;text-align:center;display:flex;flex-direction:column;justify-content:center;box-shadow:0 1px 3px rgba(0,0,0,0.04);">
+                        <div class="data-title" style="font-size:13px;font-weight:700;color:#333;margin-bottom:5px;text-transform:uppercase;line-height:1.1;">
+                            Pluja
                         </div>
-                        <div class="data-value" style="font-size:32px;font-weight:800;color:#000;margin:8px 0;">
-                            2.8<span class="data-unit" style="font-size:20px;color:#000;font-weight:700;margin-left:2px;">mm</span>
+                        <div class="data-value" style="font-size:30px;font-weight:800;color:#000;margin:6px 0;">
+                            2.8<span class="data-unit" style="font-size:18px;color:#000;font-weight:700;margin-left:1px;">mm</span>
                         </div>
                     </div>
                     
                 </div>
                 
-                <div class="footer" style="padding:10px 15px;text-align:center;background-color:#fff;border-top:1.5px solid #f0f0f0;height:60px;display:flex;flex-direction:column;justify-content:center;position:absolute;bottom:0;width:100%;box-sizing:border-box;border-radius:0 0 6px 6px;">
-                    <div class="update-info" style="font-size:14px;color:#333;margin-bottom:2px;font-weight:800;">
+                <div class="footer" style="padding:8px 12px;text-align:center;background-color:#fff;border-top:1px solid #eee;height:80px;display:flex;flex-direction:column;justify-content:center;position:absolute;bottom:0;width:100%;box-sizing:border-box;">
+                    <div class="update-info" style="font-size:13px;color:#333;margin-bottom:3px;font-weight:800;">
                         Actualitzat: 13:45 - Data: 23/12/2025
                     </div>
                     <div class="source" style="font-size:12px;color:#666;font-weight:700;">
@@ -91,47 +162,47 @@
             </div>
             
             <!-- GRUP 2: FORNELLS DE LA SELVA -->
-            <div class="content-group next" id="group2" style="position:absolute;width:100%;height:320px;left:0;background-color:white;transform:translateY(-100%);">
+            <div class="content-group next" id="group2" style="position:absolute;width:100%;height:280px;left:0;background-color:white;transform:translateY(-100%);">
                 
-                <div class="location-header" style="background-color:#c00;color:white;padding:0 15px;text-align:center;height:55px;display:flex;align-items:center;justify-content:center;border-radius:6px 6px 0 0;">
-                    <div class="location-name" style="font-size:22px;font-weight:bold;text-transform:uppercase;letter-spacing:0.3px;line-height:1;display:flex;align-items:center;justify-content:center;height:100%;width:100%;">
+                <div class="location-header" style="background-color:#c00;color:white;padding:0 12px;text-align:center;height:50px;display:flex;align-items:center;justify-content:center;">
+                    <div class="location-name" style="font-size:20px;font-weight:bold;text-transform:uppercase;letter-spacing:0.2px;display:flex;align-items:center;justify-content:center;height:100%;width:100%;">
                         FORNELLS DE LA SELVA
                     </div>
                 </div>
                 
-                <div class="data-container" style="display:flex;justify-content:space-between;padding:15px;gap:10px;background-color:white;height:145px;">
+                <div class="data-container" style="display:flex;justify-content:space-between;padding:12px;gap:8px;background-color:white;height:150px;">
                     
-                    <div class="data-box" style="flex:1;background-color:#fff;border:1.5px solid #e0e0e0;border-radius:6px;padding:12px 8px;text-align:center;display:flex;flex-direction:column;justify-content:center;box-shadow:0 2px 6px rgba(0,0,0,0.05);height:100%;">
-                        <div class="data-title" style="font-size:14px;font-weight:700;color:#333;margin-bottom:6px;text-transform:uppercase;line-height:1.2;">
-                            Temperatura màxima
+                    <div class="data-box" style="flex:1;background-color:#fff;border:1px solid #ddd;border-radius:4px;padding:10px 6px;text-align:center;display:flex;flex-direction:column;justify-content:center;box-shadow:0 1px 3px rgba(0,0,0,0.04);">
+                        <div class="data-title" style="font-size:13px;font-weight:700;color:#333;margin-bottom:5px;text-transform:uppercase;line-height:1.1;">
+                            Temp. màxima
                         </div>
-                        <div class="data-value" style="font-size:32px;font-weight:800;color:#000;margin:8px 0;">
-                            13.8<span class="data-unit" style="font-size:20px;color:#000;font-weight:700;margin-left:2px;">°C</span>
+                        <div class="data-value" style="font-size:30px;font-weight:800;color:#000;margin:6px 0;">
+                            13.8<span class="data-unit" style="font-size:18px;color:#000;font-weight:700;margin-left:1px;">°C</span>
                         </div>
                     </div>
                     
-                    <div class="data-box" style="flex:1;background-color:#fff;border:1.5px solid #e0e0e0;border-radius:6px;padding:12px 8px;text-align:center;display:flex;flex-direction:column;justify-content:center;box-shadow:0 2px 6px rgba(0,0,0,0.05);height:100%;">
-                        <div class="data-title" style="font-size:14px;font-weight:700;color:#333;margin-bottom:6px;text-transform:uppercase;line-height:1.2;">
-                            Temperatura mínima
+                    <div class="data-box" style="flex:1;background-color:#fff;border:1px solid #ddd;border-radius:4px;padding:10px 6px;text-align:center;display:flex;flex-direction:column;justify-content:center;box-shadow:0 1px 3px rgba(0,0,0,0.04);">
+                        <div class="data-title" style="font-size:13px;font-weight:700;color:#333;margin-bottom:5px;text-transform:uppercase;line-height:1.1;">
+                            Temp. mínima
                         </div>
-                        <div class="data-value" style="font-size:32px;font-weight:800;color:#000;margin:8px 0;">
-                            6.5<span class="data-unit" style="font-size:20px;color:#000;font-weight:700;margin-left:2px;">°C</span>
+                        <div class="data-value" style="font-size:30px;font-weight:800;color:#000;margin:6px 0;">
+                            6.5<span class="data-unit" style="font-size:18px;color:#000;font-weight:700;margin-left:1px;">°C</span>
                         </div>
                     </div>
                     
-                    <div class="data-box" style="flex:1;background-color:#fff;border:1.5px solid #e0e0e0;border-radius:6px;padding:12px 8px;text-align:center;display:flex;flex-direction:column;justify-content:center;box-shadow:0 2px 6px rgba(0,0,0,0.05);height:100%;">
-                        <div class="data-title" style="font-size:14px;font-weight:700;color:#333;margin-bottom:6px;text-transform:uppercase;line-height:1.2;">
-                            Pluja acumulada
+                    <div class="data-box" style="flex:1;background-color:#fff;border:1px solid #ddd;border-radius:4px;padding:10px 6px;text-align:center;display:flex;flex-direction:column;justify-content:center;box-shadow:0 1px 3px rgba(0,0,0,0.04);">
+                        <div class="data-title" style="font-size:13px;font-weight:700;color:#333;margin-bottom:5px;text-transform:uppercase;line-height:1.1;">
+                            Pluja
                         </div>
-                        <div class="data-value" style="font-size:32px;font-weight:800;color:#000;margin:8px 0;">
-                            1.2<span class="data-unit" style="font-size:20px;color:#000;font-weight:700;margin-left:2px;">mm</span>
+                        <div class="data-value" style="font-size:30px;font-weight:800;color:#000;margin:6px 0;">
+                            1.2<span class="data-unit" style="font-size:18px;color:#000;font-weight:700;margin-left:1px;">mm</span>
                         </div>
                     </div>
                     
                 </div>
                 
-                <div class="footer" style="padding:10px 15px;text-align:center;background-color:#fff;border-top:1.5px solid #f0f0f0;height:60px;display:flex;flex-direction:column;justify-content:center;position:absolute;bottom:0;width:100%;box-sizing:border-box;border-radius:0 0 6px 6px;">
-                    <div class="update-info" style="font-size:14px;color:#333;margin-bottom:2px;font-weight:800;">
+                <div class="footer" style="padding:8px 12px;text-align:center;background-color:#fff;border-top:1px solid #eee;height:80px;display:flex;flex-direction:column;justify-content:center;position:absolute;bottom:0;width:100%;box-sizing:border-box;">
+                    <div class="update-info" style="font-size:13px;color:#333;margin-bottom:3px;font-weight:800;">
                         Actualitzat: 13:45 - Data: 23/12/2025
                     </div>
                     <div class="source" style="font-size:12px;color:#666;font-weight:700;">
@@ -152,18 +223,10 @@
             if (!grup1 || !grup2) return;
             
             grup1.style.transform = 'translateY(0)';
-            grup1.style.opacity = '1';
-            grup1.style.zIndex = '2';
-            
             grup2.style.transform = 'translateY(-100%)';
-            grup2.style.opacity = '1';
-            grup2.style.zIndex = '1';
             
             void grup1.offsetWidth;
             void grup2.offsetWidth;
-            
-            grup1.className = 'content-group active';
-            grup2.className = 'content-group next';
             
             setTimeout(iniciarScroll, 800);
         }
@@ -207,8 +270,8 @@
                     grup2.classList.add('next');
                     grup2.style.transform = 'translateY(-100%)';
                     grup2.style.transition = 'none';
-                    grup2.style.zIndex = '1';
                     grup1.style.zIndex = '2';
+                    grup2.style.zIndex = '1';
                     
                     void grup2.offsetWidth;
                     grup2.style.transition = '';
@@ -232,34 +295,12 @@
             intervalId = setInterval(canviarPoblacio, 15000);
         }
         
-        function aturarScroll() {
-            if (intervalId) {
-                clearInterval(intervalId);
-                intervalId = null;
-            }
-        }
-        
-        document.addEventListener('DOMContentLoaded', function() {
-            setTimeout(inicialitzarBanner, 30);
-        });
-        
-        window.addEventListener('load', function() {
-            setTimeout(inicialitzarBanner, 80);
-        });
-        
-        setTimeout(inicialitzarBanner, 200);
+        document.addEventListener('DOMContentLoaded', inicialitzarBanner);
+        setTimeout(inicialitzarBanner, 100);
         
         document.addEventListener('visibilitychange', function() {
-            if (document.hidden) {
-                aturarScroll();
-            } else {
-                setTimeout(iniciarScroll, 800);
-            }
-        });
-        
-        window.addEventListener('blur', aturarScroll);
-        window.addEventListener('focus', function() {
-            setTimeout(iniciarScroll, 800);
+            if (document.hidden && intervalId) clearInterval(intervalId);
+            else iniciarScroll();
         });
     </script>
 </body>
