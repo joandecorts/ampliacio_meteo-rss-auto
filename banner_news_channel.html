@@ -6,7 +6,7 @@
     <title>Meteorologia</title>
     
     <style>
-        /* RESET TOTAL - zero espais */
+        /* RESET */
         * { margin:0; padding:0; box-sizing:border-box; }
         
         body {
@@ -16,23 +16,22 @@
             align-items:center;
             min-height:100vh;
             font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;
-            padding:0;
         }
         
-        /* CONTENIDOR - ajustat */
+        /* CONTENIDOR */
         .weather-container {
             width:100%;
             max-width:500px;
             background:white;
             overflow:hidden;
-            box-shadow:0 2px 6px rgba(0,0,0,0.08);
-            border-radius:4px;
+            box-shadow:0 2px 8px rgba(0,0,0,0.08);
+            border-radius:5px;
         }
         
-        /* SCROLL - altura mínima */
+        /* SCROLL */
         .scroll-container {
             position:relative;
-            height:250px;
+            height:280px;
             overflow:hidden;
         }
         
@@ -40,7 +39,7 @@
         .content-group {
             position:absolute;
             width:100%;
-            height:250px;
+            height:280px;
             left:0;
             transition:transform 0.8s ease;
             background:white;
@@ -49,68 +48,69 @@
         .next { transform:translateY(-100%); }
         .out { transform:translateY(100%); }
         
-        /* CAPÇALERA - compacta */
+        /* CAPÇALERA */
         .location-header {
             background:#c00;
             color:white;
-            padding:0 10px;
-            height:45px;
+            padding:0 12px;
+            height:50px;
             display:flex;
             align-items:center;
             justify-content:center;
         }
         .location-name {
-            font-size:18px;
+            font-size:20px;
             font-weight:bold;
             text-transform:uppercase;
             letter-spacing:0.5px;
+            text-align:center;
+            line-height:1.1;
         }
         
-        /* CAIXES - ultra compactes */
+        /* CAIXES - VERSIÓ GENERAL (PC/TABLET) */
         .data-container {
             display:flex;
-            padding:8px;
-            gap:6px;
-            height:130px;
+            padding:10px;
+            gap:8px;
+            height:160px;
         }
         .data-box {
             flex:1;
             background:#fff;
-            border:1px solid #e0e0e0;
-            border-radius:3px;
-            padding:6px 4px;
+            border:1.5px solid #e0e0e0;
+            border-radius:5px;
+            padding:10px 8px;
             display:flex;
             flex-direction:column;
             justify-content:center;
             text-align:center;
         }
         .data-title {
-            font-size:11px;
+            font-size:13px;
             font-weight:600;
             color:#333;
-            margin-bottom:3px;
-            line-height:1.1;
-            text-transform:uppercase;
+            margin-bottom:6px;
+            line-height:1.2;
         }
         .data-value {
-            font-size:24px;
+            font-size:28px;
             font-weight:800;
             color:#000;
-            margin:2px 0;
+            margin:4px 0;
         }
         .data-unit {
-            font-size:16px;
+            font-size:18px;
             font-weight:700;
-            margin-left:1px;
+            margin-left:2px;
         }
         
-        /* PEU - sense espais */
+        /* PEU */
         .footer {
-            padding:6px 8px;
+            padding:8px 10px;
             text-align:center;
             background:#fff;
-            border-top:1px solid #eee;
-            height:55px;
+            border-top:1.5px solid #eee;
+            height:70px;
             display:flex;
             flex-direction:column;
             justify-content:center;
@@ -119,76 +119,107 @@
             width:100%;
         }
         .update-info {
-            font-size:11px;
+            font-size:13px;
             color:#333;
-            margin-bottom:1px;
+            margin-bottom:2px;
             font-weight:700;
         }
         .source {
-            font-size:10px;
+            font-size:12px;
             color:#666;
             font-weight:600;
         }
         
         /* ========== MÒBIL VERTICAL ========== */
+        /* BARRA LLARGA amb 3 elements en fila */
         @media (max-width: 600px) and (orientation: portrait) {
             .weather-container { max-width:95vw; }
             .scroll-container, .content-group { height:280px; }
+            
             .data-container { 
-                flex-direction:column;
-                height:165px;
-                padding:8px;
-                gap:4px;
+                height:120px;
+                padding:8px 10px;
+                gap:6px;
             }
+            
             .data-box { 
-                height:50px;
-                padding:5px 4px;
-                flex-direction:row;
-                align-items:center;
+                padding:8px 6px;
                 justify-content:space-between;
             }
+            
             .data-title { 
-                font-size:10px;
-                margin:0;
-                text-align:left;
-                flex:1;
+                font-size:11px;
+                margin-bottom:4px;
+                line-height:1.1;
+                min-height:26px;
+                display:flex;
+                align-items:center;
+                justify-content:center;
             }
+            
             .data-value { 
-                font-size:20px;
+                font-size:22px;
                 margin:0;
-                flex-shrink:0;
             }
+            
+            .data-unit { 
+                font-size:16px;
+            }
+            
+            /* Ajust per noms llargs en dues línies */
+            .data-title.br-2 {
+                display:block;
+                padding:0 2px;
+            }
+            
             .footer { 
                 height:60px;
-                padding:5px 8px;
+                padding:6px 8px;
             }
+            
+            .update-info { font-size:12px; }
+            .source { font-size:11px; }
         }
         
         /* ========== MÒBIL HORITZONTAL ========== */
         @media (max-width: 900px) and (orientation: landscape) {
-            .scroll-container, .content-group { height:200px; }
+            .scroll-container, .content-group { height:230px; }
             .data-container { 
-                height:100px;
-                padding:6px;
-                gap:4px;
+                height:110px;
+                padding:8px;
+                gap:6px;
             }
-            .data-box { padding:4px 3px; }
-            .data-title { font-size:9px; margin-bottom:2px; }
-            .data-value { font-size:20px; }
-            .data-unit { font-size:14px; }
+            .data-box { padding:8px 5px; }
+            .data-title { 
+                font-size:11px;
+                margin-bottom:4px;
+                line-height:1.1;
+                min-height:24px;
+            }
+            .data-value { font-size:24px; }
+            .data-unit { font-size:16px; }
             .footer { 
-                height:50px;
-                padding:4px 6px;
+                height:60px;
+                padding:6px 8px;
             }
-            .update-info { font-size:10px; }
-            .source { font-size:9px; }
+            .update-info { font-size:12px; }
+            .source { font-size:11px; }
         }
         
-        /* ========== TABLET/PC ========== */
-        @media (min-width: 901px) {
-            .weather-container { max-width:450px; }
-            .scroll-container, .content-group { height:230px; }
-            .data-container { height:120px; }
+        /* ========== PC GRAN ========== */
+        @media (min-width: 1200px) {
+            .weather-container { max-width:550px; }
+            .scroll-container, .content-group { height:300px; }
+            .data-container { height:170px; }
+            .data-title { font-size:14px; }
+            .data-value { font-size:32px; }
+        }
+        
+        /* AJUSTOS iOS */
+        @supports (-webkit-touch-callout: none) {
+            .data-title {
+                -webkit-font-smoothing: antialiased;
+            }
         }
     </style>
 </head>
@@ -203,15 +234,15 @@
                 </div>
                 <div class="data-container">
                     <div class="data-box">
-                        <div class="data-title">Temp. màxima</div>
+                        <div class="data-title br-2">Temperatura<br>màxima del dia</div>
                         <div class="data-value">14.5<span class="data-unit">°C</span></div>
                     </div>
                     <div class="data-box">
-                        <div class="data-title">Temp. mínima</div>
+                        <div class="data-title br-2">Temperatura<br>mínima del dia</div>
                         <div class="data-value">7.3<span class="data-unit">°C</span></div>
                     </div>
                     <div class="data-box">
-                        <div class="data-title">Pluja</div>
+                        <div class="data-title">Pluja acumulada</div>
                         <div class="data-value">2.8<span class="data-unit">mm</span></div>
                     </div>
                 </div>
@@ -228,15 +259,15 @@
                 </div>
                 <div class="data-container">
                     <div class="data-box">
-                        <div class="data-title">Temp. màxima</div>
+                        <div class="data-title br-2">Temperatura<br>màxima del dia</div>
                         <div class="data-value">13.8<span class="data-unit">°C</span></div>
                     </div>
                     <div class="data-box">
-                        <div class="data-title">Temp. mínima</div>
+                        <div class="data-title br-2">Temperatura<br>mínima del dia</div>
                         <div class="data-value">6.5<span class="data-unit">°C</span></div>
                     </div>
                     <div class="data-box">
-                        <div class="data-title">Pluja</div>
+                        <div class="data-title">Pluja acumulada</div>
                         <div class="data-value">1.2<span class="data-unit">mm</span></div>
                     </div>
                 </div>
@@ -250,20 +281,26 @@
     </div>
 
     <script>
-        // INICIALITZACIÓ SIMPLE
-        function init() {
+        // INICIALITZACIÓ
+        document.addEventListener('DOMContentLoaded', function() {
             const g1 = document.getElementById('group1');
             const g2 = document.getElementById('group2');
             if (g1 && g2) {
                 g1.className = 'content-group active';
                 g2.className = 'content-group next';
             }
-        }
-        document.addEventListener('DOMContentLoaded', init);
+            
+            // Ajust automàtic de textos llargs
+            document.querySelectorAll('.data-title').forEach(title => {
+                if (title.textContent.includes('màxima') || title.textContent.includes('mínima')) {
+                    title.classList.add('br-2');
+                }
+            });
+        });
         
         // SCROLL AUTOMÀTIC
         let current = 1, timer;
-        function change() {
+        function changeStation() {
             const g1 = document.getElementById('group1');
             const g2 = document.getElementById('group2');
             
@@ -292,13 +329,17 @@
         
         function startScroll() {
             if (timer) clearInterval(timer);
-            timer = setInterval(change, 15000);
+            timer = setInterval(changeStation, 15000);
         }
         
         setTimeout(startScroll, 1000);
+        
         document.addEventListener('visibilitychange', () => {
-            if (document.hidden) clearInterval(timer);
-            else startScroll();
+            if (document.hidden) {
+                if (timer) clearInterval(timer);
+            } else {
+                startScroll();
+            }
         });
     </script>
 </body>
