@@ -134,7 +134,7 @@
             margin-left: 4px;
         }
         
-        /* PEU DE PÀGINA - RESPONSIVE */
+        /* PEU DE PÀGINA - RESPONSIVE amb lletres MÉS GRUIXUDES */
         .footer {
             padding: 15px 20px;
             text-align: center;
@@ -150,13 +150,13 @@
             font-size: clamp(14px, 2vw, 16px);  /* RESPONSIVE */
             color: #333;
             margin-bottom: 3px;
-            font-weight: 600;
+            font-weight: 700;  /* MÉS GRUIXUT: 700 en lloc de 600 */
         }
         
         .source {
             font-size: clamp(12px, 1.8vw, 14px);  /* RESPONSIVE */
             color: #666;
-            font-weight: 500;
+            font-weight: 600;  /* MÉS GRUIXUT: 600 en lloc de 500 */
         }
         
         /* ============================================================================
@@ -286,6 +286,27 @@
                 padding: 10px 15px;
             }
         }
+        
+        /* ============================================================================
+           AJUSTOS ESPECÍFICS PER IPHONE/IOS
+           ============================================================================ */
+        @supports (-webkit-touch-callout: none) {
+            .weather-container {
+                -webkit-font-smoothing: antialiased;
+                -moz-osx-font-smoothing: grayscale;
+            }
+            
+            .data-value, .location-name {
+                -webkit-font-smoothing: subpixel-antialiased;
+            }
+        }
+        
+        /* Prevenir zoom en input a iOS */
+        @media screen and (max-width: 768px) {
+            input, select, textarea {
+                font-size: 16px !important;
+            }
+        }
     </style>
 </head>
 <body>
@@ -352,6 +373,35 @@
     </div>
 
     <script>
+        // ============================================================================
+        // PRELOADER - Evita problemes visuals en carregar la pàgina (iPhone fix)
+        // ============================================================================
+        document.addEventListener('DOMContentLoaded', function() {
+            // Espera 100ms per assegurar que el CSS està carregat
+            setTimeout(function() {
+                const grup1 = document.getElementById('group1');
+                const grup2 = document.getElementById('group2');
+                
+                // Assegura que el grup 1 està actiu i el 2 amagat a dalt
+                if (grup1 && grup2) {
+                    grup1.classList.add('active');
+                    grup1.classList.remove('next', 'out');
+                    
+                    grup2.classList.add('next');
+                    grup2.classList.remove('active', 'out');
+                    
+                    // Força un reflow per evitar problemes de render
+                    void grup1.offsetWidth;
+                    void grup2.offsetWidth;
+                    
+                    console.log('✅ Preloader: Banner inicialitzat correctament');
+                }
+            }, 100);
+        });
+
+        // ============================================================================
+        // SISTEMA DE SCROLL AUTOMÀTIC
+        // ============================================================================
         let grupActual = 1;
         let intervalId;
         let enTransicio = false;
@@ -364,6 +414,7 @@
             const grup2 = document.getElementById('group2');
             
             if (grupActual === 1) {
+                // GIRONA → FORNELLS
                 grup1.classList.remove('active');
                 grup1.classList.add('out');
                 
@@ -372,6 +423,7 @@
                 
                 grupActual = 2;
             } else {
+                // FORNELLS → GIRONA
                 grup2.classList.remove('active');
                 grup2.classList.add('out');
                 
@@ -381,24 +433,27 @@
                 grupActual = 1;
             }
             
+            // Reset després de la transició
             setTimeout(function() {
                 if (grupActual === 1) {
+                    // Girona visible, Fornells amagat a dalt
                     grup2.classList.remove('active', 'out');
                     grup2.classList.add('next');
                     grup2.style.transition = 'none';
                     grup2.style.zIndex = '1';
                     grup1.style.zIndex = '2';
                     
-                    void grup2.offsetWidth;
+                    void grup2.offsetWidth;  // Força reflow
                     grup2.style.transition = '';
                 } else {
+                    // Fornells visible, Girona amagat a dalt
                     grup1.classList.remove('active', 'out');
                     grup1.classList.add('next');
                     grup1.style.transition = 'none';
                     grup1.style.zIndex = '1';
                     grup2.style.zIndex = '2';
                     
-                    void grup1.offsetWidth;
+                    void grup1.offsetWidth;  // Força reflow
                     grup1.style.transition = '';
                 }
                 enTransicio = false;
@@ -417,8 +472,12 @@
             }
         }
         
-        iniciarScroll();
+        // Iniciar quan la pàgina estigui completament carregada
+        window.addEventListener('load', function() {
+            setTimeout(iniciarScroll, 500);  // Espera extra per seguretat
+        });
         
+        // Control de visibilitat
         document.addEventListener('visibilitychange', function() {
             if (document.hidden) {
                 aturarScroll();
@@ -429,6 +488,9 @@
         
         window.addEventListener('blur', aturarScroll);
         window.addEventListener('focus', iniciarScroll);
+        
+        // Inici final (backup)
+        setTimeout(iniciarScroll, 1000);
     </script>
 </body>
 </html>
