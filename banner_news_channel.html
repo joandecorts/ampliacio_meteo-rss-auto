@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meteorologia</title>
+    
+    <style>
+        * { margin:0; padding:0; box-sizing:border-box; }
+        body {
+            background:#fff;
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            min-height:100vh;
+            font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;
+        }
+        .weather-container {
+            width:100%;
+            max-width:500px;
+            background:white;
+            overflow:hidden;
+            box-shadow:0 2px 8px rgba(0,0,0,0.08);
+            border-radius:5px;
+        }
+        .scroll-container {
+            position:relative;
+            height:280px;
+            overflow:hidden;
+        }
+        .content-group {
+            position:absolute;
+            width:100%;
+            height:280px;
+            left:0;
+            transition:transform 0.8s ease;
+            background:white;
+            opacity:0;
+            z-index:1;
+        }
+        .content-group.active {
+            opacity:1;
+            z-index:2;
+            transform:translateY(0);
+        }
+        .content-group.next {
+            opacity:0;
+            transform:translateY(-100%);
+        }
+        .content-group.out {
+            opacity:0;
+            transform:translateY(100%);
+        }
+        .location-header {
+            background:#c00;
+            color:white;
+            padding:0 12px;
+            height:50px;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+        }
+        .location-name {
+            font-size:20px;
+            font-weight:bold;
+            text-transform:uppercase;
+            letter-spacing:0.5px;
+            text-align:center;
+            line-height:1.1;
+        }
+        .data-container {
+            display:flex;
+            padding:10px;
+            gap:8px;
+            height:160px;
+        }
+        .data-box {
+            flex:1;
+            background:#fff;
+            border:1.5px solid #e0e0e0;
+            border-radius:5px;
+            padding:10px 8px;
+            display:flex;
+            flex-direction:column;
+            justify-content:center;
+            text-align:center;
+        }
+        .data-title {
+            font-size:13px;
+            font-weight:600;
+            color:#333;
+            margin-bottom:6px;
+            line-height:1.2;
+        }
+        .data-value {
+            font-size:28px;
+            font-weight:800;
+            color:#000;
+            margin:4px 0;
+        }
+        .data-unit {
+            font-size:18px;
+            font-weight:700;
+            margin-left:2px;
+        }
+        .footer {
+            padding:8px 10px;
+            text-align:center;
+            background:#fff;
+            border-top:1.5px solid #eee;
+            height:70px;
+            display:flex;
+            flex-direction:column;
+            justify-content:center;
+            position:absolute;
+            bottom:0;
+            width:100%;
+        }
+        .update-info {
+            font-size:13px;
+            color:#333;
+            margin-bottom:2px;
+            font-weight:700;
+        }
+        .source {
+            font-size:12px;
+            color:#666;
+            font-weight:600;
+        }
+        @media (max-width: 600px) and (orientation: portrait) {
+            .weather-container { max-width:95vw; }
+            .scroll-container, .content-group { height:280px; }
+            .data-container { 
+                height:120px;
+                padding:8px 10px;
+                gap:6px;
+            }
+            .data-box { padding:8px 6px; }
+            .data-title { 
+                font-size:11px;
+                margin-bottom:4px;
+                min-height:26px;
+                display:flex;
+                align-items:center;
+                justify-content:center;
+            }
+            .data-value { font-size:22px; }
+            .data-unit { font-size:16px; }
+            .data-title.br-2 { display:block; padding:0 2px; }
+            .footer { height:60px; padding:6px 8px; }
+            .update-info { font-size:12px; }
+            .source { font-size:11px; }
+        }
+        @media (max-width: 900px) and (orientation: landscape) {
+            .scroll-container, .content-group { height:230px; }
+            .data-container { height:110px; padding:8px; gap:6px; }
+            .data-box { padding:8px 5px; }
+            .data-title { font-size:11px; min-height:24px; }
+            .data-value { font-size:24px; }
+            .data-unit { font-size:16px; }
+            .footer { height:60px; padding:6px 8px; }
+            .update-info { font-size:12px; }
+            .source { font-size:11px; }
+        }
+        @media (min-width: 1200px) {
+            .weather-container { max-width:550px; }
+            .scroll-container, .content-group { height:300px; }
+            .data-container { height:170px; }
+            .data-title { font-size:14px; }
+            .data-value { font-size:32px; }
+        }
+        @supports (-webkit-touch-callout: none) {
+            .data-title { -webkit-font-smoothing: antialiased; }
+        }
+    </style>
+</head>
+<body>
+    <div class="weather-container">
+        <div class="scroll-container">
+            <!-- EL CONTINGUT D'AQUÍ ES REEMPLAÇARÀ COMPLETAMENT PER update_banner.py -->
+        </div>
+    </div>
+
+    <script>
+        // SCROLL SIMPLE I ROBUST
+        let currentIndex = 0;
+        let scrollInterval;
+        const DISPLAY_TIME = 5000; // 5 segons per provar
+        
+        function initSlider() {
+            const allStations = document.querySelectorAll('.content-group');
+            const total = allStations.length;
+            
+            console.log(`🔍 Estacions trobades: ${total}`);
+            if (total === 0) {
+                console.log('⚠️  No hi ha estacions per mostrar.');
+                return;
+            }
+            
+            // Ocultar totes i posar classes inicials
+            allStations.forEach((station, idx) => {
+                station.classList.remove('active', 'next', 'out');
+                station.style.zIndex = '1';
+                if (idx === 0) {
+                    station.classList.add('active');
+                    station.style.zIndex = '2';
+                } else {
+                    station.classList.add('next');
+                }
+            });
+            
+            currentIndex = 0;
+            startAutoScroll();
+        }
+        
+        function goToNext() {
+            const allStations = document.querySelectorAll('.content-group');
+            const total = allStations.length;
+            if (total < 2) return;
+            
+            const current = allStations[currentIndex];
+            const nextIndex = (currentIndex + 1) % total;
+            const next = allStations[nextIndex];
+            
+            console.log(`🔄 Canviant: ${currentIndex} → ${nextIndex}`);
+            
+            // Transició
+            current.classList.replace('active', 'out');
+            next.classList.replace('next', 'active');
+            
+            // Netejar i preparar per la següent
+            setTimeout(() => {
+                current.classList.remove('out');
+                current.classList.add('next');
+                current.style.zIndex = '1';
+                next.style.zIndex = '2';
+                
+                // La propera després de 'next' també es prepara
+                const followingIndex = (nextIndex + 1) % total;
+                if (followingIndex !== currentIndex) {
+                    allStations[followingIndex].classList.add('next');
+                }
+            }, 800);
+            
+            currentIndex = nextIndex;
+        }
+        
+        function startAutoScroll() {
+            if (scrollInterval) clearInterval(scrollInterval);
+            scrollInterval = setInterval(goToNext, DISPLAY_TIME);
+            console.log('▶️  Scroll automàtic iniciat.');
+        }
+        
+        function stopAutoScroll() {
+            if (scrollInterval) clearInterval(scrollInterval);
+            console.log('⏸️  Scroll automàtic aturat.');
+        }
+        
+        // Iniciar quan es carregui la pàgina
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('📄 DOM carregat. Inicialitzant slider...');
+            // Esperem una mica per si el contingut es carrega dinàmicament
+            setTimeout(initSlider, 100);
+        });
+        
+        // Aturar quan la pestanya no és visible
+        document.addEventListener('visibilitychange', function() {
+            if (document.hidden) {
+                stopAutoScroll();
+            } else {
+                startAutoScroll();
+            }
+        });
+        
+        // Debug: fer clic a la pàgina mostra estat
+        document.addEventListener('click', function() {
+            const all = document.querySelectorAll('.content-group');
+            console.log('--- ESTAT ACTUAL ---');
+            all.forEach((s, i) => {
+                const name = s.querySelector('.location-name')?.textContent || `Estació ${i}`;
+                console.log(`${i}: ${name} - Classes: ${s.className}`);
+            });
+        });
+    </script>
+</body>
+</html>
