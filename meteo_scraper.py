@@ -1,266 +1,257 @@
 #!/usr/bin/env python3
 """
-METEOCAT SCRAPER - Captura dades meteorològiques reals
-Versió inicial: 3 estacions
+meteo_scraper.py - Versió adaptada del daily_weather_scraper.py
+Fa web scraping directe de Meteocat igual que l'altre projecte
+AMB ARRODONIMENT CORREGIT (sense multiplicar per 100)
 """
 
 import requests
+from bs4 import BeautifulSoup
+from datetime import datetime
 import json
-import time
-from datetime import datetime, timedelta
 import sys
-import os
+import re
 
-# Importem la nostra configuració
 import config_banner as cfg
 
-class MeteoCatScraper:
-    """Classe per capturar dades de l'API de Meteocat"""
+def round_catalan_style(value, decimals=1):
+    """
+    Arrodoneix un número a 'decimals' decimals.
+    Si el segon decimal TROBAT és >= 5, augmenta el primer decimal en 1.
     
-    def __init__(self, api_key=None):
-        self.api_key = api_key or cfg.API_KEY
-        self.session = requests.Session()
-        self.session.headers.update({
-            'User-Agent': 'MeteoBanner/1.0 (joandecorts.github.io)',
-            'Accept': 'application/json'
-        })
-        
-        if self.api_key:
-            self.session.headers.update({'X-Api-Key': self.api_key})
-        else:
-            print("⚠️  Atenció: S'està utilitzant l'API sense clau (limitacions)")
+    Args:
+        value: El número a arrodonir (int, float, string o None)
+        decimals: Nombre de decimals desitjats (per defecte: 1)
     
-    def get_station_data(self, station_code, date=None):
-        """
-        Obté dades d'una estació per una data concreta
-        Retorna les dades crues de l'API
-        """
-        if date is None:
-            date = cfg.YESTERDAY  # Per defecte, dades d'ahir (màx/mín)
-        
-        date_str = date.strftime('%Y-%m-%d')
-        url = f"{cfg.METEOcat_CONFIG['api_base']}/stations/{station_code}/measurements/{date_str}"
-        
-        try:
-            print(f"  🔍 Sol·licitant dades: {station_code} ({date_str})...")
+    Returns:
+        float: El valor arrodonit amb 'decimals' decimals
+    """
+    try:
+        # Si el valor és None, buit o 'None', retorna 0.0
+        if value in [None, 'None', '', 'null']:
+            return 0.0
             
-            response = self.session.get(
-                url,
-                timeout=cfg.METEOcat_CONFIG['timeout']
-            )
+        num = float(value)
+        if num == 0:
+            return 0.0
+        
+        # MÈTODE CORRECTE:
+        # 1. Desplacem el decimal que volem mantenir a la posició d'unitats
+        factor = 10 ** decimals
+        shifted = abs(num) * factor
+        
+        # 2. Mirem la part decimal d'aquest número desplaçat
+        integer_part = int(shifted)
+        fractional_part = shifted - integer_part
+        
+        # 3. Mirem el PRIMER decimal després dels que volem mantenir
+        first_decimal_after = int(fractional_part * 10)
+        
+        # 4. Si aquest decimal és >= 5, sumem 1 a la part entera
+        if first_decimal_after >= 5:
+            integer_part += 1
+        
+        # 5. Restaurem la posició decimal original
+        result = integer_part / factor
+        
+        # 6. Restaurem el signe
+        if num < 0:
+            result = -result
             
-            response.raise_for_status()
-            data = response.json()
-            
-            return {
-                'success': True,
-                'station': station_code,
-                'date': date_str,
-                'data': data,
-                'timestamp': datetime.now().isoformat()
-            }
-            
-        except requests.exceptions.RequestException as e:
-            print(f"  ❌ Error obtenint dades {station_code}: {e}")
-            return {
-                'success': False,
-                'station': station_code,
-                'error': str(e),
-                'timestamp': datetime.now().isoformat()
-            }
-    
-    def extract_daily_values(self, raw_data):
-        """
-        Extreu els valors diaris (TX, TN, PPT) de les dades crues
-        
-        TX: Temperatura màxima del dia
-        TN: Temperatura mínima del dia  
-        PPT: Precipitació acumulada
-        """
-        if not raw_data.get('success') or 'data' not in raw_data:
-            return cfg.DEFAULT_VALUES.copy()
-        
-        measurements = raw_data['data'].get('measurements', [])
-        
-        # Inicialitzar valors
-        values = {
-            'TX': None,  # Màxima
-            'TN': None,  # Mínima
-            'PPT': 0.0   # Acumulat precipitat
-        }
-        
-        # Processar cada mesura
-        for measurement in measurements:
-            # Temperatura (variable 32)
-            if measurement.get('codi_variable') == 32:
-                temp_value = measurement.get('valor')
-                if temp_value is not None:
-                    # Actualitzar màxima i mínima
-                    if values['TX'] is None or temp_value > values['TX']:
-                        values['TX'] = temp_value
-                    if values['TN'] is None or temp_value < values['TN']:
-                        values['TN'] = temp_value
-            
-            # Precipitació (variable 35)
-            elif measurement.get('codi_variable') == 35:
-                ppt_value = measurement.get('valor')
-                if ppt_value is not None:
-                    values['PPT'] += ppt_value
-        
-        # Formatar valors finals
-        result = cfg.DEFAULT_VALUES.copy()
-        
-        if values['TX'] is not None:
-            result['TX'] = round(values['TX'], 1)
-        if values['TN'] is not None:
-            result['TN'] = round(values['TN'], 1)
-        if values['PPT'] > 0:
-            result['PPT'] = round(values['PPT'], 1)
-        
         return result
+        
+    except (ValueError, TypeError):
+        return 0.0
+
+def write_log(message):
+    """Escriu un missatge i també el mostra per pantalla"""
+    print(message)
+
+def convertir_a_numero(text, default=None):
+    """Converteix text a número, retorna None si no és vàlid"""
+    if not text or text in ['(s/d)', '-', '', 'n/d', 'N/D']:
+        return None
+    try:
+        # Netejar possibles símbols
+        text = text.replace(',', '.').replace('°', '').replace('mm', '').replace('hPa', '').replace('W/m²', '')
+        # APLIQUEM ARRODONIMENT DIRECTAMENT
+        return round_catalan_style(float(text.strip()), 1)
+    except:
+        return None
+
+def scrape_station_data(station_code, station_name):
+    """
+    Extreu les dades d'una estació (versió simplificada per al banner)
+    Retorna: {'TX': valor, 'TN': valor, 'PPT': valor} o None
+    """
+    url = f"https://www.meteo.cat/observacions/xema/dades?codi={station_code}"
     
-    def scrape_all_stations(self, stations=None):
-        """
-        Captura dades de totes les estacions configurades
-        """
-        if stations is None:
-            stations = cfg.STATIONS
+    try:
+        write_log(f"  📡 Connectant a {station_name} ({station_code})...")
+        headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'}
+        response = requests.get(url, headers=headers, timeout=15)
+        response.raise_for_status()
         
-        print(f"\n📡 Començant captura de {len(stations)} estacions...")
-        print("=" * 50)
+        soup = BeautifulSoup(response.content, 'html.parser')
+        table = soup.find('table', {'class': 'tblperiode'})
         
-        all_data = {
-            'metadata': {
-                'last_updated': datetime.now().isoformat(),
-                'date': cfg.TODAY.isoformat(),
-                'station_count': len(stations)
-            },
-            'stations': {}
-        }
+        if not table:
+            write_log("  ❌ No s'ha trobat la taula tblperiode")
+            return None
         
-        for station in stations:
-            station_code = station['code']
-            station_name = station['name']
+        rows = table.find_all('tr')
+        
+        # Variables per emmagatzemar les dades del dia
+        temp_max_values = []
+        temp_min_values = []
+        rain_values = []
+        
+        # Recórrer totes les files per acumular dades del dia
+        for i, row in enumerate(rows):
+            cells = row.find_all(['td', 'th'])
             
-            print(f"\n📍 {station['display_name']} [{station_code}]")
+            if len(cells) < 6:  # Necessitem almenys 6 columnes
+                continue
             
-            # 1. Obtenir dades crues
-            raw_data = self.get_station_data(station_code, cfg.YESTERDAY)
+            periode = cells[0].get_text(strip=True)
             
-            # 2. Extreu valors diaris
-            if raw_data['success']:
-                daily_values = self.extract_daily_values(raw_data)
+            # Verificar si és un període vàlid (hh:mm - hh:mm)
+            if re.match(r'\d{1,2}:\d{2}\s*[-–]\s*\d{1,2}:\d{2}', periode):
+                # Extreure dades
+                tx = convertir_a_numero(cells[2].get_text(strip=True)) if len(cells) > 2 else None
+                tn = convertir_a_numero(cells[3].get_text(strip=True)) if len(cells) > 3 else None
+                ppt = convertir_a_numero(cells[5].get_text(strip=True)) if len(cells) > 5 else None
                 
-                # Guardar resultats
-                all_data['stations'][station_code] = {
-                    'name': station['display_name'],
-                    'code': station_code,
-                    'values': daily_values,
-                    'raw_timestamp': raw_data['timestamp'],
-                    'success': True
-                }
-                
-                print(f"   ✅ TX: {daily_values['TX']}°C | TN: {daily_values['TN']}°C | PPT: {daily_values['PPT']}mm")
-                
-                # Guardar dades crues per històric
-                self.save_historical_data(station_code, raw_data)
-                
-            else:
-                print(f"   ❌ Error: {raw_data.get('error', 'Desconegut')}")
-                all_data['stations'][station_code] = {
-                    'name': station['display_name'],
-                    'code': station_code,
-                    'values': cfg.DEFAULT_VALUES.copy(),
-                    'error': raw_data.get('error'),
-                    'success': False
-                }
-            
-            # Esperar una mica per no sobrecarregar l'API
-            time.sleep(1)
+                # Acumular per a càlculs
+                if tx is not None:
+                    temp_max_values.append(tx)
+                if tn is not None:
+                    temp_min_values.append(tn)
+                if ppt is not None:
+                    rain_values.append(ppt)
         
-        print("\n" + "=" * 50)
-        print(f"✅ Captura completada: {len([s for s in all_data['stations'].values() if s['success']])}/{len(stations)} estacions")
+        # Calcular màxims, mínims i acumulats
+        values = {}
         
-        return all_data
-    
-    def save_historical_data(self, station_code, raw_data):
-        """Guarda dades crues per a l'històric"""
-        if not raw_data['success']:
-            return
+        if temp_max_values:
+            values['TX'] = max(temp_max_values)
+        else:
+            values['TX'] = cfg.DEFAULT_VALUES['TX']
+            
+        if temp_min_values:
+            values['TN'] = min(temp_min_values)
+        else:
+            values['TN'] = cfg.DEFAULT_VALUES['TN']
+            
+        if rain_values:
+            values['PPT'] = sum(rain_values)
+        else:
+            values['PPT'] = cfg.DEFAULT_VALUES['PPT']
         
-        file_path = cfg.get_station_file_path(station_code)
+        # APLIQUEM ARRODONIMENT FINAL (per si hi ha errors de coma flotant)
+        values['TX'] = round_catalan_style(values['TX'], 1)
+        values['TN'] = round_catalan_style(values['TN'], 1)
+        values['PPT'] = round_catalan_style(values['PPT'], 1)
         
-        try:
-            # Carregar històric existent
-            if os.path.exists(file_path):
-                with open(file_path, 'r', encoding='utf-8') as f:
-                    historical = json.load(f)
-            else:
-                historical = {'station': station_code, 'data': []}
-            
-            # Afegir nova entrada (només si no existeix ja)
-            date_str = raw_data.get('date')
-            existing = any(entry.get('date') == date_str for entry in historical['data'])
-            
-            if not existing:
-                historical['data'].append(raw_data)
-                
-                # Mantenir només últims 365 dies
-                if len(historical['data']) > 365:
-                    historical['data'] = historical['data'][-365:]
-                
-                with open(file_path, 'w', encoding='utf-8') as f:
-                    json.dump(historical, f, indent=2, ensure_ascii=False)
-                    
-        except Exception as e:
-            print(f"  ⚠️  Error guardant històric {station_code}: {e}")
-    
-    def save_latest_data(self, all_data):
-        """Guarda les dades més recents per al banner"""
-        try:
-            with open(cfg.LATEST_DATA_FILE, 'w', encoding='utf-8') as f:
-                json.dump(all_data, f, indent=2, ensure_ascii=False)
-            
-            print(f"💾 Dades guardades: {cfg.LATEST_DATA_FILE}")
-            return True
-            
-        except Exception as e:
-            print(f"❌ Error guardant dades: {e}")
-            return False
+        write_log(f"  ✅ {station_name}: TX={values['TX']}°C, TN={values['TN']}°C, PPT={values['PPT']}mm")
+        return values
+        
+    except Exception as e:
+        write_log(f"  ❌ Error consultant {station_name}: {str(e)[:50]}")
+        return None
 
 def main():
     """Funció principal"""
     print("=" * 60)
-    print("SCRAPER METEOCAT - Captura dades per Banner News Channel")
+    print("METEOCAT WEB SCRAPER - Versió igual que l'altre projecte")
     print("=" * 60)
     
-    # Verificar API key
-    if not cfg.API_KEY:
-        print("\n⚠️  ADVERTÈNCIA: No s'ha configurat clau API de Meteocat")
-        print("   Les peticions podran ser limitades")
-        print("   Configura la variable d'entorn METEOcat_API_KEY")
-        input("   Prem Enter per continuar sense clau API...")
+    print("\n[1] Comprovant estacions configurades...")
+    print(f"   Estacions a consultar: {len(cfg.STATIONS)}")
+    for station in cfg.STATIONS:
+        print(f"   • {station['display_name']} ({station['code']})")
     
-    # Inicialitzar scraper
-    scraper = MeteoCatScraper()
+    # Diccionari per emmagatzemar totes les dades
+    all_data = {
+        'metadata': {
+            'last_updated': datetime.now().isoformat(),
+            'source': 'meteocat_web_scraping',
+            'stations_count': len(cfg.STATIONS)
+        },
+        'stations': {}
+    }
     
-    # Capturar dades
-    all_data = scraper.scrape_all_stations()
+    print("\n[2] Obtenint dades de les estacions...")
+    
+    for station in cfg.STATIONS:
+        station_code = station['code']
+        display_name = station['display_name']
+        
+        # Obtenir dades de l'estació
+        raw_values = scrape_station_data(station_code, display_name)
+        
+        if raw_values:
+            station_data = {
+                'success': True,
+                'values': {
+                    'TX': raw_values.get('TX', cfg.DEFAULT_VALUES['TX']),
+                    'TN': raw_values.get('TN', cfg.DEFAULT_VALUES['TN']),
+                    'PPT': raw_values.get('PPT', cfg.DEFAULT_VALUES['PPT'])
+                },
+                'metadata': {
+                    'name': display_name,
+                    'last_fetched': datetime.now().isoformat(),
+                    'url': f"https://www.meteo.cat/observacions/xema/dades?codi={station_code}"
+                }
+            }
+        else:
+            station_data = {
+                'success': False,
+                'values': cfg.DEFAULT_VALUES,
+                'metadata': {
+                    'name': display_name,
+                    'error': 'No s\'han pogut obtenir dades',
+                    'last_attempt': datetime.now().isoformat()
+                }
+            }
+        
+        all_data['stations'][station_code] = station_data
     
     # Guardar dades
-    if scraper.save_latest_data(all_data):
-        print("\n🎉 PROCÉS COMPLETAT AMB ÈXIT")
-        print(f"   Dades actualitzades: {cfg.get_current_datetime()['datetime']}")
-        print(f"   Estacions: {len(all_data['stations'])}")
+    try:
+        with open(cfg.LATEST_DATA_FILE, 'w', encoding='utf-8') as f:
+            json.dump(all_data, f, indent=2, ensure_ascii=False)
+        
+        print(f"\n✅ Dades guardades a: {cfg.LATEST_DATA_FILE}")
+        print(f"   Estacions processades: {len(all_data['stations'])}")
+        print(f"   Última actualització: {datetime.now().strftime('%H:%M:%S')}")
         
         # Mostrar resum
-        successful = sum(1 for s in all_data['stations'].values() if s['success'])
-        print(f"   Correctes: {successful}/{len(all_data['stations'])}")
+        print("\n📊 RESUM DE DADES OBTINGUDES:")
+        for station_code, station_data in all_data['stations'].items():
+            name = next((s['display_name'] for s in cfg.STATIONS if s['code'] == station_code), station_code)
+            if station_data['success']:
+                vals = station_data['values']
+                print(f"   {name}: TX={vals['TX']}°C, TN={vals['TN']}°C, PPT={vals['PPT']}mm")
+            else:
+                print(f"   {name}: ❌ Sense dades")
         
-        return 0
-    else:
-        print("\n❌ PROCÉS FALLAT")
-        return 1
+        return all_data
+        
+    except Exception as e:
+        print(f"❌ Error guardant dades: {e}")
+        return None
 
 if __name__ == "__main__":
-    sys.exit(main())
+    try:
+        result = main()
+        if result:
+            print("\n" + "=" * 60)
+            print("✅ PROCÉS COMPLETAT AMB ÈXIT")
+            print("=" * 60)
+        else:
+            print("\n❌ PROCÉS COMPLETAT AMB ERRORS")
+    except KeyboardInterrupt:
+        print("\n\n⏹️  Execució cancel·lada per l'usuari")
+    except Exception as e:
+        print(f"\n💥 ERROR CRÍTIC: {e}")

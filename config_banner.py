@@ -14,20 +14,23 @@ STATIONS = [
     {'code': 'XJ', 'name': 'GIRONA', 'display_name': 'GIRONA'},
     {'code': 'UO', 'name': 'FORNELLS', 'display_name': 'FORNELLS DE LA SELVA'},
     {'code': 'D4', 'name': 'ROSES', 'display_name': 'ROSES'},
-    
-    # Estacions següents (comentades per ara)
-    # {'code': 'CD', 'name': 'SEU_URGELL', 'display_name': 'LA SEU D\'URGELL - BELLESTAR'},
-    # {'code': 'YP', 'name': 'PALAFRUGELL', 'display_name': 'PALAFRUGELL'},
-    # {'code': 'XL', 'name': 'PRAT_LLOBREGAT', 'display_name': 'EL PRAT DE LLOBREGAT'},
-    # {'code': 'DJ', 'name': 'BANYOLES', 'display_name': 'BANYOLES'},
-    # {'code': 'DP', 'name': 'DAS', 'display_name': 'DAS - AERÒDROM'},
-    # {'code': 'X4', 'name': 'BARCELONA_RAVAL', 'display_name': 'BARCELONA - EL RAVAL'},
-    # {'code': 'VK', 'name': 'LLEIDA_RAIMAT', 'display_name': 'LLEIDA - RAIMAT'},
-    # {'code': 'XE', 'name': 'TARRAGONA', 'display_name': 'TARRAGONA - COMPLEX EDUCATIU'},
-    # {'code': 'DG', 'name': 'QUERALBS_NURIA', 'display_name': 'QUERALBS - NÚRIA (1.971 m)'},
-    # {'code': 'ZC', 'name': 'SETCASES_ULLDETER', 'display_name': 'SETCASES - ULLDETER (2.413 m)'},
-    # {'code': 'KE', 'name': 'VILANOVA_SAU', 'display_name': 'VILANOVA DE SAU - PANTÀ DE SAU'},
-    # {'code': 'D7', 'name': 'VINEBRE', 'display_name': 'VINEBRE'}
+    {'code': 'CD', 'name': 'SEU_URGELL', 'display_name': 'LA SEU D\'URGELL - BELLESTAR'},
+    {'code': 'YP', 'name': 'PALAFRUGELL', 'display_name': 'PALAFRUGELL'},
+    {'code': 'XL', 'name': 'PRAT_LLOBREGAT', 'display_name': 'EL PRAT DE LLOBREGAT'},
+    {'code': 'DJ', 'name': 'BANYOLES', 'display_name': 'BANYOLES'},
+    {'code': 'DP', 'name': 'DAS', 'display_name': 'DAS - AERÒDROM'},
+    {'code': 'X4', 'name': 'BARCELONA_RAVAL', 'display_name': 'BARCELONA - EL RAVAL'},
+    {'code': 'VK', 'name': 'LLEIDA_RAIMAT', 'display_name': 'LLEIDA - RAIMAT'},
+    {'code': 'XE', 'name': 'TARRAGONA', 'display_name': 'TARRAGONA - COMPLEX EDUCATIU'},
+    {'code': 'DG', 'name': 'QUERALBS_NURIA', 'display_name': 'QUERALBS - NÚRIA (1.971 m)'},
+    {'code': 'ZC', 'name': 'SETCASES_ULLDETER', 'display_name': 'SETCASES - ULLDETER (2.413 m)'},
+    {'code': 'UN', 'name': 'CASSÀ DE LA SELVA', 'display_name': 'CASSÀ DE LA SELVA'},
+    {'code': 'D7', 'name': 'VINEBRE', 'display_name': 'VINEBRE'},
+    {'code': 'YB', 'name': 'OLOT', 'display_name': 'OLOT'},
+    {'code': 'CI', 'name': 'SANT PAU DE SEGÚRIES', 'display_name': 'SANT PAU DE SEGÚRIES'},
+    {'code': 'XK', 'name': 'PUIG SESOLLES', 'display_name': 'PUIG SESOLLES (1.668 M)'},  
+    {'code': 'VS', 'name': 'LAC REDON', 'display_name': 'LAC REDON (2.247 M)'}, 
+    {'code': 'DN', 'name': 'ANGLÈS', 'display_name': 'ANGLÈS'}
 ]
 
 # ============================================================================
@@ -57,7 +60,7 @@ HTML_TEMPLATE = os.path.join(BASE_DIR, 'banner_news_channel.html')
 OUTPUT_HTML = os.path.join(BASE_DIR, 'banner_output.html')  # Aquest usarà OBS
 
 # ============================================================================
-# CONFIGURACIÓ API METEOCAT
+# CONFIGURACIÓ API METEOCAT (COMENTADA - NO LA NECESSITEM ARA)
 # ============================================================================
 METEOcat_CONFIG = {
     'api_base': 'https://api.meteo.cat/v1',
@@ -66,13 +69,13 @@ METEOcat_CONFIG = {
     'backoff_factor': 2
 }
 
-# IMPORTANT: La clau API s'ha de configurar com a variable d'entorn
-# o directament aquí (menys segur). Recomano variable d'entorn.
-API_KEY = os.environ.get('METEOcat_API_KEY', '')
-if not API_KEY:
-    print("⚠️  AVÍS: No s'ha trobat clau API de Meteocat")
-    print("   Configura la variable d'entorn: METEOcat_API_KEY")
-    print("   O modifica directament a config_banner.py")
+# MODIFICACIÓ: No comprovem la clau API, no la necessitem per a web scraping
+# Si en un futur vols utilitzar l'API, descomenta això:
+# API_KEY = os.environ.get('METEOcat_API_KEY', '')
+# if not API_KEY:
+#     print("⚠️  MODE WEB SCRAPING: No s'ha trobat clau API.")
+
+API_KEY = None  # El deixem com a None per no causar errors
 
 # ============================================================================
 # CONFIGURACIÓ DE TEMPS

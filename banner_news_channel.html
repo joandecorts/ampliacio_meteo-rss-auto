@@ -6,9 +6,7 @@
     <title>Meteorologia</title>
     
     <style>
-        /* RESET */
         * { margin:0; padding:0; box-sizing:border-box; }
-        
         body {
             background:#fff;
             display:flex;
@@ -17,8 +15,6 @@
             min-height:100vh;
             font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;
         }
-        
-        /* CONTENIDOR */
         .weather-container {
             width:100%;
             max-width:500px;
@@ -27,15 +23,11 @@
             box-shadow:0 2px 8px rgba(0,0,0,0.08);
             border-radius:5px;
         }
-        
-        /* SCROLL */
         .scroll-container {
             position:relative;
             height:280px;
             overflow:hidden;
         }
-        
-        /* GRUPS */
         .content-group {
             position:absolute;
             width:100%;
@@ -43,12 +35,22 @@
             left:0;
             transition:transform 0.8s ease;
             background:white;
+            opacity:0;
+            z-index:1;
         }
-        .active { transform:translateY(0); }
-        .next { transform:translateY(-100%); }
-        .out { transform:translateY(100%); }
-        
-        /* CAPÇALERA */
+        .content-group.active {
+            opacity:1;
+            z-index:2;
+            transform:translateY(0);
+        }
+        .content-group.next {
+            opacity:0;
+            transform:translateY(-100%);
+        }
+        .content-group.out {
+            opacity:0;
+            transform:translateY(100%);
+        }
         .location-header {
             background:#c00;
             color:white;
@@ -66,8 +68,6 @@
             text-align:center;
             line-height:1.1;
         }
-        
-        /* CAIXES - VERSIÓ GENERAL (PC/TABLET) */
         .data-container {
             display:flex;
             padding:10px;
@@ -103,8 +103,6 @@
             font-weight:700;
             margin-left:2px;
         }
-        
-        /* PEU */
         .footer {
             padding:8px 10px;
             text-align:center;
@@ -129,84 +127,41 @@
             color:#666;
             font-weight:600;
         }
-        
-        /* ========== MÒBIL VERTICAL ========== */
-        /* BARRA LLARGA amb 3 elements en fila */
         @media (max-width: 600px) and (orientation: portrait) {
             .weather-container { max-width:95vw; }
             .scroll-container, .content-group { height:280px; }
-            
             .data-container { 
                 height:120px;
                 padding:8px 10px;
                 gap:6px;
             }
-            
-            .data-box { 
-                padding:8px 6px;
-                justify-content:space-between;
-            }
-            
+            .data-box { padding:8px 6px; }
             .data-title { 
                 font-size:11px;
                 margin-bottom:4px;
-                line-height:1.1;
                 min-height:26px;
                 display:flex;
                 align-items:center;
                 justify-content:center;
             }
-            
-            .data-value { 
-                font-size:22px;
-                margin:0;
-            }
-            
-            .data-unit { 
-                font-size:16px;
-            }
-            
-            /* Ajust per noms llargs en dues línies */
-            .data-title.br-2 {
-                display:block;
-                padding:0 2px;
-            }
-            
-            .footer { 
-                height:60px;
-                padding:6px 8px;
-            }
-            
+            .data-value { font-size:22px; }
+            .data-unit { font-size:16px; }
+            .data-title.br-2 { display:block; padding:0 2px; }
+            .footer { height:60px; padding:6px 8px; }
             .update-info { font-size:12px; }
             .source { font-size:11px; }
         }
-        
-        /* ========== MÒBIL HORITZONTAL ========== */
         @media (max-width: 900px) and (orientation: landscape) {
             .scroll-container, .content-group { height:230px; }
-            .data-container { 
-                height:110px;
-                padding:8px;
-                gap:6px;
-            }
+            .data-container { height:110px; padding:8px; gap:6px; }
             .data-box { padding:8px 5px; }
-            .data-title { 
-                font-size:11px;
-                margin-bottom:4px;
-                line-height:1.1;
-                min-height:24px;
-            }
+            .data-title { font-size:11px; min-height:24px; }
             .data-value { font-size:24px; }
             .data-unit { font-size:16px; }
-            .footer { 
-                height:60px;
-                padding:6px 8px;
-            }
+            .footer { height:60px; padding:6px 8px; }
             .update-info { font-size:12px; }
             .source { font-size:11px; }
         }
-        
-        /* ========== PC GRAN ========== */
         @media (min-width: 1200px) {
             .weather-container { max-width:550px; }
             .scroll-container, .content-group { height:300px; }
@@ -214,132 +169,117 @@
             .data-title { font-size:14px; }
             .data-value { font-size:32px; }
         }
-        
-        /* AJUSTOS iOS */
         @supports (-webkit-touch-callout: none) {
-            .data-title {
-                -webkit-font-smoothing: antialiased;
-            }
+            .data-title { -webkit-font-smoothing: antialiased; }
         }
     </style>
 </head>
 <body>
     <div class="weather-container">
         <div class="scroll-container">
-            
-            <!-- GIRONA -->
-            <div class="content-group active" id="group1">
-                <div class="location-header">
-                    <div class="location-name">GIRONA</div>
-                </div>
-                <div class="data-container">
-                    <div class="data-box">
-                        <div class="data-title br-2">Temperatura<br>màxima del dia</div>
-                        <div class="data-value">14.5<span class="data-unit">°C</span></div>
-                    </div>
-                    <div class="data-box">
-                        <div class="data-title br-2">Temperatura<br>mínima del dia</div>
-                        <div class="data-value">7.3<span class="data-unit">°C</span></div>
-                    </div>
-                    <div class="data-box">
-                        <div class="data-title">Pluja acumulada</div>
-                        <div class="data-value">2.8<span class="data-unit">mm</span></div>
-                    </div>
-                </div>
-                <div class="footer">
-                    <div class="update-info">Actualitzat: 13:45 - Data: 23/12/2025</div>
-                    <div class="source">Font: https://www.meteo.cat/</div>
-                </div>
-            </div>
-            
-            <!-- FORNELLS -->
-            <div class="content-group next" id="group2">
-                <div class="location-header">
-                    <div class="location-name">FORNELLS DE LA SELVA</div>
-                </div>
-                <div class="data-container">
-                    <div class="data-box">
-                        <div class="data-title br-2">Temperatura<br>màxima del dia</div>
-                        <div class="data-value">13.8<span class="data-unit">°C</span></div>
-                    </div>
-                    <div class="data-box">
-                        <div class="data-title br-2">Temperatura<br>mínima del dia</div>
-                        <div class="data-value">6.5<span class="data-unit">°C</span></div>
-                    </div>
-                    <div class="data-box">
-                        <div class="data-title">Pluja acumulada</div>
-                        <div class="data-value">1.2<span class="data-unit">mm</span></div>
-                    </div>
-                </div>
-                <div class="footer">
-                    <div class="update-info">Actualitzat: 13:45 - Data: 23/12/2025</div>
-                    <div class="source">Font: https://www.meteo.cat/</div>
-                </div>
-            </div>
-            
+            <!-- EL CONTINGUT D'AQUÍ ES REEMPLAÇARÀ COMPLETAMENT PER update_banner.py -->
         </div>
     </div>
 
     <script>
-        // INICIALITZACIÓ
-        document.addEventListener('DOMContentLoaded', function() {
-            const g1 = document.getElementById('group1');
-            const g2 = document.getElementById('group2');
-            if (g1 && g2) {
-                g1.className = 'content-group active';
-                g2.className = 'content-group next';
+        // SCROLL SIMPLE I ROBUST
+        let currentIndex = 0;
+        let scrollInterval;
+        const DISPLAY_TIME = 5000; // 5 segons per provar
+        
+        function initSlider() {
+            const allStations = document.querySelectorAll('.content-group');
+            const total = allStations.length;
+            
+            console.log(`🔍 Estacions trobades: ${total}`);
+            if (total === 0) {
+                console.log('⚠️  No hi ha estacions per mostrar.');
+                return;
             }
             
-            // Ajust automàtic de textos llargs
-            document.querySelectorAll('.data-title').forEach(title => {
-                if (title.textContent.includes('màxima') || title.textContent.includes('mínima')) {
-                    title.classList.add('br-2');
+            // Ocultar totes i posar classes inicials
+            allStations.forEach((station, idx) => {
+                station.classList.remove('active', 'next', 'out');
+                station.style.zIndex = '1';
+                if (idx === 0) {
+                    station.classList.add('active');
+                    station.style.zIndex = '2';
+                } else {
+                    station.classList.add('next');
                 }
             });
-        });
+            
+            currentIndex = 0;
+            startAutoScroll();
+        }
         
-        // SCROLL AUTOMÀTIC
-        let current = 1, timer;
-        function changeStation() {
-            const g1 = document.getElementById('group1');
-            const g2 = document.getElementById('group2');
+        function goToNext() {
+            const allStations = document.querySelectorAll('.content-group');
+            const total = allStations.length;
+            if (total < 2) return;
             
-            if (current === 1) {
-                g1.classList.replace('active', 'out');
-                g2.classList.replace('next', 'active');
-                current = 2;
-            } else {
-                g2.classList.replace('active', 'out');
-                g1.classList.replace('next', 'active');
-                current = 1;
-            }
+            const current = allStations[currentIndex];
+            const nextIndex = (currentIndex + 1) % total;
+            const next = allStations[nextIndex];
             
+            console.log(`🔄 Canviant: ${currentIndex} → ${nextIndex}`);
+            
+            // Transició
+            current.classList.replace('active', 'out');
+            next.classList.replace('next', 'active');
+            
+            // Netejar i preparar per la següent
             setTimeout(() => {
-                if (current === 1) {
-                    g2.className = 'content-group next';
-                    g1.style.zIndex = '2';
-                    g2.style.zIndex = '1';
-                } else {
-                    g1.className = 'content-group next';
-                    g1.style.zIndex = '1';
-                    g2.style.zIndex = '2';
+                current.classList.remove('out');
+                current.classList.add('next');
+                current.style.zIndex = '1';
+                next.style.zIndex = '2';
+                
+                // La propera després de 'next' també es prepara
+                const followingIndex = (nextIndex + 1) % total;
+                if (followingIndex !== currentIndex) {
+                    allStations[followingIndex].classList.add('next');
                 }
             }, 800);
+            
+            currentIndex = nextIndex;
         }
         
-        function startScroll() {
-            if (timer) clearInterval(timer);
-            timer = setInterval(changeStation, 15000);
+        function startAutoScroll() {
+            if (scrollInterval) clearInterval(scrollInterval);
+            scrollInterval = setInterval(goToNext, DISPLAY_TIME);
+            console.log('▶️  Scroll automàtic iniciat.');
         }
         
-        setTimeout(startScroll, 1000);
+        function stopAutoScroll() {
+            if (scrollInterval) clearInterval(scrollInterval);
+            console.log('⏸️  Scroll automàtic aturat.');
+        }
         
-        document.addEventListener('visibilitychange', () => {
+        // Iniciar quan es carregui la pàgina
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('📄 DOM carregat. Inicialitzant slider...');
+            // Esperem una mica per si el contingut es carrega dinàmicament
+            setTimeout(initSlider, 100);
+        });
+        
+        // Aturar quan la pestanya no és visible
+        document.addEventListener('visibilitychange', function() {
             if (document.hidden) {
-                if (timer) clearInterval(timer);
+                stopAutoScroll();
             } else {
-                startScroll();
+                startAutoScroll();
             }
+        });
+        
+        // Debug: fer clic a la pàgina mostra estat
+        document.addEventListener('click', function() {
+            const all = document.querySelectorAll('.content-group');
+            console.log('--- ESTAT ACTUAL ---');
+            all.forEach((s, i) => {
+                const name = s.querySelector('.location-name')?.textContent || `Estació ${i}`;
+                console.log(`${i}: ${name} - Classes: ${s.className}`);
+            });
         });
     </script>
 </body>

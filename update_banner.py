@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-UPDATE BANNER - Actualitza el banner HTML amb dades reals
+UPDATE BANNER - Actualitza el banner HTML amb dades reals (VERSIÓ TOLERANT)
 """
 
 import json
@@ -32,29 +32,31 @@ def read_html_template():
         print(f"❌ No es troba la plantilla: {cfg.HTML_TEMPLATE}")
         return None
 
-def create_station_html(station_config, station_data):
+def create_station_html(station_config, station_data, index):
     """
     Crea el bloc HTML per una estació amb dades reals
-    
-    station_config: dict amb {code, name, display_name}
-    station_data: dict amb {values: {TX, TN, PPT}}
     """
     code = station_config['code']
     display_name = station_config['display_name']
     
-    # Obtenir valors (o defaults si no hi ha)
     if station_data and station_data.get('success'):
         values = station_data.get('values', cfg.DEFAULT_VALUES)
         tx = values.get('TX', '--')
-        tn = values.get('TN', '--') 
+        tn = values.get('TN', '--')
         ppt = values.get('PPT', '--')
     else:
         tx, tn, ppt = cfg.DEFAULT_VALUES['TX'], cfg.DEFAULT_VALUES['TN'], cfg.DEFAULT_VALUES['PPT']
     
-    # Crear HTML
+    # Determinar classes CSS per al JavaScript corregit
+    css_class = 'content-group next'
+    if index == 0:
+        css_class = 'content-group active'  # La primera és visible
+    elif index == 1:
+        css_class = 'content-group next'    # La següent en línia
+    
     html = f'''
             <!-- GRUP: {display_name} -->
-            <div class="content-group" id="group{code}">
+            <div class="{css_class}" id="station{index}">
                 <div class="location-header">
                     <div class="location-name">{display_name}</div>
                 </div>
@@ -81,73 +83,84 @@ def create_station_html(station_config, station_data):
                     <div class="source">Font: https://www.meteo.cat/</div>
                 </div>
             </div>
-    '''
-    
+'''
     return html
 
 def generate_banner_html(weather_data):
     """
     Genera l'HTML complet del banner amb totes les estacions
+    VERSIÓ TOLERANT: Substitueix tot entre scroll-container
     """
-    # Llegir plantilla
     template = read_html_template()
     if template is None:
         return None
     
-    # Obtenir dades per estació
     stations_data = weather_data.get('stations', {}) if weather_data else {}
     
-    # Generar contingut de totes les estacions
+    # Generar HTML de TOTES les estacions
     all_stations_html = ""
-    
     for i, station_config in enumerate(cfg.STATIONS):
         station_code = station_config['code']
         station_data = stations_data.get(station_code, {})
+        all_stations_html += create_station_html(station_config, station_data, i) + "\n\n"
+    
+    # --- PART CLAU: SUBSTITUIR DES DE '<div class="scroll-container">' FINS AL FINAL ---
+    start_marker = '<div class="scroll-container">'
+    
+    # Trobar la posició inicial
+    start_index = template.find(start_marker)
+    if start_index == -1:
+        print("❌ No s'ha trobat l'inici del scroll-container")
+        return None
+    
+    # Buscar la posició on comença el tancament del contenidor scroll
+    # Primer trobem el proper '</div>' després del nostre marcador
+    end_search_start = start_index + len(start_marker)
+    
+    # Fem una cerca simple: trobar el primer '</div>' després del marcador
+    end_index = template.find('</div>', end_search_start)
+    
+    if end_index == -1:
+        print("❌ No s'ha trobat el final del contenidor")
+        return None
+    
+    # Ara retrocedim per assegurar-nos que aquest és el tancament del scroll-container
+    # Comptem quants '<div' hi ha entre start_index i end_index
+    temp_section = template[start_index:end_index]
+    div_count = temp_section.count('<div')
+    
+    # Si hi ha més d'un div obert, trobem el tancament corresponent
+    if div_count > 1:
+        # Busquem el tancament que iguala el nombre de divs oberts
+        close_tags_needed = div_count
+        current_pos = end_index
+        close_tags_found = 0
         
-        station_html = create_station_html(station_config, station_data)
-        all_stations_html += station_html + "\n\n"
+        while close_tags_found < close_tags_needed:
+            next_close = template.find('</div>', current_pos + 1)
+            if next_close == -1:
+                break
+            current_pos = next_close
+            close_tags_found += 1
+        
+        end_index = current_pos + len('</div>')
     
-    # Reemplaçar el contingut al template
-    # Busquem el punt on comença el primer grup
-    lines = template.split('\n')
+    # Crear el nou HTML
+    new_html = (
+        template[:start_index + len(start_marker)] +  # Tot fins on comença el scroll
+        "\n" + all_stations_html.strip() + "\n" +     # Els nostres nous grups
+        template[end_index:]                          # Des del final del scroll en endavant
+    )
     
-    # Trobar l'inici del primer grup
-    start_index = None
-    end_index = None
-    
-    for i, line in enumerate(lines):
-        if '<!-- GRUP: GIRONA -->' in line or '<!-- GRUP 1: GIRONA -->' in line:
-            start_index = i
-            # Buscar el següent comentari de grup o final
-            for j in range(i+1, len(lines)):
-                if '<!-- GRUP:' in lines[j] or '<!-- GRUP ' in lines[j]:
-                    end_index = j
-                    break
-            if end_index is None:
-                end_index = len(lines)
-            break
-    
-    if start_index is not None and end_index is not None:
-        # Reemplaçar
-        new_lines = lines[:start_index] + [all_stations_html.strip()] + lines[end_index:]
-        return '\n'.join(new_lines)
-    else:
-        print("⚠️  No s'ha trobat el marcador de grups al template")
-        # Intentar reemplaçar de manera simple
-        return template.replace(
-            '<!-- GRUP 1: GIRONA -->',
-            all_stations_html.strip()
-        )
+    return new_html
 
 def save_banner_html(html_content):
     """Guarda l'HTML generat"""
     try:
         with open(cfg.OUTPUT_HTML, 'w', encoding='utf-8') as f:
             f.write(html_content)
-        
         print(f"✅ Banner actualitzat: {cfg.OUTPUT_HTML}")
         return True
-        
     except Exception as e:
         print(f"❌ Error guardant banner: {e}")
         return False
@@ -158,19 +171,16 @@ def main():
     print("ACTUALITZADOR DE BANNER - Dades reals Meteocat")
     print("=" * 50)
     
-    # 1. Carregar dades
     print("\n[1] Carregant dades meteorològiques...")
     weather_data = load_latest_data()
     
     if weather_data is None:
-        # Crear dades de prova per desenvolupament
         print("   ⚠️  Utilitzant dades de prova per desenvolupament")
         weather_data = {
             'metadata': {'last_updated': datetime.now().isoformat()},
             'stations': {}
         }
     
-    # 2. Generar HTML
     print("\n[2] Generant HTML amb dades reals...")
     banner_html = generate_banner_html(weather_data)
     
@@ -178,14 +188,12 @@ def main():
         print("❌ Error generant HTML")
         return 1
     
-    # 3. Guardar fitxer
     print("\n[3] Guardant banner actualitzat...")
     if save_banner_html(banner_html):
         print(f"\n🎉 BANNER ACTUALITZAT AMB ÈXIT")
         print(f"   Fitxer: {cfg.OUTPUT_HTML}")
         print(f"   Estacions: {len(cfg.STATIONS)}")
         print(f"   {cfg.get_update_text()}")
-        print(f"\n🔧 Recorda canviar OBS a: {cfg.OUTPUT_HTML}")
         return 0
     else:
         print("\n❌ ERROR ACTUALITZANT BANNER")

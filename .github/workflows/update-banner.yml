@@ -1,0 +1,55 @@
+name: Actualitzar Banner Cada Hora
+
+on:
+  schedule:
+    # S'executa als minuts 15 i 45 de cada hora
+    - cron: '15 * * * *'
+    - cron: '45 * * * *'
+  # També es pot executar manualment des de GitHub
+  workflow_dispatch:
+
+jobs:
+  update-banner:
+    runs-on: ubuntu-latest
+    
+    steps:
+    # 1. Agafar el codi
+    - name: Checkout repository
+      uses: actions/checkout@v3
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+    
+    # 2. Configurar Python
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.9'
+    
+    # 3. Instal·lar dependències
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+    
+    # 4. Executar el scraper
+    - name: Run meteo scraper
+      run: python meteo_scraper.py
+    
+    # 5. Generar banner
+    - name: Generate banner
+      run: python generate_banner.py
+    
+    # 6. Renombrar a index.html
+    - name: Rename to index.html
+      run: |
+        cp banner_output.html index.html
+        echo "<!-- Última actualització: $(date '+%H:%M - %d/%m/%Y') -->" >> index.html
+    
+    # 7. Pujar canvis a GitHub
+    - name: Commit and push changes
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        git add index.html data/latest_weather.json
+        git commit -m "🔄 Actualització automàtica: $(date '+%Y-%m-%d %H:%M')" || echo "No hi ha canvis per commitejar"
+        git push origin main
