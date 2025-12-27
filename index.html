@@ -7,590 +7,1030 @@
     <style>
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: #f5f5f5;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
             margin: 0;
             padding: 20px;
-            color: #333;
-        }
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
+            min-height: 100vh;
         }
         @media (max-width: 768px) {
-            .container {
+            body {
                 padding: 10px;
             }
-            h1 { font-size: 24px; }
-            h3 { font-size: 16px; }
-            div[style*="font-size: 48px"] {
-                font-size: 36px !important;
+            div[style*="font-size: 36px"] {
+                font-size: 28px !important;
+            }
+            h1 {
+                font-size: 22px !important;
+            }
+        }
+        @media print {
+            body {
+                background: #fff !important;
             }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        
-            <div style="margin: 20px; padding: 20px; background: #fff; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
-                <h1 style="color: #c00; text-align: center; margin-bottom: 20px;">GIRONA</h1>
+    
+            <div style="margin: 15px auto; padding: 0; max-width: 800px; background: #fff; border-radius: 0; font-family: Arial, sans-serif;">
+                <!-- TÍTOL -->
+                <h1 style="color: #c00; text-align: center; margin: 0 0 20px 0; padding: 15px 0; background: #f8f8f8; border-bottom: 2px solid #ddd;">
+                    GIRONA
+                </h1>
                 
-                <div style="display: flex; justify-content: space-between; margin-bottom: 25px;">
-                    <div style="text-align: center; flex: 1;">
-                        <h3 style="color: #333; margin-bottom: 10px;">Temperatura máxima del día</h3>
-                        <div style="font-size: 48px; font-weight: bold; color: #c00;">13.0°c</div>
+                <!-- TRES CAIXES EN FILES SEPARADES -->
+                <div style="padding: 15px;">
+                    <!-- Fila 1: Temp. màx -->
+                    <div style="margin-bottom: 15px; border: 2px solid #e0e0e0; border-radius: 8px; padding: 15px; background: #fafafa;">
+                        <div style="font-weight: bold; font-size: 16px; color: #333; margin-bottom: 8px;">
+                            Temperatura máxima del día
+                        </div>
+                        <div style="font-size: 36px; font-weight: bold; color: #c00; text-align: center;">
+                            13.0°C
+                        </div>
                     </div>
                     
-                    <div style="text-align: center; flex: 1;">
-                        <h3 style="color: #333; margin-bottom: 10px;">Temperatura mínima del día</h3>
-                        <div style="font-size: 48px; font-weight: bold; color: #c00;">10.5°c</div>
+                    <!-- Fila 2: Temp. mín -->
+                    <div style="margin-bottom: 15px; border: 2px solid #e0e0e0; border-radius: 8px; padding: 15px; background: #fafafa;">
+                        <div style="font-weight: bold; font-size: 16px; color: #333; margin-bottom: 8px;">
+                            Temperatura mínima del día
+                        </div>
+                        <div style="font-size: 36px; font-weight: bold; color: #c00; text-align: center;">
+                            10.5°C
+                        </div>
                     </div>
                     
-                    <div style="text-align: center; flex: 1;">
-                        <h3 style="color: #333; margin-bottom: 10px;">Pluja acumulada</h3>
-                        <div style="font-size: 48px; font-weight: bold; color: #c00;">9.2 mm</div>
+                    <!-- Fila 3: Pluja -->
+                    <div style="margin-bottom: 20px; border: 2px solid #e0e0e0; border-radius: 8px; padding: 15px; background: #fafafa;">
+                        <div style="font-weight: bold; font-size: 16px; color: #333; margin-bottom: 8px;">
+                            Pluja acumulada
+                        </div>
+                        <div style="font-size: 36px; font-weight: bold; color: #c00; text-align: center;">
+                            9.2 mm
+                        </div>
                     </div>
                 </div>
                 
-                <hr style="border: none; border-top: 2px solid #eee; margin: 25px 0;">
-                
-                <div style="text-align: center; color: #666; font-size: 14px;">
-                    <p><strong>Actualitzat: 14:42 - Data: 27/12/2025</strong></p>
-                    <p>Font: https://www.meteo.cat/</p>
-                </div>
-            </div>
-            
-            <div style="margin: 20px; padding: 20px; background: #fff; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
-                <h1 style="color: #c00; text-align: center; margin-bottom: 20px;">FORNELLS DE LA SELVA</h1>
-                
-                <div style="display: flex; justify-content: space-between; margin-bottom: 25px;">
-                    <div style="text-align: center; flex: 1;">
-                        <h3 style="color: #333; margin-bottom: 10px;">Temperatura máxima del día</h3>
-                        <div style="font-size: 48px; font-weight: bold; color: #c00;">12.9°c</div>
+                <!-- PEU DE PÀGINA -->
+                <div style="background: #f8f8f8; padding: 12px; border-top: 2px solid #ddd; text-align: center;">
+                    <div style="color: #333; font-weight: bold; margin-bottom: 4px;">
+                        Actualitzat: 14:49 - Data: 27/12/2025
                     </div>
-                    
-                    <div style="text-align: center; flex: 1;">
-                        <h3 style="color: #333; margin-bottom: 10px;">Temperatura mínima del día</h3>
-                        <div style="font-size: 48px; font-weight: bold; color: #c00;">10.8°c</div>
+                    <div style="color: #666; font-size: 14px;">
+                        Font: https://www.meteo.cat/
                     </div>
-                    
-                    <div style="text-align: center; flex: 1;">
-                        <h3 style="color: #333; margin-bottom: 10px;">Pluja acumulada</h3>
-                        <div style="font-size: 48px; font-weight: bold; color: #c00;">7.4 mm</div>
-                    </div>
-                </div>
-                
-                <hr style="border: none; border-top: 2px solid #eee; margin: 25px 0;">
-                
-                <div style="text-align: center; color: #666; font-size: 14px;">
-                    <p><strong>Actualitzat: 14:42 - Data: 27/12/2025</strong></p>
-                    <p>Font: https://www.meteo.cat/</p>
                 </div>
             </div>
             
-            <div style="margin: 20px; padding: 20px; background: #fff; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
-                <h1 style="color: #c00; text-align: center; margin-bottom: 20px;">ROSES</h1>
+            <div style="margin: 15px auto; padding: 0; max-width: 800px; background: #fff; border-radius: 0; font-family: Arial, sans-serif;">
+                <!-- TÍTOL -->
+                <h1 style="color: #c00; text-align: center; margin: 0 0 20px 0; padding: 15px 0; background: #f8f8f8; border-bottom: 2px solid #ddd;">
+                    FORNELLS DE LA SELVA
+                </h1>
                 
-                <div style="display: flex; justify-content: space-between; margin-bottom: 25px;">
-                    <div style="text-align: center; flex: 1;">
-                        <h3 style="color: #333; margin-bottom: 10px;">Temperatura máxima del día</h3>
-                        <div style="font-size: 48px; font-weight: bold; color: #c00;">14.3°c</div>
+                <!-- TRES CAIXES EN FILES SEPARADES -->
+                <div style="padding: 15px;">
+                    <!-- Fila 1: Temp. màx -->
+                    <div style="margin-bottom: 15px; border: 2px solid #e0e0e0; border-radius: 8px; padding: 15px; background: #fafafa;">
+                        <div style="font-weight: bold; font-size: 16px; color: #333; margin-bottom: 8px;">
+                            Temperatura máxima del día
+                        </div>
+                        <div style="font-size: 36px; font-weight: bold; color: #c00; text-align: center;">
+                            12.9°C
+                        </div>
                     </div>
                     
-                    <div style="text-align: center; flex: 1;">
-                        <h3 style="color: #333; margin-bottom: 10px;">Temperatura mínima del día</h3>
-                        <div style="font-size: 48px; font-weight: bold; color: #c00;">11.4°c</div>
+                    <!-- Fila 2: Temp. mín -->
+                    <div style="margin-bottom: 15px; border: 2px solid #e0e0e0; border-radius: 8px; padding: 15px; background: #fafafa;">
+                        <div style="font-weight: bold; font-size: 16px; color: #333; margin-bottom: 8px;">
+                            Temperatura mínima del día
+                        </div>
+                        <div style="font-size: 36px; font-weight: bold; color: #c00; text-align: center;">
+                            10.8°C
+                        </div>
                     </div>
                     
-                    <div style="text-align: center; flex: 1;">
-                        <h3 style="color: #333; margin-bottom: 10px;">Pluja acumulada</h3>
-                        <div style="font-size: 48px; font-weight: bold; color: #c00;">2.7 mm</div>
+                    <!-- Fila 3: Pluja -->
+                    <div style="margin-bottom: 20px; border: 2px solid #e0e0e0; border-radius: 8px; padding: 15px; background: #fafafa;">
+                        <div style="font-weight: bold; font-size: 16px; color: #333; margin-bottom: 8px;">
+                            Pluja acumulada
+                        </div>
+                        <div style="font-size: 36px; font-weight: bold; color: #c00; text-align: center;">
+                            7.4 mm
+                        </div>
                     </div>
                 </div>
                 
-                <hr style="border: none; border-top: 2px solid #eee; margin: 25px 0;">
-                
-                <div style="text-align: center; color: #666; font-size: 14px;">
-                    <p><strong>Actualitzat: 14:42 - Data: 27/12/2025</strong></p>
-                    <p>Font: https://www.meteo.cat/</p>
-                </div>
-            </div>
-            
-            <div style="margin: 20px; padding: 20px; background: #fff; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
-                <h1 style="color: #c00; text-align: center; margin-bottom: 20px;">LA SEU D'URGELL - BELLESTAR</h1>
-                
-                <div style="display: flex; justify-content: space-between; margin-bottom: 25px;">
-                    <div style="text-align: center; flex: 1;">
-                        <h3 style="color: #333; margin-bottom: 10px;">Temperatura máxima del día</h3>
-                        <div style="font-size: 48px; font-weight: bold; color: #c00;">9.0°c</div>
+                <!-- PEU DE PÀGINA -->
+                <div style="background: #f8f8f8; padding: 12px; border-top: 2px solid #ddd; text-align: center;">
+                    <div style="color: #333; font-weight: bold; margin-bottom: 4px;">
+                        Actualitzat: 14:49 - Data: 27/12/2025
                     </div>
-                    
-                    <div style="text-align: center; flex: 1;">
-                        <h3 style="color: #333; margin-bottom: 10px;">Temperatura mínima del día</h3>
-                        <div style="font-size: 48px; font-weight: bold; color: #c00;">1.9°c</div>
+                    <div style="color: #666; font-size: 14px;">
+                        Font: https://www.meteo.cat/
                     </div>
-                    
-                    <div style="text-align: center; flex: 1;">
-                        <h3 style="color: #333; margin-bottom: 10px;">Pluja acumulada</h3>
-                        <div style="font-size: 48px; font-weight: bold; color: #c00;">0.1 mm</div>
-                    </div>
-                </div>
-                
-                <hr style="border: none; border-top: 2px solid #eee; margin: 25px 0;">
-                
-                <div style="text-align: center; color: #666; font-size: 14px;">
-                    <p><strong>Actualitzat: 14:42 - Data: 27/12/2025</strong></p>
-                    <p>Font: https://www.meteo.cat/</p>
                 </div>
             </div>
             
-            <div style="margin: 20px; padding: 20px; background: #fff; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
-                <h1 style="color: #c00; text-align: center; margin-bottom: 20px;">PALAFRUGELL</h1>
+            <div style="margin: 15px auto; padding: 0; max-width: 800px; background: #fff; border-radius: 0; font-family: Arial, sans-serif;">
+                <!-- TÍTOL -->
+                <h1 style="color: #c00; text-align: center; margin: 0 0 20px 0; padding: 15px 0; background: #f8f8f8; border-bottom: 2px solid #ddd;">
+                    ROSES
+                </h1>
                 
-                <div style="display: flex; justify-content: space-between; margin-bottom: 25px;">
-                    <div style="text-align: center; flex: 1;">
-                        <h3 style="color: #333; margin-bottom: 10px;">Temperatura máxima del día</h3>
-                        <div style="font-size: 48px; font-weight: bold; color: #c00;">13.8°c</div>
+                <!-- TRES CAIXES EN FILES SEPARADES -->
+                <div style="padding: 15px;">
+                    <!-- Fila 1: Temp. màx -->
+                    <div style="margin-bottom: 15px; border: 2px solid #e0e0e0; border-radius: 8px; padding: 15px; background: #fafafa;">
+                        <div style="font-weight: bold; font-size: 16px; color: #333; margin-bottom: 8px;">
+                            Temperatura máxima del día
+                        </div>
+                        <div style="font-size: 36px; font-weight: bold; color: #c00; text-align: center;">
+                            14.3°C
+                        </div>
                     </div>
                     
-                    <div style="text-align: center; flex: 1;">
-                        <h3 style="color: #333; margin-bottom: 10px;">Temperatura mínima del día</h3>
-                        <div style="font-size: 48px; font-weight: bold; color: #c00;">12.1°c</div>
+                    <!-- Fila 2: Temp. mín -->
+                    <div style="margin-bottom: 15px; border: 2px solid #e0e0e0; border-radius: 8px; padding: 15px; background: #fafafa;">
+                        <div style="font-weight: bold; font-size: 16px; color: #333; margin-bottom: 8px;">
+                            Temperatura mínima del día
+                        </div>
+                        <div style="font-size: 36px; font-weight: bold; color: #c00; text-align: center;">
+                            11.4°C
+                        </div>
                     </div>
                     
-                    <div style="text-align: center; flex: 1;">
-                        <h3 style="color: #333; margin-bottom: 10px;">Pluja acumulada</h3>
-                        <div style="font-size: 48px; font-weight: bold; color: #c00;">0.7 mm</div>
+                    <!-- Fila 3: Pluja -->
+                    <div style="margin-bottom: 20px; border: 2px solid #e0e0e0; border-radius: 8px; padding: 15px; background: #fafafa;">
+                        <div style="font-weight: bold; font-size: 16px; color: #333; margin-bottom: 8px;">
+                            Pluja acumulada
+                        </div>
+                        <div style="font-size: 36px; font-weight: bold; color: #c00; text-align: center;">
+                            2.7 mm
+                        </div>
                     </div>
                 </div>
                 
-                <hr style="border: none; border-top: 2px solid #eee; margin: 25px 0;">
-                
-                <div style="text-align: center; color: #666; font-size: 14px;">
-                    <p><strong>Actualitzat: 14:42 - Data: 27/12/2025</strong></p>
-                    <p>Font: https://www.meteo.cat/</p>
-                </div>
-            </div>
-            
-            <div style="margin: 20px; padding: 20px; background: #fff; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
-                <h1 style="color: #c00; text-align: center; margin-bottom: 20px;">EL PRAT DE LLOBREGAT</h1>
-                
-                <div style="display: flex; justify-content: space-between; margin-bottom: 25px;">
-                    <div style="text-align: center; flex: 1;">
-                        <h3 style="color: #333; margin-bottom: 10px;">Temperatura máxima del día</h3>
-                        <div style="font-size: 48px; font-weight: bold; color: #c00;">13.8°c</div>
+                <!-- PEU DE PÀGINA -->
+                <div style="background: #f8f8f8; padding: 12px; border-top: 2px solid #ddd; text-align: center;">
+                    <div style="color: #333; font-weight: bold; margin-bottom: 4px;">
+                        Actualitzat: 14:49 - Data: 27/12/2025
                     </div>
-                    
-                    <div style="text-align: center; flex: 1;">
-                        <h3 style="color: #333; margin-bottom: 10px;">Temperatura mínima del día</h3>
-                        <div style="font-size: 48px; font-weight: bold; color: #c00;">10.3°c</div>
+                    <div style="color: #666; font-size: 14px;">
+                        Font: https://www.meteo.cat/
                     </div>
-                    
-                    <div style="text-align: center; flex: 1;">
-                        <h3 style="color: #333; margin-bottom: 10px;">Pluja acumulada</h3>
-                        <div style="font-size: 48px; font-weight: bold; color: #c00;">15.3 mm</div>
-                    </div>
-                </div>
-                
-                <hr style="border: none; border-top: 2px solid #eee; margin: 25px 0;">
-                
-                <div style="text-align: center; color: #666; font-size: 14px;">
-                    <p><strong>Actualitzat: 14:42 - Data: 27/12/2025</strong></p>
-                    <p>Font: https://www.meteo.cat/</p>
                 </div>
             </div>
             
-            <div style="margin: 20px; padding: 20px; background: #fff; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
-                <h1 style="color: #c00; text-align: center; margin-bottom: 20px;">BANYOLES</h1>
+            <div style="margin: 15px auto; padding: 0; max-width: 800px; background: #fff; border-radius: 0; font-family: Arial, sans-serif;">
+                <!-- TÍTOL -->
+                <h1 style="color: #c00; text-align: center; margin: 0 0 20px 0; padding: 15px 0; background: #f8f8f8; border-bottom: 2px solid #ddd;">
+                    LA SEU D'URGELL - BELLESTAR
+                </h1>
                 
-                <div style="display: flex; justify-content: space-between; margin-bottom: 25px;">
-                    <div style="text-align: center; flex: 1;">
-                        <h3 style="color: #333; margin-bottom: 10px;">Temperatura máxima del día</h3>
-                        <div style="font-size: 48px; font-weight: bold; color: #c00;">11.8°c</div>
+                <!-- TRES CAIXES EN FILES SEPARADES -->
+                <div style="padding: 15px;">
+                    <!-- Fila 1: Temp. màx -->
+                    <div style="margin-bottom: 15px; border: 2px solid #e0e0e0; border-radius: 8px; padding: 15px; background: #fafafa;">
+                        <div style="font-weight: bold; font-size: 16px; color: #333; margin-bottom: 8px;">
+                            Temperatura máxima del día
+                        </div>
+                        <div style="font-size: 36px; font-weight: bold; color: #c00; text-align: center;">
+                            9.0°C
+                        </div>
                     </div>
                     
-                    <div style="text-align: center; flex: 1;">
-                        <h3 style="color: #333; margin-bottom: 10px;">Temperatura mínima del día</h3>
-                        <div style="font-size: 48px; font-weight: bold; color: #c00;">9.7°c</div>
+                    <!-- Fila 2: Temp. mín -->
+                    <div style="margin-bottom: 15px; border: 2px solid #e0e0e0; border-radius: 8px; padding: 15px; background: #fafafa;">
+                        <div style="font-weight: bold; font-size: 16px; color: #333; margin-bottom: 8px;">
+                            Temperatura mínima del día
+                        </div>
+                        <div style="font-size: 36px; font-weight: bold; color: #c00; text-align: center;">
+                            1.9°C
+                        </div>
                     </div>
                     
-                    <div style="text-align: center; flex: 1;">
-                        <h3 style="color: #333; margin-bottom: 10px;">Pluja acumulada</h3>
-                        <div style="font-size: 48px; font-weight: bold; color: #c00;">10.2 mm</div>
+                    <!-- Fila 3: Pluja -->
+                    <div style="margin-bottom: 20px; border: 2px solid #e0e0e0; border-radius: 8px; padding: 15px; background: #fafafa;">
+                        <div style="font-weight: bold; font-size: 16px; color: #333; margin-bottom: 8px;">
+                            Pluja acumulada
+                        </div>
+                        <div style="font-size: 36px; font-weight: bold; color: #c00; text-align: center;">
+                            0.1 mm
+                        </div>
                     </div>
                 </div>
                 
-                <hr style="border: none; border-top: 2px solid #eee; margin: 25px 0;">
-                
-                <div style="text-align: center; color: #666; font-size: 14px;">
-                    <p><strong>Actualitzat: 14:42 - Data: 27/12/2025</strong></p>
-                    <p>Font: https://www.meteo.cat/</p>
-                </div>
-            </div>
-            
-            <div style="margin: 20px; padding: 20px; background: #fff; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
-                <h1 style="color: #c00; text-align: center; margin-bottom: 20px;">DAS - AERÒDROM</h1>
-                
-                <div style="display: flex; justify-content: space-between; margin-bottom: 25px;">
-                    <div style="text-align: center; flex: 1;">
-                        <h3 style="color: #333; margin-bottom: 10px;">Temperatura máxima del día</h3>
-                        <div style="font-size: 48px; font-weight: bold; color: #c00;">7.3°c</div>
+                <!-- PEU DE PÀGINA -->
+                <div style="background: #f8f8f8; padding: 12px; border-top: 2px solid #ddd; text-align: center;">
+                    <div style="color: #333; font-weight: bold; margin-bottom: 4px;">
+                        Actualitzat: 14:49 - Data: 27/12/2025
                     </div>
-                    
-                    <div style="text-align: center; flex: 1;">
-                        <h3 style="color: #333; margin-bottom: 10px;">Temperatura mínima del día</h3>
-                        <div style="font-size: 48px; font-weight: bold; color: #c00;">2.0°c</div>
+                    <div style="color: #666; font-size: 14px;">
+                        Font: https://www.meteo.cat/
                     </div>
-                    
-                    <div style="text-align: center; flex: 1;">
-                        <h3 style="color: #333; margin-bottom: 10px;">Pluja acumulada</h3>
-                        <div style="font-size: 48px; font-weight: bold; color: #c00;">1.0 mm</div>
-                    </div>
-                </div>
-                
-                <hr style="border: none; border-top: 2px solid #eee; margin: 25px 0;">
-                
-                <div style="text-align: center; color: #666; font-size: 14px;">
-                    <p><strong>Actualitzat: 14:42 - Data: 27/12/2025</strong></p>
-                    <p>Font: https://www.meteo.cat/</p>
                 </div>
             </div>
             
-            <div style="margin: 20px; padding: 20px; background: #fff; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
-                <h1 style="color: #c00; text-align: center; margin-bottom: 20px;">BARCELONA - EL RAVAL</h1>
+            <div style="margin: 15px auto; padding: 0; max-width: 800px; background: #fff; border-radius: 0; font-family: Arial, sans-serif;">
+                <!-- TÍTOL -->
+                <h1 style="color: #c00; text-align: center; margin: 0 0 20px 0; padding: 15px 0; background: #f8f8f8; border-bottom: 2px solid #ddd;">
+                    PALAFRUGELL
+                </h1>
                 
-                <div style="display: flex; justify-content: space-between; margin-bottom: 25px;">
-                    <div style="text-align: center; flex: 1;">
-                        <h3 style="color: #333; margin-bottom: 10px;">Temperatura máxima del día</h3>
-                        <div style="font-size: 48px; font-weight: bold; color: #c00;">13.7°c</div>
+                <!-- TRES CAIXES EN FILES SEPARADES -->
+                <div style="padding: 15px;">
+                    <!-- Fila 1: Temp. màx -->
+                    <div style="margin-bottom: 15px; border: 2px solid #e0e0e0; border-radius: 8px; padding: 15px; background: #fafafa;">
+                        <div style="font-weight: bold; font-size: 16px; color: #333; margin-bottom: 8px;">
+                            Temperatura máxima del día
+                        </div>
+                        <div style="font-size: 36px; font-weight: bold; color: #c00; text-align: center;">
+                            13.8°C
+                        </div>
                     </div>
                     
-                    <div style="text-align: center; flex: 1;">
-                        <h3 style="color: #333; margin-bottom: 10px;">Temperatura mínima del día</h3>
-                        <div style="font-size: 48px; font-weight: bold; color: #c00;">10.1°c</div>
+                    <!-- Fila 2: Temp. mín -->
+                    <div style="margin-bottom: 15px; border: 2px solid #e0e0e0; border-radius: 8px; padding: 15px; background: #fafafa;">
+                        <div style="font-weight: bold; font-size: 16px; color: #333; margin-bottom: 8px;">
+                            Temperatura mínima del día
+                        </div>
+                        <div style="font-size: 36px; font-weight: bold; color: #c00; text-align: center;">
+                            12.1°C
+                        </div>
                     </div>
                     
-                    <div style="text-align: center; flex: 1;">
-                        <h3 style="color: #333; margin-bottom: 10px;">Pluja acumulada</h3>
-                        <div style="font-size: 48px; font-weight: bold; color: #c00;">12.8 mm</div>
+                    <!-- Fila 3: Pluja -->
+                    <div style="margin-bottom: 20px; border: 2px solid #e0e0e0; border-radius: 8px; padding: 15px; background: #fafafa;">
+                        <div style="font-weight: bold; font-size: 16px; color: #333; margin-bottom: 8px;">
+                            Pluja acumulada
+                        </div>
+                        <div style="font-size: 36px; font-weight: bold; color: #c00; text-align: center;">
+                            0.7 mm
+                        </div>
                     </div>
                 </div>
                 
-                <hr style="border: none; border-top: 2px solid #eee; margin: 25px 0;">
-                
-                <div style="text-align: center; color: #666; font-size: 14px;">
-                    <p><strong>Actualitzat: 14:42 - Data: 27/12/2025</strong></p>
-                    <p>Font: https://www.meteo.cat/</p>
-                </div>
-            </div>
-            
-            <div style="margin: 20px; padding: 20px; background: #fff; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
-                <h1 style="color: #c00; text-align: center; margin-bottom: 20px;">LLEIDA - RAIMAT</h1>
-                
-                <div style="display: flex; justify-content: space-between; margin-bottom: 25px;">
-                    <div style="text-align: center; flex: 1;">
-                        <h3 style="color: #333; margin-bottom: 10px;">Temperatura máxima del día</h3>
-                        <div style="font-size: 48px; font-weight: bold; color: #c00;">12.5°c</div>
+                <!-- PEU DE PÀGINA -->
+                <div style="background: #f8f8f8; padding: 12px; border-top: 2px solid #ddd; text-align: center;">
+                    <div style="color: #333; font-weight: bold; margin-bottom: 4px;">
+                        Actualitzat: 14:49 - Data: 27/12/2025
                     </div>
-                    
-                    <div style="text-align: center; flex: 1;">
-                        <h3 style="color: #333; margin-bottom: 10px;">Temperatura mínima del día</h3>
-                        <div style="font-size: 48px; font-weight: bold; color: #c00;">4.9°c</div>
+                    <div style="color: #666; font-size: 14px;">
+                        Font: https://www.meteo.cat/
                     </div>
-                    
-                    <div style="text-align: center; flex: 1;">
-                        <h3 style="color: #333; margin-bottom: 10px;">Pluja acumulada</h3>
-                        <div style="font-size: 48px; font-weight: bold; color: #c00;">1.0 mm</div>
-                    </div>
-                </div>
-                
-                <hr style="border: none; border-top: 2px solid #eee; margin: 25px 0;">
-                
-                <div style="text-align: center; color: #666; font-size: 14px;">
-                    <p><strong>Actualitzat: 14:42 - Data: 27/12/2025</strong></p>
-                    <p>Font: https://www.meteo.cat/</p>
                 </div>
             </div>
             
-            <div style="margin: 20px; padding: 20px; background: #fff; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
-                <h1 style="color: #c00; text-align: center; margin-bottom: 20px;">TARRAGONA - COMPLEX EDUCATIU</h1>
+            <div style="margin: 15px auto; padding: 0; max-width: 800px; background: #fff; border-radius: 0; font-family: Arial, sans-serif;">
+                <!-- TÍTOL -->
+                <h1 style="color: #c00; text-align: center; margin: 0 0 20px 0; padding: 15px 0; background: #f8f8f8; border-bottom: 2px solid #ddd;">
+                    EL PRAT DE LLOBREGAT
+                </h1>
                 
-                <div style="display: flex; justify-content: space-between; margin-bottom: 25px;">
-                    <div style="text-align: center; flex: 1;">
-                        <h3 style="color: #333; margin-bottom: 10px;">Temperatura máxima del día</h3>
-                        <div style="font-size: 48px; font-weight: bold; color: #c00;">13.8°c</div>
+                <!-- TRES CAIXES EN FILES SEPARADES -->
+                <div style="padding: 15px;">
+                    <!-- Fila 1: Temp. màx -->
+                    <div style="margin-bottom: 15px; border: 2px solid #e0e0e0; border-radius: 8px; padding: 15px; background: #fafafa;">
+                        <div style="font-weight: bold; font-size: 16px; color: #333; margin-bottom: 8px;">
+                            Temperatura máxima del día
+                        </div>
+                        <div style="font-size: 36px; font-weight: bold; color: #c00; text-align: center;">
+                            13.8°C
+                        </div>
                     </div>
                     
-                    <div style="text-align: center; flex: 1;">
-                        <h3 style="color: #333; margin-bottom: 10px;">Temperatura mínima del día</h3>
-                        <div style="font-size: 48px; font-weight: bold; color: #c00;">10.4°c</div>
+                    <!-- Fila 2: Temp. mín -->
+                    <div style="margin-bottom: 15px; border: 2px solid #e0e0e0; border-radius: 8px; padding: 15px; background: #fafafa;">
+                        <div style="font-weight: bold; font-size: 16px; color: #333; margin-bottom: 8px;">
+                            Temperatura mínima del día
+                        </div>
+                        <div style="font-size: 36px; font-weight: bold; color: #c00; text-align: center;">
+                            10.3°C
+                        </div>
                     </div>
                     
-                    <div style="text-align: center; flex: 1;">
-                        <h3 style="color: #333; margin-bottom: 10px;">Pluja acumulada</h3>
-                        <div style="font-size: 48px; font-weight: bold; color: #c00;">7.6 mm</div>
+                    <!-- Fila 3: Pluja -->
+                    <div style="margin-bottom: 20px; border: 2px solid #e0e0e0; border-radius: 8px; padding: 15px; background: #fafafa;">
+                        <div style="font-weight: bold; font-size: 16px; color: #333; margin-bottom: 8px;">
+                            Pluja acumulada
+                        </div>
+                        <div style="font-size: 36px; font-weight: bold; color: #c00; text-align: center;">
+                            15.3 mm
+                        </div>
                     </div>
                 </div>
                 
-                <hr style="border: none; border-top: 2px solid #eee; margin: 25px 0;">
-                
-                <div style="text-align: center; color: #666; font-size: 14px;">
-                    <p><strong>Actualitzat: 14:42 - Data: 27/12/2025</strong></p>
-                    <p>Font: https://www.meteo.cat/</p>
-                </div>
-            </div>
-            
-            <div style="margin: 20px; padding: 20px; background: #fff; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
-                <h1 style="color: #c00; text-align: center; margin-bottom: 20px;">QUERALBS - NÚRIA (1.971 m)</h1>
-                
-                <div style="display: flex; justify-content: space-between; margin-bottom: 25px;">
-                    <div style="text-align: center; flex: 1;">
-                        <h3 style="color: #333; margin-bottom: 10px;">Temperatura máxima del día</h3>
-                        <div style="font-size: 48px; font-weight: bold; color: #c00;">2.1°c</div>
+                <!-- PEU DE PÀGINA -->
+                <div style="background: #f8f8f8; padding: 12px; border-top: 2px solid #ddd; text-align: center;">
+                    <div style="color: #333; font-weight: bold; margin-bottom: 4px;">
+                        Actualitzat: 14:49 - Data: 27/12/2025
                     </div>
-                    
-                    <div style="text-align: center; flex: 1;">
-                        <h3 style="color: #333; margin-bottom: 10px;">Temperatura mínima del día</h3>
-                        <div style="font-size: 48px; font-weight: bold; color: #c00;">-0.9°c</div>
+                    <div style="color: #666; font-size: 14px;">
+                        Font: https://www.meteo.cat/
                     </div>
-                    
-                    <div style="text-align: center; flex: 1;">
-                        <h3 style="color: #333; margin-bottom: 10px;">Pluja acumulada</h3>
-                        <div style="font-size: 48px; font-weight: bold; color: #c00;">7.9 mm</div>
-                    </div>
-                </div>
-                
-                <hr style="border: none; border-top: 2px solid #eee; margin: 25px 0;">
-                
-                <div style="text-align: center; color: #666; font-size: 14px;">
-                    <p><strong>Actualitzat: 14:42 - Data: 27/12/2025</strong></p>
-                    <p>Font: https://www.meteo.cat/</p>
                 </div>
             </div>
             
-            <div style="margin: 20px; padding: 20px; background: #fff; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
-                <h1 style="color: #c00; text-align: center; margin-bottom: 20px;">SETCASES - ULLDETER (2.413 m)</h1>
+            <div style="margin: 15px auto; padding: 0; max-width: 800px; background: #fff; border-radius: 0; font-family: Arial, sans-serif;">
+                <!-- TÍTOL -->
+                <h1 style="color: #c00; text-align: center; margin: 0 0 20px 0; padding: 15px 0; background: #f8f8f8; border-bottom: 2px solid #ddd;">
+                    BANYOLES
+                </h1>
                 
-                <div style="display: flex; justify-content: space-between; margin-bottom: 25px;">
-                    <div style="text-align: center; flex: 1;">
-                        <h3 style="color: #333; margin-bottom: 10px;">Temperatura máxima del día</h3>
-                        <div style="font-size: 48px; font-weight: bold; color: #c00;">-2.1°c</div>
+                <!-- TRES CAIXES EN FILES SEPARADES -->
+                <div style="padding: 15px;">
+                    <!-- Fila 1: Temp. màx -->
+                    <div style="margin-bottom: 15px; border: 2px solid #e0e0e0; border-radius: 8px; padding: 15px; background: #fafafa;">
+                        <div style="font-weight: bold; font-size: 16px; color: #333; margin-bottom: 8px;">
+                            Temperatura máxima del día
+                        </div>
+                        <div style="font-size: 36px; font-weight: bold; color: #c00; text-align: center;">
+                            11.8°C
+                        </div>
                     </div>
                     
-                    <div style="text-align: center; flex: 1;">
-                        <h3 style="color: #333; margin-bottom: 10px;">Temperatura mínima del día</h3>
-                        <div style="font-size: 48px; font-weight: bold; color: #c00;">-3.7°c</div>
+                    <!-- Fila 2: Temp. mín -->
+                    <div style="margin-bottom: 15px; border: 2px solid #e0e0e0; border-radius: 8px; padding: 15px; background: #fafafa;">
+                        <div style="font-weight: bold; font-size: 16px; color: #333; margin-bottom: 8px;">
+                            Temperatura mínima del día
+                        </div>
+                        <div style="font-size: 36px; font-weight: bold; color: #c00; text-align: center;">
+                            9.7°C
+                        </div>
                     </div>
                     
-                    <div style="text-align: center; flex: 1;">
-                        <h3 style="color: #333; margin-bottom: 10px;">Pluja acumulada</h3>
-                        <div style="font-size: 48px; font-weight: bold; color: #c00;">4.9 mm</div>
+                    <!-- Fila 3: Pluja -->
+                    <div style="margin-bottom: 20px; border: 2px solid #e0e0e0; border-radius: 8px; padding: 15px; background: #fafafa;">
+                        <div style="font-weight: bold; font-size: 16px; color: #333; margin-bottom: 8px;">
+                            Pluja acumulada
+                        </div>
+                        <div style="font-size: 36px; font-weight: bold; color: #c00; text-align: center;">
+                            10.2 mm
+                        </div>
                     </div>
                 </div>
                 
-                <hr style="border: none; border-top: 2px solid #eee; margin: 25px 0;">
-                
-                <div style="text-align: center; color: #666; font-size: 14px;">
-                    <p><strong>Actualitzat: 14:42 - Data: 27/12/2025</strong></p>
-                    <p>Font: https://www.meteo.cat/</p>
-                </div>
-            </div>
-            
-            <div style="margin: 20px; padding: 20px; background: #fff; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
-                <h1 style="color: #c00; text-align: center; margin-bottom: 20px;">CASSÀ DE LA SELVA</h1>
-                
-                <div style="display: flex; justify-content: space-between; margin-bottom: 25px;">
-                    <div style="text-align: center; flex: 1;">
-                        <h3 style="color: #333; margin-bottom: 10px;">Temperatura máxima del día</h3>
-                        <div style="font-size: 48px; font-weight: bold; color: #c00;">12.8°c</div>
+                <!-- PEU DE PÀGINA -->
+                <div style="background: #f8f8f8; padding: 12px; border-top: 2px solid #ddd; text-align: center;">
+                    <div style="color: #333; font-weight: bold; margin-bottom: 4px;">
+                        Actualitzat: 14:49 - Data: 27/12/2025
                     </div>
-                    
-                    <div style="text-align: center; flex: 1;">
-                        <h3 style="color: #333; margin-bottom: 10px;">Temperatura mínima del día</h3>
-                        <div style="font-size: 48px; font-weight: bold; color: #c00;">10.6°c</div>
+                    <div style="color: #666; font-size: 14px;">
+                        Font: https://www.meteo.cat/
                     </div>
-                    
-                    <div style="text-align: center; flex: 1;">
-                        <h3 style="color: #333; margin-bottom: 10px;">Pluja acumulada</h3>
-                        <div style="font-size: 48px; font-weight: bold; color: #c00;">5.1 mm</div>
-                    </div>
-                </div>
-                
-                <hr style="border: none; border-top: 2px solid #eee; margin: 25px 0;">
-                
-                <div style="text-align: center; color: #666; font-size: 14px;">
-                    <p><strong>Actualitzat: 14:42 - Data: 27/12/2025</strong></p>
-                    <p>Font: https://www.meteo.cat/</p>
                 </div>
             </div>
             
-            <div style="margin: 20px; padding: 20px; background: #fff; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
-                <h1 style="color: #c00; text-align: center; margin-bottom: 20px;">VINEBRE</h1>
+            <div style="margin: 15px auto; padding: 0; max-width: 800px; background: #fff; border-radius: 0; font-family: Arial, sans-serif;">
+                <!-- TÍTOL -->
+                <h1 style="color: #c00; text-align: center; margin: 0 0 20px 0; padding: 15px 0; background: #f8f8f8; border-bottom: 2px solid #ddd;">
+                    DAS - AERÒDROM
+                </h1>
                 
-                <div style="display: flex; justify-content: space-between; margin-bottom: 25px;">
-                    <div style="text-align: center; flex: 1;">
-                        <h3 style="color: #333; margin-bottom: 10px;">Temperatura máxima del día</h3>
-                        <div style="font-size: 48px; font-weight: bold; color: #c00;">9.2°c</div>
+                <!-- TRES CAIXES EN FILES SEPARADES -->
+                <div style="padding: 15px;">
+                    <!-- Fila 1: Temp. màx -->
+                    <div style="margin-bottom: 15px; border: 2px solid #e0e0e0; border-radius: 8px; padding: 15px; background: #fafafa;">
+                        <div style="font-weight: bold; font-size: 16px; color: #333; margin-bottom: 8px;">
+                            Temperatura máxima del día
+                        </div>
+                        <div style="font-size: 36px; font-weight: bold; color: #c00; text-align: center;">
+                            7.3°C
+                        </div>
                     </div>
                     
-                    <div style="text-align: center; flex: 1;">
-                        <h3 style="color: #333; margin-bottom: 10px;">Temperatura mínima del día</h3>
-                        <div style="font-size: 48px; font-weight: bold; color: #c00;">5.9°c</div>
+                    <!-- Fila 2: Temp. mín -->
+                    <div style="margin-bottom: 15px; border: 2px solid #e0e0e0; border-radius: 8px; padding: 15px; background: #fafafa;">
+                        <div style="font-weight: bold; font-size: 16px; color: #333; margin-bottom: 8px;">
+                            Temperatura mínima del día
+                        </div>
+                        <div style="font-size: 36px; font-weight: bold; color: #c00; text-align: center;">
+                            2.0°C
+                        </div>
                     </div>
                     
-                    <div style="text-align: center; flex: 1;">
-                        <h3 style="color: #333; margin-bottom: 10px;">Pluja acumulada</h3>
-                        <div style="font-size: 48px; font-weight: bold; color: #c00;">8.8 mm</div>
+                    <!-- Fila 3: Pluja -->
+                    <div style="margin-bottom: 20px; border: 2px solid #e0e0e0; border-radius: 8px; padding: 15px; background: #fafafa;">
+                        <div style="font-weight: bold; font-size: 16px; color: #333; margin-bottom: 8px;">
+                            Pluja acumulada
+                        </div>
+                        <div style="font-size: 36px; font-weight: bold; color: #c00; text-align: center;">
+                            1.0 mm
+                        </div>
                     </div>
                 </div>
                 
-                <hr style="border: none; border-top: 2px solid #eee; margin: 25px 0;">
-                
-                <div style="text-align: center; color: #666; font-size: 14px;">
-                    <p><strong>Actualitzat: 14:42 - Data: 27/12/2025</strong></p>
-                    <p>Font: https://www.meteo.cat/</p>
-                </div>
-            </div>
-            
-            <div style="margin: 20px; padding: 20px; background: #fff; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
-                <h1 style="color: #c00; text-align: center; margin-bottom: 20px;">OLOT</h1>
-                
-                <div style="display: flex; justify-content: space-between; margin-bottom: 25px;">
-                    <div style="text-align: center; flex: 1;">
-                        <h3 style="color: #333; margin-bottom: 10px;">Temperatura máxima del día</h3>
-                        <div style="font-size: 48px; font-weight: bold; color: #c00;">9.9°c</div>
+                <!-- PEU DE PÀGINA -->
+                <div style="background: #f8f8f8; padding: 12px; border-top: 2px solid #ddd; text-align: center;">
+                    <div style="color: #333; font-weight: bold; margin-bottom: 4px;">
+                        Actualitzat: 14:49 - Data: 27/12/2025
                     </div>
-                    
-                    <div style="text-align: center; flex: 1;">
-                        <h3 style="color: #333; margin-bottom: 10px;">Temperatura mínima del día</h3>
-                        <div style="font-size: 48px; font-weight: bold; color: #c00;">7.9°c</div>
+                    <div style="color: #666; font-size: 14px;">
+                        Font: https://www.meteo.cat/
                     </div>
-                    
-                    <div style="text-align: center; flex: 1;">
-                        <h3 style="color: #333; margin-bottom: 10px;">Pluja acumulada</h3>
-                        <div style="font-size: 48px; font-weight: bold; color: #c00;">36.5 mm</div>
-                    </div>
-                </div>
-                
-                <hr style="border: none; border-top: 2px solid #eee; margin: 25px 0;">
-                
-                <div style="text-align: center; color: #666; font-size: 14px;">
-                    <p><strong>Actualitzat: 14:42 - Data: 27/12/2025</strong></p>
-                    <p>Font: https://www.meteo.cat/</p>
                 </div>
             </div>
             
-            <div style="margin: 20px; padding: 20px; background: #fff; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
-                <h1 style="color: #c00; text-align: center; margin-bottom: 20px;">SANT PAU DE SEGÚRIES</h1>
+            <div style="margin: 15px auto; padding: 0; max-width: 800px; background: #fff; border-radius: 0; font-family: Arial, sans-serif;">
+                <!-- TÍTOL -->
+                <h1 style="color: #c00; text-align: center; margin: 0 0 20px 0; padding: 15px 0; background: #f8f8f8; border-bottom: 2px solid #ddd;">
+                    BARCELONA - EL RAVAL
+                </h1>
                 
-                <div style="display: flex; justify-content: space-between; margin-bottom: 25px;">
-                    <div style="text-align: center; flex: 1;">
-                        <h3 style="color: #333; margin-bottom: 10px;">Temperatura máxima del día</h3>
-                        <div style="font-size: 48px; font-weight: bold; color: #c00;">7.0°c</div>
+                <!-- TRES CAIXES EN FILES SEPARADES -->
+                <div style="padding: 15px;">
+                    <!-- Fila 1: Temp. màx -->
+                    <div style="margin-bottom: 15px; border: 2px solid #e0e0e0; border-radius: 8px; padding: 15px; background: #fafafa;">
+                        <div style="font-weight: bold; font-size: 16px; color: #333; margin-bottom: 8px;">
+                            Temperatura máxima del día
+                        </div>
+                        <div style="font-size: 36px; font-weight: bold; color: #c00; text-align: center;">
+                            13.7°C
+                        </div>
                     </div>
                     
-                    <div style="text-align: center; flex: 1;">
-                        <h3 style="color: #333; margin-bottom: 10px;">Temperatura mínima del día</h3>
-                        <div style="font-size: 48px; font-weight: bold; color: #c00;">5.6°c</div>
+                    <!-- Fila 2: Temp. mín -->
+                    <div style="margin-bottom: 15px; border: 2px solid #e0e0e0; border-radius: 8px; padding: 15px; background: #fafafa;">
+                        <div style="font-weight: bold; font-size: 16px; color: #333; margin-bottom: 8px;">
+                            Temperatura mínima del día
+                        </div>
+                        <div style="font-size: 36px; font-weight: bold; color: #c00; text-align: center;">
+                            10.1°C
+                        </div>
                     </div>
                     
-                    <div style="text-align: center; flex: 1;">
-                        <h3 style="color: #333; margin-bottom: 10px;">Pluja acumulada</h3>
-                        <div style="font-size: 48px; font-weight: bold; color: #c00;">23.7 mm</div>
+                    <!-- Fila 3: Pluja -->
+                    <div style="margin-bottom: 20px; border: 2px solid #e0e0e0; border-radius: 8px; padding: 15px; background: #fafafa;">
+                        <div style="font-weight: bold; font-size: 16px; color: #333; margin-bottom: 8px;">
+                            Pluja acumulada
+                        </div>
+                        <div style="font-size: 36px; font-weight: bold; color: #c00; text-align: center;">
+                            12.8 mm
+                        </div>
                     </div>
                 </div>
                 
-                <hr style="border: none; border-top: 2px solid #eee; margin: 25px 0;">
-                
-                <div style="text-align: center; color: #666; font-size: 14px;">
-                    <p><strong>Actualitzat: 14:42 - Data: 27/12/2025</strong></p>
-                    <p>Font: https://www.meteo.cat/</p>
-                </div>
-            </div>
-            
-            <div style="margin: 20px; padding: 20px; background: #fff; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
-                <h1 style="color: #c00; text-align: center; margin-bottom: 20px;">PUIG SESOLLES (1.668 M)</h1>
-                
-                <div style="display: flex; justify-content: space-between; margin-bottom: 25px;">
-                    <div style="text-align: center; flex: 1;">
-                        <h3 style="color: #333; margin-bottom: 10px;">Temperatura máxima del día</h3>
-                        <div style="font-size: 48px; font-weight: bold; color: #c00;">2.3°c</div>
+                <!-- PEU DE PÀGINA -->
+                <div style="background: #f8f8f8; padding: 12px; border-top: 2px solid #ddd; text-align: center;">
+                    <div style="color: #333; font-weight: bold; margin-bottom: 4px;">
+                        Actualitzat: 14:49 - Data: 27/12/2025
                     </div>
-                    
-                    <div style="text-align: center; flex: 1;">
-                        <h3 style="color: #333; margin-bottom: 10px;">Temperatura mínima del día</h3>
-                        <div style="font-size: 48px; font-weight: bold; color: #c00;">0.3°c</div>
+                    <div style="color: #666; font-size: 14px;">
+                        Font: https://www.meteo.cat/
                     </div>
-                    
-                    <div style="text-align: center; flex: 1;">
-                        <h3 style="color: #333; margin-bottom: 10px;">Pluja acumulada</h3>
-                        <div style="font-size: 48px; font-weight: bold; color: #c00;">32.2 mm</div>
-                    </div>
-                </div>
-                
-                <hr style="border: none; border-top: 2px solid #eee; margin: 25px 0;">
-                
-                <div style="text-align: center; color: #666; font-size: 14px;">
-                    <p><strong>Actualitzat: 14:42 - Data: 27/12/2025</strong></p>
-                    <p>Font: https://www.meteo.cat/</p>
                 </div>
             </div>
             
-            <div style="margin: 20px; padding: 20px; background: #fff; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
-                <h1 style="color: #c00; text-align: center; margin-bottom: 20px;">LAC REDON (2.247 M)</h1>
+            <div style="margin: 15px auto; padding: 0; max-width: 800px; background: #fff; border-radius: 0; font-family: Arial, sans-serif;">
+                <!-- TÍTOL -->
+                <h1 style="color: #c00; text-align: center; margin: 0 0 20px 0; padding: 15px 0; background: #f8f8f8; border-bottom: 2px solid #ddd;">
+                    LLEIDA - RAIMAT
+                </h1>
                 
-                <div style="display: flex; justify-content: space-between; margin-bottom: 25px;">
-                    <div style="text-align: center; flex: 1;">
-                        <h3 style="color: #333; margin-bottom: 10px;">Temperatura máxima del día</h3>
-                        <div style="font-size: 48px; font-weight: bold; color: #c00;">-0.2°c</div>
+                <!-- TRES CAIXES EN FILES SEPARADES -->
+                <div style="padding: 15px;">
+                    <!-- Fila 1: Temp. màx -->
+                    <div style="margin-bottom: 15px; border: 2px solid #e0e0e0; border-radius: 8px; padding: 15px; background: #fafafa;">
+                        <div style="font-weight: bold; font-size: 16px; color: #333; margin-bottom: 8px;">
+                            Temperatura máxima del día
+                        </div>
+                        <div style="font-size: 36px; font-weight: bold; color: #c00; text-align: center;">
+                            12.5°C
+                        </div>
                     </div>
                     
-                    <div style="text-align: center; flex: 1;">
-                        <h3 style="color: #333; margin-bottom: 10px;">Temperatura mínima del día</h3>
-                        <div style="font-size: 48px; font-weight: bold; color: #c00;">-2.9°c</div>
+                    <!-- Fila 2: Temp. mín -->
+                    <div style="margin-bottom: 15px; border: 2px solid #e0e0e0; border-radius: 8px; padding: 15px; background: #fafafa;">
+                        <div style="font-weight: bold; font-size: 16px; color: #333; margin-bottom: 8px;">
+                            Temperatura mínima del día
+                        </div>
+                        <div style="font-size: 36px; font-weight: bold; color: #c00; text-align: center;">
+                            4.9°C
+                        </div>
                     </div>
                     
-                    <div style="text-align: center; flex: 1;">
-                        <h3 style="color: #333; margin-bottom: 10px;">Pluja acumulada</h3>
-                        <div style="font-size: 48px; font-weight: bold; color: #c00;">0.3 mm</div>
+                    <!-- Fila 3: Pluja -->
+                    <div style="margin-bottom: 20px; border: 2px solid #e0e0e0; border-radius: 8px; padding: 15px; background: #fafafa;">
+                        <div style="font-weight: bold; font-size: 16px; color: #333; margin-bottom: 8px;">
+                            Pluja acumulada
+                        </div>
+                        <div style="font-size: 36px; font-weight: bold; color: #c00; text-align: center;">
+                            1.0 mm
+                        </div>
                     </div>
                 </div>
                 
-                <hr style="border: none; border-top: 2px solid #eee; margin: 25px 0;">
-                
-                <div style="text-align: center; color: #666; font-size: 14px;">
-                    <p><strong>Actualitzat: 14:42 - Data: 27/12/2025</strong></p>
-                    <p>Font: https://www.meteo.cat/</p>
-                </div>
-            </div>
-            
-            <div style="margin: 20px; padding: 20px; background: #fff; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
-                <h1 style="color: #c00; text-align: center; margin-bottom: 20px;">ANGLÈS</h1>
-                
-                <div style="display: flex; justify-content: space-between; margin-bottom: 25px;">
-                    <div style="text-align: center; flex: 1;">
-                        <h3 style="color: #333; margin-bottom: 10px;">Temperatura máxima del día</h3>
-                        <div style="font-size: 48px; font-weight: bold; color: #c00;">12.0°c</div>
+                <!-- PEU DE PÀGINA -->
+                <div style="background: #f8f8f8; padding: 12px; border-top: 2px solid #ddd; text-align: center;">
+                    <div style="color: #333; font-weight: bold; margin-bottom: 4px;">
+                        Actualitzat: 14:49 - Data: 27/12/2025
                     </div>
-                    
-                    <div style="text-align: center; flex: 1;">
-                        <h3 style="color: #333; margin-bottom: 10px;">Temperatura mínima del día</h3>
-                        <div style="font-size: 48px; font-weight: bold; color: #c00;">10.0°c</div>
+                    <div style="color: #666; font-size: 14px;">
+                        Font: https://www.meteo.cat/
                     </div>
-                    
-                    <div style="text-align: center; flex: 1;">
-                        <h3 style="color: #333; margin-bottom: 10px;">Pluja acumulada</h3>
-                        <div style="font-size: 48px; font-weight: bold; color: #c00;">15.0 mm</div>
-                    </div>
-                </div>
-                
-                <hr style="border: none; border-top: 2px solid #eee; margin: 25px 0;">
-                
-                <div style="text-align: center; color: #666; font-size: 14px;">
-                    <p><strong>Actualitzat: 14:42 - Data: 27/12/2025</strong></p>
-                    <p>Font: https://www.meteo.cat/</p>
                 </div>
             </div>
             
-    </div>
+            <div style="margin: 15px auto; padding: 0; max-width: 800px; background: #fff; border-radius: 0; font-family: Arial, sans-serif;">
+                <!-- TÍTOL -->
+                <h1 style="color: #c00; text-align: center; margin: 0 0 20px 0; padding: 15px 0; background: #f8f8f8; border-bottom: 2px solid #ddd;">
+                    TARRAGONA - COMPLEX EDUCATIU
+                </h1>
+                
+                <!-- TRES CAIXES EN FILES SEPARADES -->
+                <div style="padding: 15px;">
+                    <!-- Fila 1: Temp. màx -->
+                    <div style="margin-bottom: 15px; border: 2px solid #e0e0e0; border-radius: 8px; padding: 15px; background: #fafafa;">
+                        <div style="font-weight: bold; font-size: 16px; color: #333; margin-bottom: 8px;">
+                            Temperatura máxima del día
+                        </div>
+                        <div style="font-size: 36px; font-weight: bold; color: #c00; text-align: center;">
+                            13.8°C
+                        </div>
+                    </div>
+                    
+                    <!-- Fila 2: Temp. mín -->
+                    <div style="margin-bottom: 15px; border: 2px solid #e0e0e0; border-radius: 8px; padding: 15px; background: #fafafa;">
+                        <div style="font-weight: bold; font-size: 16px; color: #333; margin-bottom: 8px;">
+                            Temperatura mínima del día
+                        </div>
+                        <div style="font-size: 36px; font-weight: bold; color: #c00; text-align: center;">
+                            10.4°C
+                        </div>
+                    </div>
+                    
+                    <!-- Fila 3: Pluja -->
+                    <div style="margin-bottom: 20px; border: 2px solid #e0e0e0; border-radius: 8px; padding: 15px; background: #fafafa;">
+                        <div style="font-weight: bold; font-size: 16px; color: #333; margin-bottom: 8px;">
+                            Pluja acumulada
+                        </div>
+                        <div style="font-size: 36px; font-weight: bold; color: #c00; text-align: center;">
+                            7.6 mm
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- PEU DE PÀGINA -->
+                <div style="background: #f8f8f8; padding: 12px; border-top: 2px solid #ddd; text-align: center;">
+                    <div style="color: #333; font-weight: bold; margin-bottom: 4px;">
+                        Actualitzat: 14:49 - Data: 27/12/2025
+                    </div>
+                    <div style="color: #666; font-size: 14px;">
+                        Font: https://www.meteo.cat/
+                    </div>
+                </div>
+            </div>
+            
+            <div style="margin: 15px auto; padding: 0; max-width: 800px; background: #fff; border-radius: 0; font-family: Arial, sans-serif;">
+                <!-- TÍTOL -->
+                <h1 style="color: #c00; text-align: center; margin: 0 0 20px 0; padding: 15px 0; background: #f8f8f8; border-bottom: 2px solid #ddd;">
+                    QUERALBS - NÚRIA (1.971 m)
+                </h1>
+                
+                <!-- TRES CAIXES EN FILES SEPARADES -->
+                <div style="padding: 15px;">
+                    <!-- Fila 1: Temp. màx -->
+                    <div style="margin-bottom: 15px; border: 2px solid #e0e0e0; border-radius: 8px; padding: 15px; background: #fafafa;">
+                        <div style="font-weight: bold; font-size: 16px; color: #333; margin-bottom: 8px;">
+                            Temperatura máxima del día
+                        </div>
+                        <div style="font-size: 36px; font-weight: bold; color: #c00; text-align: center;">
+                            2.1°C
+                        </div>
+                    </div>
+                    
+                    <!-- Fila 2: Temp. mín -->
+                    <div style="margin-bottom: 15px; border: 2px solid #e0e0e0; border-radius: 8px; padding: 15px; background: #fafafa;">
+                        <div style="font-weight: bold; font-size: 16px; color: #333; margin-bottom: 8px;">
+                            Temperatura mínima del día
+                        </div>
+                        <div style="font-size: 36px; font-weight: bold; color: #c00; text-align: center;">
+                            -0.9°C
+                        </div>
+                    </div>
+                    
+                    <!-- Fila 3: Pluja -->
+                    <div style="margin-bottom: 20px; border: 2px solid #e0e0e0; border-radius: 8px; padding: 15px; background: #fafafa;">
+                        <div style="font-weight: bold; font-size: 16px; color: #333; margin-bottom: 8px;">
+                            Pluja acumulada
+                        </div>
+                        <div style="font-size: 36px; font-weight: bold; color: #c00; text-align: center;">
+                            7.9 mm
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- PEU DE PÀGINA -->
+                <div style="background: #f8f8f8; padding: 12px; border-top: 2px solid #ddd; text-align: center;">
+                    <div style="color: #333; font-weight: bold; margin-bottom: 4px;">
+                        Actualitzat: 14:49 - Data: 27/12/2025
+                    </div>
+                    <div style="color: #666; font-size: 14px;">
+                        Font: https://www.meteo.cat/
+                    </div>
+                </div>
+            </div>
+            
+            <div style="margin: 15px auto; padding: 0; max-width: 800px; background: #fff; border-radius: 0; font-family: Arial, sans-serif;">
+                <!-- TÍTOL -->
+                <h1 style="color: #c00; text-align: center; margin: 0 0 20px 0; padding: 15px 0; background: #f8f8f8; border-bottom: 2px solid #ddd;">
+                    SETCASES - ULLDETER (2.413 m)
+                </h1>
+                
+                <!-- TRES CAIXES EN FILES SEPARADES -->
+                <div style="padding: 15px;">
+                    <!-- Fila 1: Temp. màx -->
+                    <div style="margin-bottom: 15px; border: 2px solid #e0e0e0; border-radius: 8px; padding: 15px; background: #fafafa;">
+                        <div style="font-weight: bold; font-size: 16px; color: #333; margin-bottom: 8px;">
+                            Temperatura máxima del día
+                        </div>
+                        <div style="font-size: 36px; font-weight: bold; color: #c00; text-align: center;">
+                            -2.1°C
+                        </div>
+                    </div>
+                    
+                    <!-- Fila 2: Temp. mín -->
+                    <div style="margin-bottom: 15px; border: 2px solid #e0e0e0; border-radius: 8px; padding: 15px; background: #fafafa;">
+                        <div style="font-weight: bold; font-size: 16px; color: #333; margin-bottom: 8px;">
+                            Temperatura mínima del día
+                        </div>
+                        <div style="font-size: 36px; font-weight: bold; color: #c00; text-align: center;">
+                            -3.7°C
+                        </div>
+                    </div>
+                    
+                    <!-- Fila 3: Pluja -->
+                    <div style="margin-bottom: 20px; border: 2px solid #e0e0e0; border-radius: 8px; padding: 15px; background: #fafafa;">
+                        <div style="font-weight: bold; font-size: 16px; color: #333; margin-bottom: 8px;">
+                            Pluja acumulada
+                        </div>
+                        <div style="font-size: 36px; font-weight: bold; color: #c00; text-align: center;">
+                            4.9 mm
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- PEU DE PÀGINA -->
+                <div style="background: #f8f8f8; padding: 12px; border-top: 2px solid #ddd; text-align: center;">
+                    <div style="color: #333; font-weight: bold; margin-bottom: 4px;">
+                        Actualitzat: 14:49 - Data: 27/12/2025
+                    </div>
+                    <div style="color: #666; font-size: 14px;">
+                        Font: https://www.meteo.cat/
+                    </div>
+                </div>
+            </div>
+            
+            <div style="margin: 15px auto; padding: 0; max-width: 800px; background: #fff; border-radius: 0; font-family: Arial, sans-serif;">
+                <!-- TÍTOL -->
+                <h1 style="color: #c00; text-align: center; margin: 0 0 20px 0; padding: 15px 0; background: #f8f8f8; border-bottom: 2px solid #ddd;">
+                    CASSÀ DE LA SELVA
+                </h1>
+                
+                <!-- TRES CAIXES EN FILES SEPARADES -->
+                <div style="padding: 15px;">
+                    <!-- Fila 1: Temp. màx -->
+                    <div style="margin-bottom: 15px; border: 2px solid #e0e0e0; border-radius: 8px; padding: 15px; background: #fafafa;">
+                        <div style="font-weight: bold; font-size: 16px; color: #333; margin-bottom: 8px;">
+                            Temperatura máxima del día
+                        </div>
+                        <div style="font-size: 36px; font-weight: bold; color: #c00; text-align: center;">
+                            12.8°C
+                        </div>
+                    </div>
+                    
+                    <!-- Fila 2: Temp. mín -->
+                    <div style="margin-bottom: 15px; border: 2px solid #e0e0e0; border-radius: 8px; padding: 15px; background: #fafafa;">
+                        <div style="font-weight: bold; font-size: 16px; color: #333; margin-bottom: 8px;">
+                            Temperatura mínima del día
+                        </div>
+                        <div style="font-size: 36px; font-weight: bold; color: #c00; text-align: center;">
+                            10.6°C
+                        </div>
+                    </div>
+                    
+                    <!-- Fila 3: Pluja -->
+                    <div style="margin-bottom: 20px; border: 2px solid #e0e0e0; border-radius: 8px; padding: 15px; background: #fafafa;">
+                        <div style="font-weight: bold; font-size: 16px; color: #333; margin-bottom: 8px;">
+                            Pluja acumulada
+                        </div>
+                        <div style="font-size: 36px; font-weight: bold; color: #c00; text-align: center;">
+                            5.1 mm
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- PEU DE PÀGINA -->
+                <div style="background: #f8f8f8; padding: 12px; border-top: 2px solid #ddd; text-align: center;">
+                    <div style="color: #333; font-weight: bold; margin-bottom: 4px;">
+                        Actualitzat: 14:49 - Data: 27/12/2025
+                    </div>
+                    <div style="color: #666; font-size: 14px;">
+                        Font: https://www.meteo.cat/
+                    </div>
+                </div>
+            </div>
+            
+            <div style="margin: 15px auto; padding: 0; max-width: 800px; background: #fff; border-radius: 0; font-family: Arial, sans-serif;">
+                <!-- TÍTOL -->
+                <h1 style="color: #c00; text-align: center; margin: 0 0 20px 0; padding: 15px 0; background: #f8f8f8; border-bottom: 2px solid #ddd;">
+                    VINEBRE
+                </h1>
+                
+                <!-- TRES CAIXES EN FILES SEPARADES -->
+                <div style="padding: 15px;">
+                    <!-- Fila 1: Temp. màx -->
+                    <div style="margin-bottom: 15px; border: 2px solid #e0e0e0; border-radius: 8px; padding: 15px; background: #fafafa;">
+                        <div style="font-weight: bold; font-size: 16px; color: #333; margin-bottom: 8px;">
+                            Temperatura máxima del día
+                        </div>
+                        <div style="font-size: 36px; font-weight: bold; color: #c00; text-align: center;">
+                            9.2°C
+                        </div>
+                    </div>
+                    
+                    <!-- Fila 2: Temp. mín -->
+                    <div style="margin-bottom: 15px; border: 2px solid #e0e0e0; border-radius: 8px; padding: 15px; background: #fafafa;">
+                        <div style="font-weight: bold; font-size: 16px; color: #333; margin-bottom: 8px;">
+                            Temperatura mínima del día
+                        </div>
+                        <div style="font-size: 36px; font-weight: bold; color: #c00; text-align: center;">
+                            5.9°C
+                        </div>
+                    </div>
+                    
+                    <!-- Fila 3: Pluja -->
+                    <div style="margin-bottom: 20px; border: 2px solid #e0e0e0; border-radius: 8px; padding: 15px; background: #fafafa;">
+                        <div style="font-weight: bold; font-size: 16px; color: #333; margin-bottom: 8px;">
+                            Pluja acumulada
+                        </div>
+                        <div style="font-size: 36px; font-weight: bold; color: #c00; text-align: center;">
+                            8.8 mm
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- PEU DE PÀGINA -->
+                <div style="background: #f8f8f8; padding: 12px; border-top: 2px solid #ddd; text-align: center;">
+                    <div style="color: #333; font-weight: bold; margin-bottom: 4px;">
+                        Actualitzat: 14:49 - Data: 27/12/2025
+                    </div>
+                    <div style="color: #666; font-size: 14px;">
+                        Font: https://www.meteo.cat/
+                    </div>
+                </div>
+            </div>
+            
+            <div style="margin: 15px auto; padding: 0; max-width: 800px; background: #fff; border-radius: 0; font-family: Arial, sans-serif;">
+                <!-- TÍTOL -->
+                <h1 style="color: #c00; text-align: center; margin: 0 0 20px 0; padding: 15px 0; background: #f8f8f8; border-bottom: 2px solid #ddd;">
+                    OLOT
+                </h1>
+                
+                <!-- TRES CAIXES EN FILES SEPARADES -->
+                <div style="padding: 15px;">
+                    <!-- Fila 1: Temp. màx -->
+                    <div style="margin-bottom: 15px; border: 2px solid #e0e0e0; border-radius: 8px; padding: 15px; background: #fafafa;">
+                        <div style="font-weight: bold; font-size: 16px; color: #333; margin-bottom: 8px;">
+                            Temperatura máxima del día
+                        </div>
+                        <div style="font-size: 36px; font-weight: bold; color: #c00; text-align: center;">
+                            9.9°C
+                        </div>
+                    </div>
+                    
+                    <!-- Fila 2: Temp. mín -->
+                    <div style="margin-bottom: 15px; border: 2px solid #e0e0e0; border-radius: 8px; padding: 15px; background: #fafafa;">
+                        <div style="font-weight: bold; font-size: 16px; color: #333; margin-bottom: 8px;">
+                            Temperatura mínima del día
+                        </div>
+                        <div style="font-size: 36px; font-weight: bold; color: #c00; text-align: center;">
+                            7.9°C
+                        </div>
+                    </div>
+                    
+                    <!-- Fila 3: Pluja -->
+                    <div style="margin-bottom: 20px; border: 2px solid #e0e0e0; border-radius: 8px; padding: 15px; background: #fafafa;">
+                        <div style="font-weight: bold; font-size: 16px; color: #333; margin-bottom: 8px;">
+                            Pluja acumulada
+                        </div>
+                        <div style="font-size: 36px; font-weight: bold; color: #c00; text-align: center;">
+                            36.5 mm
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- PEU DE PÀGINA -->
+                <div style="background: #f8f8f8; padding: 12px; border-top: 2px solid #ddd; text-align: center;">
+                    <div style="color: #333; font-weight: bold; margin-bottom: 4px;">
+                        Actualitzat: 14:49 - Data: 27/12/2025
+                    </div>
+                    <div style="color: #666; font-size: 14px;">
+                        Font: https://www.meteo.cat/
+                    </div>
+                </div>
+            </div>
+            
+            <div style="margin: 15px auto; padding: 0; max-width: 800px; background: #fff; border-radius: 0; font-family: Arial, sans-serif;">
+                <!-- TÍTOL -->
+                <h1 style="color: #c00; text-align: center; margin: 0 0 20px 0; padding: 15px 0; background: #f8f8f8; border-bottom: 2px solid #ddd;">
+                    SANT PAU DE SEGÚRIES
+                </h1>
+                
+                <!-- TRES CAIXES EN FILES SEPARADES -->
+                <div style="padding: 15px;">
+                    <!-- Fila 1: Temp. màx -->
+                    <div style="margin-bottom: 15px; border: 2px solid #e0e0e0; border-radius: 8px; padding: 15px; background: #fafafa;">
+                        <div style="font-weight: bold; font-size: 16px; color: #333; margin-bottom: 8px;">
+                            Temperatura máxima del día
+                        </div>
+                        <div style="font-size: 36px; font-weight: bold; color: #c00; text-align: center;">
+                            7.0°C
+                        </div>
+                    </div>
+                    
+                    <!-- Fila 2: Temp. mín -->
+                    <div style="margin-bottom: 15px; border: 2px solid #e0e0e0; border-radius: 8px; padding: 15px; background: #fafafa;">
+                        <div style="font-weight: bold; font-size: 16px; color: #333; margin-bottom: 8px;">
+                            Temperatura mínima del día
+                        </div>
+                        <div style="font-size: 36px; font-weight: bold; color: #c00; text-align: center;">
+                            5.6°C
+                        </div>
+                    </div>
+                    
+                    <!-- Fila 3: Pluja -->
+                    <div style="margin-bottom: 20px; border: 2px solid #e0e0e0; border-radius: 8px; padding: 15px; background: #fafafa;">
+                        <div style="font-weight: bold; font-size: 16px; color: #333; margin-bottom: 8px;">
+                            Pluja acumulada
+                        </div>
+                        <div style="font-size: 36px; font-weight: bold; color: #c00; text-align: center;">
+                            23.7 mm
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- PEU DE PÀGINA -->
+                <div style="background: #f8f8f8; padding: 12px; border-top: 2px solid #ddd; text-align: center;">
+                    <div style="color: #333; font-weight: bold; margin-bottom: 4px;">
+                        Actualitzat: 14:49 - Data: 27/12/2025
+                    </div>
+                    <div style="color: #666; font-size: 14px;">
+                        Font: https://www.meteo.cat/
+                    </div>
+                </div>
+            </div>
+            
+            <div style="margin: 15px auto; padding: 0; max-width: 800px; background: #fff; border-radius: 0; font-family: Arial, sans-serif;">
+                <!-- TÍTOL -->
+                <h1 style="color: #c00; text-align: center; margin: 0 0 20px 0; padding: 15px 0; background: #f8f8f8; border-bottom: 2px solid #ddd;">
+                    PUIG SESOLLES (1.668 M)
+                </h1>
+                
+                <!-- TRES CAIXES EN FILES SEPARADES -->
+                <div style="padding: 15px;">
+                    <!-- Fila 1: Temp. màx -->
+                    <div style="margin-bottom: 15px; border: 2px solid #e0e0e0; border-radius: 8px; padding: 15px; background: #fafafa;">
+                        <div style="font-weight: bold; font-size: 16px; color: #333; margin-bottom: 8px;">
+                            Temperatura máxima del día
+                        </div>
+                        <div style="font-size: 36px; font-weight: bold; color: #c00; text-align: center;">
+                            2.3°C
+                        </div>
+                    </div>
+                    
+                    <!-- Fila 2: Temp. mín -->
+                    <div style="margin-bottom: 15px; border: 2px solid #e0e0e0; border-radius: 8px; padding: 15px; background: #fafafa;">
+                        <div style="font-weight: bold; font-size: 16px; color: #333; margin-bottom: 8px;">
+                            Temperatura mínima del día
+                        </div>
+                        <div style="font-size: 36px; font-weight: bold; color: #c00; text-align: center;">
+                            0.3°C
+                        </div>
+                    </div>
+                    
+                    <!-- Fila 3: Pluja -->
+                    <div style="margin-bottom: 20px; border: 2px solid #e0e0e0; border-radius: 8px; padding: 15px; background: #fafafa;">
+                        <div style="font-weight: bold; font-size: 16px; color: #333; margin-bottom: 8px;">
+                            Pluja acumulada
+                        </div>
+                        <div style="font-size: 36px; font-weight: bold; color: #c00; text-align: center;">
+                            32.2 mm
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- PEU DE PÀGINA -->
+                <div style="background: #f8f8f8; padding: 12px; border-top: 2px solid #ddd; text-align: center;">
+                    <div style="color: #333; font-weight: bold; margin-bottom: 4px;">
+                        Actualitzat: 14:49 - Data: 27/12/2025
+                    </div>
+                    <div style="color: #666; font-size: 14px;">
+                        Font: https://www.meteo.cat/
+                    </div>
+                </div>
+            </div>
+            
+            <div style="margin: 15px auto; padding: 0; max-width: 800px; background: #fff; border-radius: 0; font-family: Arial, sans-serif;">
+                <!-- TÍTOL -->
+                <h1 style="color: #c00; text-align: center; margin: 0 0 20px 0; padding: 15px 0; background: #f8f8f8; border-bottom: 2px solid #ddd;">
+                    LAC REDON (2.247 M)
+                </h1>
+                
+                <!-- TRES CAIXES EN FILES SEPARADES -->
+                <div style="padding: 15px;">
+                    <!-- Fila 1: Temp. màx -->
+                    <div style="margin-bottom: 15px; border: 2px solid #e0e0e0; border-radius: 8px; padding: 15px; background: #fafafa;">
+                        <div style="font-weight: bold; font-size: 16px; color: #333; margin-bottom: 8px;">
+                            Temperatura máxima del día
+                        </div>
+                        <div style="font-size: 36px; font-weight: bold; color: #c00; text-align: center;">
+                            -0.2°C
+                        </div>
+                    </div>
+                    
+                    <!-- Fila 2: Temp. mín -->
+                    <div style="margin-bottom: 15px; border: 2px solid #e0e0e0; border-radius: 8px; padding: 15px; background: #fafafa;">
+                        <div style="font-weight: bold; font-size: 16px; color: #333; margin-bottom: 8px;">
+                            Temperatura mínima del día
+                        </div>
+                        <div style="font-size: 36px; font-weight: bold; color: #c00; text-align: center;">
+                            -2.9°C
+                        </div>
+                    </div>
+                    
+                    <!-- Fila 3: Pluja -->
+                    <div style="margin-bottom: 20px; border: 2px solid #e0e0e0; border-radius: 8px; padding: 15px; background: #fafafa;">
+                        <div style="font-weight: bold; font-size: 16px; color: #333; margin-bottom: 8px;">
+                            Pluja acumulada
+                        </div>
+                        <div style="font-size: 36px; font-weight: bold; color: #c00; text-align: center;">
+                            0.3 mm
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- PEU DE PÀGINA -->
+                <div style="background: #f8f8f8; padding: 12px; border-top: 2px solid #ddd; text-align: center;">
+                    <div style="color: #333; font-weight: bold; margin-bottom: 4px;">
+                        Actualitzat: 14:49 - Data: 27/12/2025
+                    </div>
+                    <div style="color: #666; font-size: 14px;">
+                        Font: https://www.meteo.cat/
+                    </div>
+                </div>
+            </div>
+            
+            <div style="margin: 15px auto; padding: 0; max-width: 800px; background: #fff; border-radius: 0; font-family: Arial, sans-serif;">
+                <!-- TÍTOL -->
+                <h1 style="color: #c00; text-align: center; margin: 0 0 20px 0; padding: 15px 0; background: #f8f8f8; border-bottom: 2px solid #ddd;">
+                    ANGLÈS
+                </h1>
+                
+                <!-- TRES CAIXES EN FILES SEPARADES -->
+                <div style="padding: 15px;">
+                    <!-- Fila 1: Temp. màx -->
+                    <div style="margin-bottom: 15px; border: 2px solid #e0e0e0; border-radius: 8px; padding: 15px; background: #fafafa;">
+                        <div style="font-weight: bold; font-size: 16px; color: #333; margin-bottom: 8px;">
+                            Temperatura máxima del día
+                        </div>
+                        <div style="font-size: 36px; font-weight: bold; color: #c00; text-align: center;">
+                            12.0°C
+                        </div>
+                    </div>
+                    
+                    <!-- Fila 2: Temp. mín -->
+                    <div style="margin-bottom: 15px; border: 2px solid #e0e0e0; border-radius: 8px; padding: 15px; background: #fafafa;">
+                        <div style="font-weight: bold; font-size: 16px; color: #333; margin-bottom: 8px;">
+                            Temperatura mínima del día
+                        </div>
+                        <div style="font-size: 36px; font-weight: bold; color: #c00; text-align: center;">
+                            10.0°C
+                        </div>
+                    </div>
+                    
+                    <!-- Fila 3: Pluja -->
+                    <div style="margin-bottom: 20px; border: 2px solid #e0e0e0; border-radius: 8px; padding: 15px; background: #fafafa;">
+                        <div style="font-weight: bold; font-size: 16px; color: #333; margin-bottom: 8px;">
+                            Pluja acumulada
+                        </div>
+                        <div style="font-size: 36px; font-weight: bold; color: #c00; text-align: center;">
+                            15.0 mm
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- PEU DE PÀGINA -->
+                <div style="background: #f8f8f8; padding: 12px; border-top: 2px solid #ddd; text-align: center;">
+                    <div style="color: #333; font-weight: bold; margin-bottom: 4px;">
+                        Actualitzat: 14:49 - Data: 27/12/2025
+                    </div>
+                    <div style="color: #666; font-size: 14px;">
+                        Font: https://www.meteo.cat/
+                    </div>
+                </div>
+            </div>
+            
 </body>
 </html>
