@@ -13,48 +13,37 @@ jobs:
       contents: write
     
     steps:
-      # 1. Baixa el repositori COMPLET (amb tots els arxius)
       - name: Checkout repository
         uses: actions/checkout@v3
         with:
-          fetch-depth: 0  # Important: baixa tota la història
+          fetch-depth: 0
 
-      # 2. Configura Python
       - name: Setup Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.9'
 
-      # 3. Instal·la dependencies (si existeix requirements.txt)
       - name: Install dependencies
         run: |
           if [ -f "requirements.txt" ]; then
             pip install -r requirements.txt
-          else
-            pip install requests beautifulsoup4
           fi
 
-      # 4. Executa els scripts
       - name: Get weather data
         run: python meteo_scraper.py
 
       - name: Generate banner
         run: python generate_banner.py
 
-      # 5. ACTUALITZA NOMÉS index.html (sense esborrar res)
       - name: Update only index.html
         run: |
-          # Crea una còpia del banner com a index.html
           cp banner_output.html index.html
           
-          # Configura git
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           
-          # Afegeix i commiteja NOMÉS index.html
           git add index.html
           
-          # Commiteja si hi ha canvis
           if git diff --staged --quiet; then
             echo "No hi ha canvis a index.html"
           else
