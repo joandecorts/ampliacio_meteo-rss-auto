@@ -3,377 +3,764 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MeteoCat Banner</title>
+    <title>Meteorologia</title>
+    
     <style>
+        * { margin:0; padding:0; box-sizing:border-box; }
         body {
-            margin: 0;
-            padding: 0;
-            background-color: #000;
-            color: #fff;
-            font-family: 'Arial', sans-serif;
-            width: 1920px;
-            overflow: hidden;
+            background:#fff;
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            min-height:100vh;
+            font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;
         }
-        
-        .banner-container {
-            display: flex;
-            flex-wrap: nowrap;
-            padding: 10px;
-            background: linear-gradient(90deg, #1a237e, #0d47a1);
-            border-bottom: 3px solid #ff9800;
+        .weather-container {
+            width:100%;
+            max-width:500px;
+            background:white;
+            overflow:hidden;
+            box-shadow:0 2px 8px rgba(0,0,0,0.08);
+            border-radius:5px;
         }
-        
-        .station {
-            flex: 0 0 auto;
-            width: 320px;
-            padding: 15px;
-            margin-right: 10px;
-            background-color: rgba(255, 255, 255, 0.1);
-            border-radius: 8px;
-            border-left: 4px solid #ff9800;
+        .scroll-container {
+            position:relative;
+            height:280px;
+            overflow:hidden;
         }
-        
-        .station-name {
-            font-size: 18px;
-            font-weight: bold;
-            margin-bottom: 10px;
-            color: #ff9800;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
+        .content-group {
+            position:absolute;
+            width:100%;
+            height:280px;
+            left:0;
+            transition:transform 0.8s ease;
+            background:white;
+            opacity:0;
+            z-index:1;
         }
-        
-        .data-row {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 5px;
-            font-size: 16px;
+        .content-group.active {
+            opacity:1;
+            z-index:2;
+            transform:translateY(0);
         }
-        
-        .data-label {
-            color: #bbdefb;
+        .content-group.next {
+            opacity:0;
+            transform:translateY(-100%);
         }
-        
+        .content-group.out {
+            opacity:0;
+            transform:translateY(100%);
+        }
+        .location-header {
+            background:#c00;
+            color:white;
+            padding:0 12px;
+            height:50px;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+        }
+        .location-name {
+            font-size:20px;
+            font-weight:bold;
+            text-transform:uppercase;
+            letter-spacing:0.5px;
+            text-align:center;
+            line-height:1.1;
+        }
+        .data-container {
+            display:flex;
+            padding:10px;
+            gap:8px;
+            height:160px;
+        }
+        .data-box {
+            flex:1;
+            background:#fff;
+            border:1.5px solid #e0e0e0;
+            border-radius:5px;
+            padding:10px 8px;
+            display:flex;
+            flex-direction:column;
+            justify-content:center;
+            text-align:center;
+        }
+        .data-title {
+            font-size:13px;
+            font-weight:600;
+            color:#333;
+            margin-bottom:6px;
+            line-height:1.2;
+        }
         .data-value {
-            font-weight: bold;
-            color: #fff;
+            font-size:28px;
+            font-weight:800;
+            color:#000;
+            margin:4px 0;
         }
-        
+        .data-unit {
+            font-size:18px;
+            font-weight:700;
+            margin-left:2px;
+        }
         .footer {
-            position: absolute;
-            bottom: 5px;
-            right: 10px;
-            font-size: 12px;
-            color: #90a4ae;
+            padding:8px 10px;
+            text-align:center;
+            background:#fff;
+            border-top:1.5px solid #eee;
+            height:70px;
+            display:flex;
+            flex-direction:column;
+            justify-content:center;
+            position:absolute;
+            bottom:0;
+            width:100%;
+        }
+        .update-info {
+            font-size:13px;
+            color:#333;
+            margin-bottom:2px;
+            font-weight:700;
+        }
+        .source {
+            font-size:12px;
+            color:#666;
+            font-weight:600;
+        }
+        @media (max-width: 600px) and (orientation: portrait) {
+            .weather-container { max-width:95vw; }
+            .scroll-container, .content-group { height:280px; }
+            .data-container { 
+                height:120px;
+                padding:8px 10px;
+                gap:6px;
+            }
+            .data-box { padding:8px 6px; }
+            .data-title { 
+                font-size:11px;
+                margin-bottom:4px;
+                min-height:26px;
+                display:flex;
+                align-items:center;
+                justify-content:center;
+            }
+            .data-value { font-size:22px; }
+            .data-unit { font-size:16px; }
+            .data-title.br-2 { display:block; padding:0 2px; }
+            .footer { height:60px; padding:6px 8px; }
+            .update-info { font-size:12px; }
+            .source { font-size:11px; }
+        }
+        @media (max-width: 900px) and (orientation: landscape) {
+            .scroll-container, .content-group { height:230px; }
+            .data-container { height:110px; padding:8px; gap:6px; }
+            .data-box { padding:8px 5px; }
+            .data-title { font-size:11px; min-height:24px; }
+            .data-value { font-size:24px; }
+            .data-unit { font-size:16px; }
+            .footer { height:60px; padding:6px 8px; }
+            .update-info { font-size:12px; }
+            .source { font-size:11px; }
+        }
+        @media (min-width: 1200px) {
+            .weather-container { max-width:550px; }
+            .scroll-container, .content-group { height:300px; }
+            .data-container { height:170px; }
+            .data-title { font-size:14px; }
+            .data-value { font-size:32px; }
+        }
+        @supports (-webkit-touch-callout: none) {
+            .data-title { -webkit-font-smoothing: antialiased; }
         }
     </style>
 </head>
 <body>
-    <div class="banner-container">
+    <div class="weather-container">
+        <div class="scroll-container">
+            
+            <div class="content-group">
+                <div class="location-header">
+                    <div class="location-name">GIRONA</div>
+                </div>
+                <div class="data-container">
+                    <div class="data-box">
+                        <div class="data-title">Temp. màxima</div>
+                        <div class="data-value">13.0<span class="data-unit">°C</span></div>
+                    </div>
+                    <div class="data-box">
+                        <div class="data-title">Temp. mínima</div>
+                        <div class="data-value">10.5<span class="data-unit">°C</span></div>
+                    </div>
+                    <div class="data-box">
+                        <div class="data-title">Pluja acumulada</div>
+                        <div class="data-value">9.2<span class="data-unit">mm</span></div>
+                    </div>
+                </div>
+                <div class="footer">
+                    <div class="update-info">Actualització: 13:35</div>
+                    <div class="source">Font: MeteoCat</div>
+                </div>
+            </div>
+    
+            <div class="content-group">
+                <div class="location-header">
+                    <div class="location-name">FORNELLS DE LA SELVA</div>
+                </div>
+                <div class="data-container">
+                    <div class="data-box">
+                        <div class="data-title">Temp. màxima</div>
+                        <div class="data-value">12.9<span class="data-unit">°C</span></div>
+                    </div>
+                    <div class="data-box">
+                        <div class="data-title">Temp. mínima</div>
+                        <div class="data-value">10.8<span class="data-unit">°C</span></div>
+                    </div>
+                    <div class="data-box">
+                        <div class="data-title">Pluja acumulada</div>
+                        <div class="data-value">7.3<span class="data-unit">mm</span></div>
+                    </div>
+                </div>
+                <div class="footer">
+                    <div class="update-info">Actualització: 13:35</div>
+                    <div class="source">Font: MeteoCat</div>
+                </div>
+            </div>
+    
+            <div class="content-group">
+                <div class="location-header">
+                    <div class="location-name">ROSES</div>
+                </div>
+                <div class="data-container">
+                    <div class="data-box">
+                        <div class="data-title">Temp. màxima</div>
+                        <div class="data-value">14.1<span class="data-unit">°C</span></div>
+                    </div>
+                    <div class="data-box">
+                        <div class="data-title">Temp. mínima</div>
+                        <div class="data-value">11.4<span class="data-unit">°C</span></div>
+                    </div>
+                    <div class="data-box">
+                        <div class="data-title">Pluja acumulada</div>
+                        <div class="data-value">2.7<span class="data-unit">mm</span></div>
+                    </div>
+                </div>
+                <div class="footer">
+                    <div class="update-info">Actualització: 13:35</div>
+                    <div class="source">Font: MeteoCat</div>
+                </div>
+            </div>
+    
+            <div class="content-group">
+                <div class="location-header">
+                    <div class="location-name">LA SEU D'URGELL - BELLESTAR</div>
+                </div>
+                <div class="data-container">
+                    <div class="data-box">
+                        <div class="data-title">Temp. màxima</div>
+                        <div class="data-value">9.0<span class="data-unit">°C</span></div>
+                    </div>
+                    <div class="data-box">
+                        <div class="data-title">Temp. mínima</div>
+                        <div class="data-value">1.9<span class="data-unit">°C</span></div>
+                    </div>
+                    <div class="data-box">
+                        <div class="data-title">Pluja acumulada</div>
+                        <div class="data-value">0.1<span class="data-unit">mm</span></div>
+                    </div>
+                </div>
+                <div class="footer">
+                    <div class="update-info">Actualització: 13:35</div>
+                    <div class="source">Font: MeteoCat</div>
+                </div>
+            </div>
+    
+            <div class="content-group">
+                <div class="location-header">
+                    <div class="location-name">PALAFRUGELL</div>
+                </div>
+                <div class="data-container">
+                    <div class="data-box">
+                        <div class="data-title">Temp. màxima</div>
+                        <div class="data-value">13.8<span class="data-unit">°C</span></div>
+                    </div>
+                    <div class="data-box">
+                        <div class="data-title">Temp. mínima</div>
+                        <div class="data-value">12.1<span class="data-unit">°C</span></div>
+                    </div>
+                    <div class="data-box">
+                        <div class="data-title">Pluja acumulada</div>
+                        <div class="data-value">0.7<span class="data-unit">mm</span></div>
+                    </div>
+                </div>
+                <div class="footer">
+                    <div class="update-info">Actualització: 13:35</div>
+                    <div class="source">Font: MeteoCat</div>
+                </div>
+            </div>
+    
+            <div class="content-group">
+                <div class="location-header">
+                    <div class="location-name">EL PRAT DE LLOBREGAT</div>
+                </div>
+                <div class="data-container">
+                    <div class="data-box">
+                        <div class="data-title">Temp. màxima</div>
+                        <div class="data-value">13.8<span class="data-unit">°C</span></div>
+                    </div>
+                    <div class="data-box">
+                        <div class="data-title">Temp. mínima</div>
+                        <div class="data-value">10.9<span class="data-unit">°C</span></div>
+                    </div>
+                    <div class="data-box">
+                        <div class="data-title">Pluja acumulada</div>
+                        <div class="data-value">11.8<span class="data-unit">mm</span></div>
+                    </div>
+                </div>
+                <div class="footer">
+                    <div class="update-info">Actualització: 13:35</div>
+                    <div class="source">Font: MeteoCat</div>
+                </div>
+            </div>
+    
+            <div class="content-group">
+                <div class="location-header">
+                    <div class="location-name">BANYOLES</div>
+                </div>
+                <div class="data-container">
+                    <div class="data-box">
+                        <div class="data-title">Temp. màxima</div>
+                        <div class="data-value">11.8<span class="data-unit">°C</span></div>
+                    </div>
+                    <div class="data-box">
+                        <div class="data-title">Temp. mínima</div>
+                        <div class="data-value">9.7<span class="data-unit">°C</span></div>
+                    </div>
+                    <div class="data-box">
+                        <div class="data-title">Pluja acumulada</div>
+                        <div class="data-value">10.2<span class="data-unit">mm</span></div>
+                    </div>
+                </div>
+                <div class="footer">
+                    <div class="update-info">Actualització: 13:35</div>
+                    <div class="source">Font: MeteoCat</div>
+                </div>
+            </div>
+    
+            <div class="content-group">
+                <div class="location-header">
+                    <div class="location-name">DAS - AERÒDROM</div>
+                </div>
+                <div class="data-container">
+                    <div class="data-box">
+                        <div class="data-title">Temp. màxima</div>
+                        <div class="data-value">7.3<span class="data-unit">°C</span></div>
+                    </div>
+                    <div class="data-box">
+                        <div class="data-title">Temp. mínima</div>
+                        <div class="data-value">2.0<span class="data-unit">°C</span></div>
+                    </div>
+                    <div class="data-box">
+                        <div class="data-title">Pluja acumulada</div>
+                        <div class="data-value">0.4<span class="data-unit">mm</span></div>
+                    </div>
+                </div>
+                <div class="footer">
+                    <div class="update-info">Actualització: 13:35</div>
+                    <div class="source">Font: MeteoCat</div>
+                </div>
+            </div>
+    
+            <div class="content-group">
+                <div class="location-header">
+                    <div class="location-name">BARCELONA - EL RAVAL</div>
+                </div>
+                <div class="data-container">
+                    <div class="data-box">
+                        <div class="data-title">Temp. màxima</div>
+                        <div class="data-value">13.7<span class="data-unit">°C</span></div>
+                    </div>
+                    <div class="data-box">
+                        <div class="data-title">Temp. mínima</div>
+                        <div class="data-value">10.5<span class="data-unit">°C</span></div>
+                    </div>
+                    <div class="data-box">
+                        <div class="data-title">Pluja acumulada</div>
+                        <div class="data-value">10.4<span class="data-unit">mm</span></div>
+                    </div>
+                </div>
+                <div class="footer">
+                    <div class="update-info">Actualització: 13:35</div>
+                    <div class="source">Font: MeteoCat</div>
+                </div>
+            </div>
+    
+            <div class="content-group">
+                <div class="location-header">
+                    <div class="location-name">LLEIDA - RAIMAT</div>
+                </div>
+                <div class="data-container">
+                    <div class="data-box">
+                        <div class="data-title">Temp. màxima</div>
+                        <div class="data-value">12.5<span class="data-unit">°C</span></div>
+                    </div>
+                    <div class="data-box">
+                        <div class="data-title">Temp. mínima</div>
+                        <div class="data-value">4.9<span class="data-unit">°C</span></div>
+                    </div>
+                    <div class="data-box">
+                        <div class="data-title">Pluja acumulada</div>
+                        <div class="data-value">0.4<span class="data-unit">mm</span></div>
+                    </div>
+                </div>
+                <div class="footer">
+                    <div class="update-info">Actualització: 13:35</div>
+                    <div class="source">Font: MeteoCat</div>
+                </div>
+            </div>
+    
+            <div class="content-group">
+                <div class="location-header">
+                    <div class="location-name">TARRAGONA - COMPLEX EDUCATIU</div>
+                </div>
+                <div class="data-container">
+                    <div class="data-box">
+                        <div class="data-title">Temp. màxima</div>
+                        <div class="data-value">13.8<span class="data-unit">°C</span></div>
+                    </div>
+                    <div class="data-box">
+                        <div class="data-title">Temp. mínima</div>
+                        <div class="data-value">10.4<span class="data-unit">°C</span></div>
+                    </div>
+                    <div class="data-box">
+                        <div class="data-title">Pluja acumulada</div>
+                        <div class="data-value">6.8<span class="data-unit">mm</span></div>
+                    </div>
+                </div>
+                <div class="footer">
+                    <div class="update-info">Actualització: 13:35</div>
+                    <div class="source">Font: MeteoCat</div>
+                </div>
+            </div>
+    
+            <div class="content-group">
+                <div class="location-header">
+                    <div class="location-name">QUERALBS - NÚRIA (1.971 m)</div>
+                </div>
+                <div class="data-container">
+                    <div class="data-box">
+                        <div class="data-title">Temp. màxima</div>
+                        <div class="data-value">2.1<span class="data-unit">°C</span></div>
+                    </div>
+                    <div class="data-box">
+                        <div class="data-title">Temp. mínima</div>
+                        <div class="data-value">-0.9<span class="data-unit">°C</span></div>
+                    </div>
+                    <div class="data-box">
+                        <div class="data-title">Pluja acumulada</div>
+                        <div class="data-value">7.5<span class="data-unit">mm</span></div>
+                    </div>
+                </div>
+                <div class="footer">
+                    <div class="update-info">Actualització: 13:35</div>
+                    <div class="source">Font: MeteoCat</div>
+                </div>
+            </div>
+    
+            <div class="content-group">
+                <div class="location-header">
+                    <div class="location-name">SETCASES - ULLDETER (2.413 m)</div>
+                </div>
+                <div class="data-container">
+                    <div class="data-box">
+                        <div class="data-title">Temp. màxima</div>
+                        <div class="data-value">-2.1<span class="data-unit">°C</span></div>
+                    </div>
+                    <div class="data-box">
+                        <div class="data-title">Temp. mínima</div>
+                        <div class="data-value">-3.7<span class="data-unit">°C</span></div>
+                    </div>
+                    <div class="data-box">
+                        <div class="data-title">Pluja acumulada</div>
+                        <div class="data-value">4.9<span class="data-unit">mm</span></div>
+                    </div>
+                </div>
+                <div class="footer">
+                    <div class="update-info">Actualització: 13:35</div>
+                    <div class="source">Font: MeteoCat</div>
+                </div>
+            </div>
+    
+            <div class="content-group">
+                <div class="location-header">
+                    <div class="location-name">CASSÀ DE LA SELVA</div>
+                </div>
+                <div class="data-container">
+                    <div class="data-box">
+                        <div class="data-title">Temp. màxima</div>
+                        <div class="data-value">12.8<span class="data-unit">°C</span></div>
+                    </div>
+                    <div class="data-box">
+                        <div class="data-title">Temp. mínima</div>
+                        <div class="data-value">10.6<span class="data-unit">°C</span></div>
+                    </div>
+                    <div class="data-box">
+                        <div class="data-title">Pluja acumulada</div>
+                        <div class="data-value">5.1<span class="data-unit">mm</span></div>
+                    </div>
+                </div>
+                <div class="footer">
+                    <div class="update-info">Actualització: 13:35</div>
+                    <div class="source">Font: MeteoCat</div>
+                </div>
+            </div>
+    
+            <div class="content-group">
+                <div class="location-header">
+                    <div class="location-name">VINEBRE</div>
+                </div>
+                <div class="data-container">
+                    <div class="data-box">
+                        <div class="data-title">Temp. màxima</div>
+                        <div class="data-value">8.9<span class="data-unit">°C</span></div>
+                    </div>
+                    <div class="data-box">
+                        <div class="data-title">Temp. mínima</div>
+                        <div class="data-value">5.9<span class="data-unit">°C</span></div>
+                    </div>
+                    <div class="data-box">
+                        <div class="data-title">Pluja acumulada</div>
+                        <div class="data-value">8.6<span class="data-unit">mm</span></div>
+                    </div>
+                </div>
+                <div class="footer">
+                    <div class="update-info">Actualització: 13:35</div>
+                    <div class="source">Font: MeteoCat</div>
+                </div>
+            </div>
+    
+            <div class="content-group">
+                <div class="location-header">
+                    <div class="location-name">OLOT</div>
+                </div>
+                <div class="data-container">
+                    <div class="data-box">
+                        <div class="data-title">Temp. màxima</div>
+                        <div class="data-value">9.7<span class="data-unit">°C</span></div>
+                    </div>
+                    <div class="data-box">
+                        <div class="data-title">Temp. mínima</div>
+                        <div class="data-value">7.9<span class="data-unit">°C</span></div>
+                    </div>
+                    <div class="data-box">
+                        <div class="data-title">Pluja acumulada</div>
+                        <div class="data-value">36.5<span class="data-unit">mm</span></div>
+                    </div>
+                </div>
+                <div class="footer">
+                    <div class="update-info">Actualització: 13:35</div>
+                    <div class="source">Font: MeteoCat</div>
+                </div>
+            </div>
+    
+            <div class="content-group">
+                <div class="location-header">
+                    <div class="location-name">SANT PAU DE SEGÚRIES</div>
+                </div>
+                <div class="data-container">
+                    <div class="data-box">
+                        <div class="data-title">Temp. màxima</div>
+                        <div class="data-value">6.9<span class="data-unit">°C</span></div>
+                    </div>
+                    <div class="data-box">
+                        <div class="data-title">Temp. mínima</div>
+                        <div class="data-value">5.6<span class="data-unit">°C</span></div>
+                    </div>
+                    <div class="data-box">
+                        <div class="data-title">Pluja acumulada</div>
+                        <div class="data-value">22.9<span class="data-unit">mm</span></div>
+                    </div>
+                </div>
+                <div class="footer">
+                    <div class="update-info">Actualització: 13:35</div>
+                    <div class="source">Font: MeteoCat</div>
+                </div>
+            </div>
+    
+            <div class="content-group">
+                <div class="location-header">
+                    <div class="location-name">PUIG SESOLLES (1.668 M)</div>
+                </div>
+                <div class="data-container">
+                    <div class="data-box">
+                        <div class="data-title">Temp. màxima</div>
+                        <div class="data-value">2.2<span class="data-unit">°C</span></div>
+                    </div>
+                    <div class="data-box">
+                        <div class="data-title">Temp. mínima</div>
+                        <div class="data-value">0.3<span class="data-unit">°C</span></div>
+                    </div>
+                    <div class="data-box">
+                        <div class="data-title">Pluja acumulada</div>
+                        <div class="data-value">30.5<span class="data-unit">mm</span></div>
+                    </div>
+                </div>
+                <div class="footer">
+                    <div class="update-info">Actualització: 13:35</div>
+                    <div class="source">Font: MeteoCat</div>
+                </div>
+            </div>
+    
+            <div class="content-group">
+                <div class="location-header">
+                    <div class="location-name">LAC REDON (2.247 M)</div>
+                </div>
+                <div class="data-container">
+                    <div class="data-box">
+                        <div class="data-title">Temp. màxima</div>
+                        <div class="data-value">-0.2<span class="data-unit">°C</span></div>
+                    </div>
+                    <div class="data-box">
+                        <div class="data-title">Temp. mínima</div>
+                        <div class="data-value">-2.9<span class="data-unit">°C</span></div>
+                    </div>
+                    <div class="data-box">
+                        <div class="data-title">Pluja acumulada</div>
+                        <div class="data-value">0.3<span class="data-unit">mm</span></div>
+                    </div>
+                </div>
+                <div class="footer">
+                    <div class="update-info">Actualització: 13:35</div>
+                    <div class="source">Font: MeteoCat</div>
+                </div>
+            </div>
+    
+            <div class="content-group">
+                <div class="location-header">
+                    <div class="location-name">ANGLÈS</div>
+                </div>
+                <div class="data-container">
+                    <div class="data-box">
+                        <div class="data-title">Temp. màxima</div>
+                        <div class="data-value">12.0<span class="data-unit">°C</span></div>
+                    </div>
+                    <div class="data-box">
+                        <div class="data-title">Temp. mínima</div>
+                        <div class="data-value">10.0<span class="data-unit">°C</span></div>
+                    </div>
+                    <div class="data-box">
+                        <div class="data-title">Pluja acumulada</div>
+                        <div class="data-value">14.5<span class="data-unit">mm</span></div>
+                    </div>
+                </div>
+                <div class="footer">
+                    <div class="update-info">Actualització: 13:35</div>
+                    <div class="source">Font: MeteoCat</div>
+                </div>
+            </div>
+    
+        </div></div>
+    </div>
+
+    <script>
+        // SCROLL SIMPLE I ROBUST
+        let currentIndex = 0;
+        let scrollInterval;
+        const DISPLAY_TIME = 5000; // 5 segons per provar
         
-        <div class="station">
-            <div class="station-name">GIRONA</div>
-            <div class="data-row">
-                <span class="data-label">Temp. màx:</span>
-                <span class="data-value">13.0°c</span>
-            </div>
-            <div class="data-row">
-                <span class="data-label">Temp. mín:</span>
-                <span class="data-value">10.5°c</span>
-            </div>
-            <div class="data-row">
-                <span class="data-label">Pluja:</span>
-                <span class="data-value">9.2 mm</span>
-            </div>
-        </div>
-        <div class="station">
-            <div class="station-name">FORNELLS DE LA SELVA</div>
-            <div class="data-row">
-                <span class="data-label">Temp. màx:</span>
-                <span class="data-value">12.9°c</span>
-            </div>
-            <div class="data-row">
-                <span class="data-label">Temp. mín:</span>
-                <span class="data-value">10.8°c</span>
-            </div>
-            <div class="data-row">
-                <span class="data-label">Pluja:</span>
-                <span class="data-value">7.3 mm</span>
-            </div>
-        </div>
-        <div class="station">
-            <div class="station-name">ROSES</div>
-            <div class="data-row">
-                <span class="data-label">Temp. màx:</span>
-                <span class="data-value">14.1°c</span>
-            </div>
-            <div class="data-row">
-                <span class="data-label">Temp. mín:</span>
-                <span class="data-value">11.4°c</span>
-            </div>
-            <div class="data-row">
-                <span class="data-label">Pluja:</span>
-                <span class="data-value">2.7 mm</span>
-            </div>
-        </div>
-        <div class="station">
-            <div class="station-name">LA SEU D'URGELL - BELLESTAR</div>
-            <div class="data-row">
-                <span class="data-label">Temp. màx:</span>
-                <span class="data-value">9.0°c</span>
-            </div>
-            <div class="data-row">
-                <span class="data-label">Temp. mín:</span>
-                <span class="data-value">1.9°c</span>
-            </div>
-            <div class="data-row">
-                <span class="data-label">Pluja:</span>
-                <span class="data-value">0.1 mm</span>
-            </div>
-        </div>
-        <div class="station">
-            <div class="station-name">PALAFRUGELL</div>
-            <div class="data-row">
-                <span class="data-label">Temp. màx:</span>
-                <span class="data-value">13.8°c</span>
-            </div>
-            <div class="data-row">
-                <span class="data-label">Temp. mín:</span>
-                <span class="data-value">12.1°c</span>
-            </div>
-            <div class="data-row">
-                <span class="data-label">Pluja:</span>
-                <span class="data-value">0.7 mm</span>
-            </div>
-        </div>
-        <div class="station">
-            <div class="station-name">EL PRAT DE LLOBREGAT</div>
-            <div class="data-row">
-                <span class="data-label">Temp. màx:</span>
-                <span class="data-value">13.8°c</span>
-            </div>
-            <div class="data-row">
-                <span class="data-label">Temp. mín:</span>
-                <span class="data-value">10.9°c</span>
-            </div>
-            <div class="data-row">
-                <span class="data-label">Pluja:</span>
-                <span class="data-value">11.8 mm</span>
-            </div>
-        </div>
-        <div class="station">
-            <div class="station-name">BANYOLES</div>
-            <div class="data-row">
-                <span class="data-label">Temp. màx:</span>
-                <span class="data-value">11.8°c</span>
-            </div>
-            <div class="data-row">
-                <span class="data-label">Temp. mín:</span>
-                <span class="data-value">9.7°c</span>
-            </div>
-            <div class="data-row">
-                <span class="data-label">Pluja:</span>
-                <span class="data-value">10.2 mm</span>
-            </div>
-        </div>
-        <div class="station">
-            <div class="station-name">DAS - AERÒDROM</div>
-            <div class="data-row">
-                <span class="data-label">Temp. màx:</span>
-                <span class="data-value">7.3°c</span>
-            </div>
-            <div class="data-row">
-                <span class="data-label">Temp. mín:</span>
-                <span class="data-value">2.0°c</span>
-            </div>
-            <div class="data-row">
-                <span class="data-label">Pluja:</span>
-                <span class="data-value">0.4 mm</span>
-            </div>
-        </div>
-        <div class="station">
-            <div class="station-name">BARCELONA - EL RAVAL</div>
-            <div class="data-row">
-                <span class="data-label">Temp. màx:</span>
-                <span class="data-value">13.7°c</span>
-            </div>
-            <div class="data-row">
-                <span class="data-label">Temp. mín:</span>
-                <span class="data-value">10.5°c</span>
-            </div>
-            <div class="data-row">
-                <span class="data-label">Pluja:</span>
-                <span class="data-value">10.4 mm</span>
-            </div>
-        </div>
-        <div class="station">
-            <div class="station-name">LLEIDA - RAIMAT</div>
-            <div class="data-row">
-                <span class="data-label">Temp. màx:</span>
-                <span class="data-value">12.5°c</span>
-            </div>
-            <div class="data-row">
-                <span class="data-label">Temp. mín:</span>
-                <span class="data-value">4.9°c</span>
-            </div>
-            <div class="data-row">
-                <span class="data-label">Pluja:</span>
-                <span class="data-value">0.4 mm</span>
-            </div>
-        </div>
-        <div class="station">
-            <div class="station-name">TARRAGONA - COMPLEX EDUCATIU</div>
-            <div class="data-row">
-                <span class="data-label">Temp. màx:</span>
-                <span class="data-value">13.8°c</span>
-            </div>
-            <div class="data-row">
-                <span class="data-label">Temp. mín:</span>
-                <span class="data-value">10.4°c</span>
-            </div>
-            <div class="data-row">
-                <span class="data-label">Pluja:</span>
-                <span class="data-value">6.8 mm</span>
-            </div>
-        </div>
-        <div class="station">
-            <div class="station-name">QUERALBS - NÚRIA (1.971 m)</div>
-            <div class="data-row">
-                <span class="data-label">Temp. màx:</span>
-                <span class="data-value">2.1°c</span>
-            </div>
-            <div class="data-row">
-                <span class="data-label">Temp. mín:</span>
-                <span class="data-value">-0.9°c</span>
-            </div>
-            <div class="data-row">
-                <span class="data-label">Pluja:</span>
-                <span class="data-value">7.5 mm</span>
-            </div>
-        </div>
-        <div class="station">
-            <div class="station-name">SETCASES - ULLDETER (2.413 m)</div>
-            <div class="data-row">
-                <span class="data-label">Temp. màx:</span>
-                <span class="data-value">-2.1°c</span>
-            </div>
-            <div class="data-row">
-                <span class="data-label">Temp. mín:</span>
-                <span class="data-value">-3.7°c</span>
-            </div>
-            <div class="data-row">
-                <span class="data-label">Pluja:</span>
-                <span class="data-value">4.9 mm</span>
-            </div>
-        </div>
-        <div class="station">
-            <div class="station-name">CASSÀ DE LA SELVA</div>
-            <div class="data-row">
-                <span class="data-label">Temp. màx:</span>
-                <span class="data-value">12.8°c</span>
-            </div>
-            <div class="data-row">
-                <span class="data-label">Temp. mín:</span>
-                <span class="data-value">10.6°c</span>
-            </div>
-            <div class="data-row">
-                <span class="data-label">Pluja:</span>
-                <span class="data-value">5.1 mm</span>
-            </div>
-        </div>
-        <div class="station">
-            <div class="station-name">VINEBRE</div>
-            <div class="data-row">
-                <span class="data-label">Temp. màx:</span>
-                <span class="data-value">8.9°c</span>
-            </div>
-            <div class="data-row">
-                <span class="data-label">Temp. mín:</span>
-                <span class="data-value">5.9°c</span>
-            </div>
-            <div class="data-row">
-                <span class="data-label">Pluja:</span>
-                <span class="data-value">8.6 mm</span>
-            </div>
-        </div>
-        <div class="station">
-            <div class="station-name">OLOT</div>
-            <div class="data-row">
-                <span class="data-label">Temp. màx:</span>
-                <span class="data-value">9.7°c</span>
-            </div>
-            <div class="data-row">
-                <span class="data-label">Temp. mín:</span>
-                <span class="data-value">7.9°c</span>
-            </div>
-            <div class="data-row">
-                <span class="data-label">Pluja:</span>
-                <span class="data-value">36.5 mm</span>
-            </div>
-        </div>
-        <div class="station">
-            <div class="station-name">SANT PAU DE SEGÚRIES</div>
-            <div class="data-row">
-                <span class="data-label">Temp. màx:</span>
-                <span class="data-value">6.9°c</span>
-            </div>
-            <div class="data-row">
-                <span class="data-label">Temp. mín:</span>
-                <span class="data-value">5.6°c</span>
-            </div>
-            <div class="data-row">
-                <span class="data-label">Pluja:</span>
-                <span class="data-value">22.9 mm</span>
-            </div>
-        </div>
-        <div class="station">
-            <div class="station-name">PUIG SESOLLES (1.668 M)</div>
-            <div class="data-row">
-                <span class="data-label">Temp. màx:</span>
-                <span class="data-value">2.2°c</span>
-            </div>
-            <div class="data-row">
-                <span class="data-label">Temp. mín:</span>
-                <span class="data-value">0.3°c</span>
-            </div>
-            <div class="data-row">
-                <span class="data-label">Pluja:</span>
-                <span class="data-value">30.5 mm</span>
-            </div>
-        </div>
-        <div class="station">
-            <div class="station-name">LAC REDON (2.247 M)</div>
-            <div class="data-row">
-                <span class="data-label">Temp. màx:</span>
-                <span class="data-value">-0.2°c</span>
-            </div>
-            <div class="data-row">
-                <span class="data-label">Temp. mín:</span>
-                <span class="data-value">-2.9°c</span>
-            </div>
-            <div class="data-row">
-                <span class="data-label">Pluja:</span>
-                <span class="data-value">0.3 mm</span>
-            </div>
-        </div>
-        <div class="station">
-            <div class="station-name">ANGLÈS</div>
-            <div class="data-row">
-                <span class="data-label">Temp. màx:</span>
-                <span class="data-value">12.0°c</span>
-            </div>
-            <div class="data-row">
-                <span class="data-label">Temp. mín:</span>
-                <span class="data-value">10.0°c</span>
-            </div>
-            <div class="data-row">
-                <span class="data-label">Pluja:</span>
-                <span class="data-value">14.5 mm</span>
-            </div>
-        </div>
-    </div>
-    <div class="footer">
-        Actualitzat: 13:23:05 - Data: 2025-12-27 | Font: MeteoCat
-    </div>
+        function initSlider() {
+            const allStations = document.querySelectorAll('.content-group');
+            const total = allStations.length;
+            
+            console.log(`🔍 Estacions trobades: ${total}`);
+            if (total === 0) {
+                console.log('⚠️  No hi ha estacions per mostrar.');
+                return;
+            }
+            
+            // Ocultar totes i posar classes inicials
+            allStations.forEach((station, idx) => {
+                station.classList.remove('active', 'next', 'out');
+                station.style.zIndex = '1';
+                if (idx === 0) {
+                    station.classList.add('active');
+                    station.style.zIndex = '2';
+                } else {
+                    station.classList.add('next');
+                }
+            });
+            
+            currentIndex = 0;
+            startAutoScroll();
+        }
+        
+        function goToNext() {
+            const allStations = document.querySelectorAll('.content-group');
+            const total = allStations.length;
+            if (total < 2) return;
+            
+            const current = allStations[currentIndex];
+            const nextIndex = (currentIndex + 1) % total;
+            const next = allStations[nextIndex];
+            
+            console.log(`🔄 Canviant: ${currentIndex} → ${nextIndex}`);
+            
+            // Transició
+            current.classList.replace('active', 'out');
+            next.classList.replace('next', 'active');
+            
+            // Netejar i preparar per la següent
+            setTimeout(() => {
+                current.classList.remove('out');
+                current.classList.add('next');
+                current.style.zIndex = '1';
+                next.style.zIndex = '2';
+                
+                // La propera després de 'next' també es prepara
+                const followingIndex = (nextIndex + 1) % total;
+                if (followingIndex !== currentIndex) {
+                    allStations[followingIndex].classList.add('next');
+                }
+            }, 800);
+            
+            currentIndex = nextIndex;
+        }
+        
+        function startAutoScroll() {
+            if (scrollInterval) clearInterval(scrollInterval);
+            scrollInterval = setInterval(goToNext, DISPLAY_TIME);
+            console.log('▶️  Scroll automàtic iniciat.');
+        }
+        
+        function stopAutoScroll() {
+            if (scrollInterval) clearInterval(scrollInterval);
+            console.log('⏸️  Scroll automàtic aturat.');
+        }
+        
+        // Iniciar quan es carregui la pàgina
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('📄 DOM carregat. Inicialitzant slider...');
+            // Esperem una mica per si el contingut es carrega dinàmicament
+            setTimeout(initSlider, 100);
+        });
+        
+        // Aturar quan la pestanya no és visible
+        document.addEventListener('visibilitychange', function() {
+            if (document.hidden) {
+                stopAutoScroll();
+            } else {
+                startAutoScroll();
+            }
+        });
+        
+        // Debug: fer clic a la pàgina mostra estat
+        document.addEventListener('click', function() {
+            const all = document.querySelectorAll('.content-group');
+            console.log('--- ESTAT ACTUAL ---');
+            all.forEach((s, i) => {
+                const name = s.querySelector('.location-name')?.textContent || `Estació ${i}`;
+                console.log(`${i}: ${name} - Classes: ${s.className}`);
+            });
+        });
+    </script>
 </body>
 </html>
