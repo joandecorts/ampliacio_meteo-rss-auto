@@ -1,14 +1,14 @@
 """
-Genera el fitxer HTML amb el banner meteorològic - FORMAT SIMPLE I NET
-Com la imatge que has compartit
+Genera el fitxer HTML amb el banner meteorològic - VERSIÓ DEFINITIVA
+Amb caixes individuals per cada dada (com la foto IMG_6531.PNG)
 """
 
 import json
 from datetime import datetime, timezone, timedelta
 import os
 
-def generate_banner_simple():
-    """Genera el banner en format simple (com la teva imatge)"""
+def generate_banner_with_boxes():
+    """Genera el banner amb caixes individuals (com la teva foto)"""
     
     # 1. Carregar dades
     data_file = "data/latest_weather.json"
@@ -39,8 +39,8 @@ def generate_banner_simple():
             ppt = values.get('PPT', '-')
             
             # Formatejar valors
-            tx_display = f"{tx}°c" if tx != '-' else "-"
-            tn_display = f"{tn}°c" if tn != '-' else "-"
+            tx_display = f"{tx}°C" if tx != '-' else "-"
+            tn_display = f"{tn}°C" if tn != '-' else "-"
             ppt_display = f"{ppt} mm" if ppt != '-' else "-"
             
             # Hora local (Catalunya, UTC+1)
@@ -49,33 +49,55 @@ def generate_banner_simple():
             hora_actual = local_time.strftime("%H:%M")
             data_actual = local_time.strftime("%d/%m/%Y")
             
-            # HTML de l'estació (format simple)
+            # HTML de l'estació (AMB CAIXES INDIVIDUALS)
             station_html = f"""
-            <div style="margin: 20px; padding: 20px; background: #fff; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
-                <h1 style="color: #c00; text-align: center; margin-bottom: 20px;">{station_name}</h1>
+            <div style="margin: 15px auto; padding: 0; max-width: 800px; background: #fff; border-radius: 0; font-family: Arial, sans-serif;">
+                <!-- TÍTOL -->
+                <h1 style="color: #c00; text-align: center; margin: 0 0 20px 0; padding: 15px 0; background: #f8f8f8; border-bottom: 2px solid #ddd;">
+                    {station_name}
+                </h1>
                 
-                <div style="display: flex; justify-content: space-between; margin-bottom: 25px;">
-                    <div style="text-align: center; flex: 1;">
-                        <h3 style="color: #333; margin-bottom: 10px;">Temperatura máxima del día</h3>
-                        <div style="font-size: 48px; font-weight: bold; color: #c00;">{tx_display}</div>
+                <!-- TRES CAIXES EN FILES SEPARADES -->
+                <div style="padding: 15px;">
+                    <!-- Fila 1: Temp. màx -->
+                    <div style="margin-bottom: 15px; border: 2px solid #e0e0e0; border-radius: 8px; padding: 15px; background: #fafafa;">
+                        <div style="font-weight: bold; font-size: 16px; color: #333; margin-bottom: 8px;">
+                            Temperatura máxima del día
+                        </div>
+                        <div style="font-size: 36px; font-weight: bold; color: #c00; text-align: center;">
+                            {tx_display}
+                        </div>
                     </div>
                     
-                    <div style="text-align: center; flex: 1;">
-                        <h3 style="color: #333; margin-bottom: 10px;">Temperatura mínima del día</h3>
-                        <div style="font-size: 48px; font-weight: bold; color: #c00;">{tn_display}</div>
+                    <!-- Fila 2: Temp. mín -->
+                    <div style="margin-bottom: 15px; border: 2px solid #e0e0e0; border-radius: 8px; padding: 15px; background: #fafafa;">
+                        <div style="font-weight: bold; font-size: 16px; color: #333; margin-bottom: 8px;">
+                            Temperatura mínima del día
+                        </div>
+                        <div style="font-size: 36px; font-weight: bold; color: #c00; text-align: center;">
+                            {tn_display}
+                        </div>
                     </div>
                     
-                    <div style="text-align: center; flex: 1;">
-                        <h3 style="color: #333; margin-bottom: 10px;">Pluja acumulada</h3>
-                        <div style="font-size: 48px; font-weight: bold; color: #c00;">{ppt_display}</div>
+                    <!-- Fila 3: Pluja -->
+                    <div style="margin-bottom: 20px; border: 2px solid #e0e0e0; border-radius: 8px; padding: 15px; background: #fafafa;">
+                        <div style="font-weight: bold; font-size: 16px; color: #333; margin-bottom: 8px;">
+                            Pluja acumulada
+                        </div>
+                        <div style="font-size: 36px; font-weight: bold; color: #c00; text-align: center;">
+                            {ppt_display}
+                        </div>
                     </div>
                 </div>
                 
-                <hr style="border: none; border-top: 2px solid #eee; margin: 25px 0;">
-                
-                <div style="text-align: center; color: #666; font-size: 14px;">
-                    <p><strong>Actualitzat: {hora_actual} - Data: {data_actual}</strong></p>
-                    <p>Font: https://www.meteo.cat/</p>
+                <!-- PEU DE PÀGINA -->
+                <div style="background: #f8f8f8; padding: 12px; border-top: 2px solid #ddd; text-align: center;">
+                    <div style="color: #333; font-weight: bold; margin-bottom: 4px;">
+                        Actualitzat: {hora_actual} - Data: {data_actual}
+                    </div>
+                    <div style="color: #666; font-size: 14px;">
+                        Font: https://www.meteo.cat/
+                    </div>
                 </div>
             </div>
             """
@@ -88,15 +110,20 @@ def generate_banner_simple():
         data_actual = datetime.now().strftime("%d/%m/%Y")
         
         stations_html = f"""
-        <div style="margin: 20px; padding: 20px; background: #fff; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); text-align: center;">
-            <h1 style="color: #c00; margin-bottom: 20px;">SENSE DADES DISPONIBLES</h1>
-            <p style="font-size: 18px; color: #666;">Esperant actualització de dades meteorològiques...</p>
-            
-            <hr style="border: none; border-top: 2px solid #eee; margin: 25px 0;">
-            
-            <div style="text-align: center; color: #666; font-size: 14px;">
-                <p><strong>Actualitzat: {hora_actual} - Data: {data_actual}</strong></p>
-                <p>Font: https://www.meteo.cat/</p>
+        <div style="margin: 15px auto; padding: 0; max-width: 800px; background: #fff; font-family: Arial, sans-serif;">
+            <h1 style="color: #c00; text-align: center; margin: 0; padding: 20px; background: #f8f8f8;">
+                SENSE DADES DISPONIBLES
+            </h1>
+            <div style="padding: 30px; text-align: center; color: #666;">
+                <p style="font-size: 18px;">Esperant actualització de dades meteorològiques...</p>
+            </div>
+            <div style="background: #f8f8f8; padding: 12px; border-top: 2px solid #ddd; text-align: center;">
+                <div style="color: #333; font-weight: bold; margin-bottom: 4px;">
+                    Actualitzat: {hora_actual} - Data: {data_actual}
+                </div>
+                <div style="color: #666; font-size: 14px;">
+                    Font: https://www.meteo.cat/
+                </div>
             </div>
         </div>
         """
@@ -111,31 +138,31 @@ def generate_banner_simple():
     <style>
         body {{
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: #f5f5f5;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
             margin: 0;
             padding: 20px;
-            color: #333;
-        }}
-        .container {{
-            max-width: 1200px;
-            margin: 0 auto;
+            min-height: 100vh;
         }}
         @media (max-width: 768px) {{
-            .container {{
+            body {{
                 padding: 10px;
             }}
-            h1 {{ font-size: 24px; }}
-            h3 {{ font-size: 16px; }}
-            div[style*="font-size: 48px"] {{
-                font-size: 36px !important;
+            div[style*="font-size: 36px"] {{
+                font-size: 28px !important;
+            }}
+            h1 {{
+                font-size: 22px !important;
+            }}
+        }}
+        @media print {{
+            body {{
+                background: #fff !important;
             }}
         }}
     </style>
 </head>
 <body>
-    <div class="container">
-        {stations_html}
-    </div>
+    {stations_html}
 </body>
 </html>"""
     
@@ -143,9 +170,9 @@ def generate_banner_simple():
 
 def main():
     """Funció principal"""
-    print("🎨 Generant banner meteorològic (format simple)...")
+    print("🎨 Generant banner meteorològic (amb caixes)...")
     
-    html = generate_banner_simple()
+    html = generate_banner_with_boxes()
     
     if html:
         # Guardar com a banner_output.html
