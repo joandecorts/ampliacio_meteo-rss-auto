@@ -1,160 +1,173 @@
 """
-Genera el fitxer HTML amb el banner meteorològic - VERSIÓ DEFINITIVA
-Utilitza banner_news_channel.html com a template
+Genera el fitxer HTML amb el banner meteorològic - FORMAT SIMPLE I NET
+Com la imatge que has compartit
 """
 
 import json
-from datetime import datetime
+from datetime import datetime, timezone, timedelta
 import os
 
-def load_template(template_file="banner_news_channel.html"):
-    """Carrega el template HTML"""
-    try:
-        with open(template_file, 'r', encoding='utf-8') as f:
-            return f.read()
-    except Exception as e:
-        print(f"❌ Error carregant template: {e}")
-        return None
-
-def generate_station_html(station_data):
-    """
-    Genera el HTML per una estació individual
-    """
-    if not station_data.get('success'):
-        return ""
+def generate_banner_simple():
+    """Genera el banner en format simple (com la teva imatge)"""
     
-    metadata = station_data['metadata']
-    values = station_data['values']
-    
-    station_name = metadata['name']
-    tx = values.get('TX', '-')
-    tn = values.get('TN', '-')
-    ppt = values.get('PPT', '-')
-    
-    # Formatejar valors (ja venen arrodonits del scraper)
-    tx_display = f"{tx}" if tx != '-' else "-"
-    tn_display = f"{tn}" if tn != '-' else "-"
-    ppt_display = f"{ppt}" if ppt != '-' else "-"
-    
-    return f"""
-            <div class="content-group">
-                <div class="location-header">
-                    <div class="location-name">{station_name}</div>
-                </div>
-                <div class="data-container">
-                    <div class="data-box">
-                        <div class="data-title">Temp. màxima</div>
-                        <div class="data-value">{tx_display}<span class="data-unit">°C</span></div>
-                    </div>
-                    <div class="data-box">
-                        <div class="data-title">Temp. mínima</div>
-                        <div class="data-value">{tn_display}<span class="data-unit">°C</span></div>
-                    </div>
-                    <div class="data-box">
-                        <div class="data-title">Pluja acumulada</div>
-                        <div class="data-value">{ppt_display}<span class="data-unit">mm</span></div>
-                    </div>
-                </div>
-                <div class="footer">
-                    <div class="update-info">Actualització: {datetime.now().strftime("%H:%M")}</div>
-                    <div class="source">Font: MeteoCat</div>
-                </div>
-            </div>
-    """
-
-def main():
-    """Funció principal"""
-    print("🎨 Generant banner meteorològic...")
-    
-    # 1. Carregar template
-    template = load_template()
-    if not template:
-        return
-    
-    # 2. Carregar dades meteorològiques
+    # 1. Carregar dades
     data_file = "data/latest_weather.json"
     if not os.path.exists(data_file):
         print(f"❌ El fitxer {data_file} no existeix")
-        print("   Executa primer meteo_scraper.py per obtenir dades")
-        return
+        return None
     
     try:
         with open(data_file, 'r', encoding='utf-8') as f:
             data = json.load(f)
     except Exception as e:
         print(f"❌ Error llegint dades: {e}")
-        return
+        return None
     
     stations = data.get('stations', {})
     
-    # 3. Generar HTML per a cada estació
+    # 2. Generar HTML per a cada estació
     stations_html = ""
-    station_count = 0
     
     for station_id, station_data in stations.items():
         if station_data.get('success'):
-            station_html = generate_station_html(station_data)
-            if station_html:
-                stations_html += station_html
-                station_count += 1
-    
-    # 4. Si no hi ha dades, mostrar missatge
-    if station_count == 0:
-        stations_html = """
-            <div class="content-group active">
-                <div class="location-header">
-                    <div class="location-name">SENSE DADES</div>
+            metadata = station_data['metadata']
+            values = station_data['values']
+            
+            station_name = metadata['name']
+            tx = values.get('TX', '-')
+            tn = values.get('TN', '-')
+            ppt = values.get('PPT', '-')
+            
+            # Formatejar valors
+            tx_display = f"{tx}°c" if tx != '-' else "-"
+            tn_display = f"{tn}°c" if tn != '-' else "-"
+            ppt_display = f"{ppt} mm" if ppt != '-' else "-"
+            
+            # Hora local (Catalunya, UTC+1)
+            utc_time = datetime.now(timezone.utc)
+            local_time = utc_time + timedelta(hours=1)  # UTC+1 per Catalunya
+            hora_actual = local_time.strftime("%H:%M")
+            data_actual = local_time.strftime("%d/%m/%Y")
+            
+            # HTML de l'estació (format simple)
+            station_html = f"""
+            <div style="margin: 20px; padding: 20px; background: #fff; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+                <h1 style="color: #c00; text-align: center; margin-bottom: 20px;">{station_name}</h1>
+                
+                <div style="display: flex; justify-content: space-between; margin-bottom: 25px;">
+                    <div style="text-align: center; flex: 1;">
+                        <h3 style="color: #333; margin-bottom: 10px;">Temperatura máxima del día</h3>
+                        <div style="font-size: 48px; font-weight: bold; color: #c00;">{tx_display}</div>
+                    </div>
+                    
+                    <div style="text-align: center; flex: 1;">
+                        <h3 style="color: #333; margin-bottom: 10px;">Temperatura mínima del día</h3>
+                        <div style="font-size: 48px; font-weight: bold; color: #c00;">{tn_display}</div>
+                    </div>
+                    
+                    <div style="text-align: center; flex: 1;">
+                        <h3 style="color: #333; margin-bottom: 10px;">Pluja acumulada</h3>
+                        <div style="font-size: 48px; font-weight: bold; color: #c00;">{ppt_display}</div>
+                    </div>
                 </div>
-                <div class="data-container">
-                    <div class="data-box">
-                        <div class="data-title">Temperatura màxima</div>
-                        <div class="data-value">-<span class="data-unit">°C</span></div>
-                    </div>
-                    <div class="data-box">
-                        <div class="data-title">Temperatura mínima</div>
-                        <div class="data-value">-<span class="data-unit">°C</span></div>
-                    </div>
-                    <div class="data-box">
-                        <div class="data-title">Pluja acumulada</div>
-                        <div class="data-value">-<span class="data-unit">mm</span></div>
-                    </div>
-                </div>
-                <div class="footer">
-                    <div class="update-info">Esperant dades meteorològiques...</div>
-                    <div class="source">Font: MeteoCat</div>
+                
+                <hr style="border: none; border-top: 2px solid #eee; margin: 25px 0;">
+                
+                <div style="text-align: center; color: #666; font-size: 14px;">
+                    <p><strong>Actualitzat: {hora_actual} - Data: {data_actual}</strong></p>
+                    <p>Font: https://www.meteo.cat/</p>
                 </div>
             </div>
+            """
+            
+            stations_html += station_html
+    
+    # 3. Si no hi ha dades
+    if not stations_html:
+        hora_actual = datetime.now().strftime("%H:%M")
+        data_actual = datetime.now().strftime("%d/%m/%Y")
+        
+        stations_html = f"""
+        <div style="margin: 20px; padding: 20px; background: #fff; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); text-align: center;">
+            <h1 style="color: #c00; margin-bottom: 20px;">SENSE DADES DISPONIBLES</h1>
+            <p style="font-size: 18px; color: #666;">Esperant actualització de dades meteorològiques...</p>
+            
+            <hr style="border: none; border-top: 2px solid #eee; margin: 25px 0;">
+            
+            <div style="text-align: center; color: #666; font-size: 14px;">
+                <p><strong>Actualitzat: {hora_actual} - Data: {data_actual}</strong></p>
+                <p>Font: https://www.meteo.cat/</p>
+            </div>
+        </div>
         """
     
-    # 5. Injectar stations_html al template
-    # Buscar el div.scroll-container i reemplaçar el seu contingut
-    start_marker = '<div class="scroll-container">'
-    end_marker = '</div>\n    </div>'  # Tancament de .scroll-container + .weather-container
+    # 4. HTML complet
+    html = f"""<!DOCTYPE html>
+<html lang="ca">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meteorologia - Dades en Directe</title>
+    <style>
+        body {{
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f5f5f5;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }}
+        .container {{
+            max-width: 1200px;
+            margin: 0 auto;
+        }}
+        @media (max-width: 768px) {{
+            .container {{
+                padding: 10px;
+            }}
+            h1 {{ font-size: 24px; }}
+            h3 {{ font-size: 16px; }}
+            div[style*="font-size: 48px"] {{
+                font-size: 36px !important;
+            }}
+        }}
+    </style>
+</head>
+<body>
+    <div class="container">
+        {stations_html}
+    </div>
+</body>
+</html>"""
     
-    start_idx = template.find(start_marker)
-    end_idx = template.find(end_marker, start_idx)
+    return html
+
+def main():
+    """Funció principal"""
+    print("🎨 Generant banner meteorològic (format simple)...")
     
-    if start_idx != -1 and end_idx != -1:
-        # Mantenir el div.scroll-container obert i tancat
-        new_content = f'{start_marker}\n            {stations_html}\n        </div>'
-        updated_template = template[:start_idx] + new_content + template[end_idx:]
+    html = generate_banner_simple()
+    
+    if html:
+        # Guardar com a banner_output.html
+        with open("banner_output.html", 'w', encoding='utf-8') as f:
+            f.write(html)
+        print("✅ banner_output.html generat")
+        
+        # Guardar com a index.html (per GitHub Pages)
+        with open("index.html", 'w', encoding='utf-8') as f:
+            f.write(html)
+        print("✅ index.html actualitzat")
+        
+        # Comptar estacions
+        try:
+            with open("data/latest_weather.json", 'r', encoding='utf-8') as f:
+                data = json.load(f)
+            count = len([s for s in data.get('stations', {}).values() if s.get('success')])
+            print(f"📊 Estacions processades: {count}")
+        except:
+            print("📊 No s'han pogut comptar les estacions")
     else:
-        # Fallback: reemplaçar manualment
-        placeholder = '<!-- EL CONTINGUT D\'AQUÍ ES REEMPLAÇARÀ COMPLETAMENT PER update_banner.py -->'
-        updated_template = template.replace(placeholder, stations_html)
-    
-    # 6. Guardar fitxer
-    output_file = "banner_output.html"
-    with open(output_file, 'w', encoding='utf-8') as f:
-        f.write(updated_template)
-    
-    print(f"✅ Banner generat amb {station_count} estacions")
-    print(f"🏁 Fitxer: {output_file}")
-    
-    # 7. També generar index.html (per GitHub Pages)
-    with open("index.html", 'w', encoding='utf-8') as f:
-        f.write(updated_template)
-    print("📄 index.html actualitzat")
+        print("❌ No s'ha pogut generar el banner")
 
 if __name__ == "__main__":
     main()
