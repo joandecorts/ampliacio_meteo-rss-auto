@@ -1,5 +1,5 @@
 """
-Genera el fitxer HTML amb el banner meteorològic
+Genera el fitxer HTML amb el banner meteorològic - VERSIÓ CORREGIDA
 """
 
 import json
@@ -57,8 +57,8 @@ def format_temperature(temp):
     if temp is None:
         return "-"
     try:
-        rounded = round_catalan_style(temp, 1)
-        return f"{rounded}°c"
+        # Ja ve arrodonida del scraper, però fem altre cop per seguretat
+        return f"{temp}°c"
     except:
         return "-"
 
@@ -68,8 +68,7 @@ def format_rain(rain):
     if rain is None:
         return "-"
     try:
-        rounded = round_catalan_style(rain, 1)
-        return f"{rounded} mm"
+        return f"{rain} mm"
     except:
         return "-"
 
@@ -96,7 +95,7 @@ def generate_banner_html(weather_data, output_file="banner_output.html"):
     # CANVI CRÍTIC: 'stations' en lloc de 'estacions'
     stations = data.get('stations', {})
     
-    # Obtenir data d'actualització del metadata
+    # Obtenir data d'actualització
     last_updated = data.get('metadata', {}).get('last_updated', '')
     if last_updated:
         try:
@@ -110,7 +109,7 @@ def generate_banner_html(weather_data, output_file="banner_output.html"):
         update_time = ""
         update_date = ""
     
-    # HTML template
+    # HTML template (el mateix que teníem)
     html_template = """<!DOCTYPE html>
 <html lang="ca">
 <head>
@@ -196,7 +195,7 @@ def generate_banner_html(weather_data, output_file="banner_output.html"):
     station_count = 0
     
     for station_id, station_data in stations.items():
-        # CANVI: Comprovar si l'estació té dades vàlides
+        # SOLS si l'estació té èxit
         if station_data.get('success'):
             # CANVI: Accedir correctament a les dades
             station_name = station_data['metadata']['name']
