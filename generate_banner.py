@@ -1,273 +1,160 @@
 """
-Genera el fitxer HTML amb el banner meteorològic - VERSIÓ CORREGIDA
+Genera el fitxer HTML amb el banner meteorològic - VERSIÓ DEFINITIVA
+Utilitza banner_news_channel.html com a template
 """
 
 import json
 from datetime import datetime
 import os
 
-def round_catalan_style(value, decimals=1):
-    """
-    Arrodoneix un número a 'decimals' decimals.
-    Si el segon decimal TROBAT és >= 5, augmenta el primer decimal en 1.
-    
-    Args:
-        value: El número a arrodonir (int, float o string)
-        decimals: Nombre de decimals desitjats (per defecte: 1)
-    
-    Returns:
-        float: El valor arrodonit amb 'decimals' decimals
-    """
+def load_template(template_file="banner_news_channel.html"):
+    """Carrega el template HTML"""
     try:
-        num = float(value)
-        if num == 0:
-            return 0.0
-            
-        # Multipliquem per moure els decimals
-        factor = 10 ** (decimals + 1)  # Un decimal extra per veure el segon
-        multiplied = abs(num) * factor
-        
-        # Separem parts enteres i decimals
-        integer_part = int(multiplied)
-        fractional = multiplied - integer_part
-        
-        # Mirem el SEGON decimal (primer decimal després del que volem)
-        second_decimal_digit = int((fractional * 10) % 10)
-        
-        # Si el segon decimal és >= 5, sumem 1 a la part entera
-        if second_decimal_digit >= 5:
-            integer_part += 1
-        
-        # Ara dividim eliminant el decimal extra
-        result = integer_part / (10 ** decimals)
-        
-        # Restaurem el signe
-        if num < 0:
-            result = -result
-            
-        # Arrodonim per eliminar errors de coma flotant
-        return round(result, decimals)
-        
-    except (ValueError, TypeError):
-        return 0.0
-
-
-def format_temperature(temp):
-    """Formata temperatura amb símbol °C"""
-    if temp is None:
-        return "-"
-    try:
-        # Ja ve arrodonida del scraper, però fem altre cop per seguretat
-        return f"{temp}°c"
-    except:
-        return "-"
-
-
-def format_rain(rain):
-    """Formata pluja acumulada"""
-    if rain is None:
-        return "-"
-    try:
-        return f"{rain} mm"
-    except:
-        return "-"
-
-
-def generate_banner_html(weather_data, output_file="banner_output.html"):
-    """
-    Genera el fitxer HTML del banner
-    
-    Args:
-        weather_data: Diccionari amb les dades meteorològiques
-        output_file: Nom del fitxer de sortida
-    """
-    # Llegir les dades
-    try:
-        if isinstance(weather_data, str):
-            with open(weather_data, 'r', encoding='utf-8') as f:
-                data = json.load(f)
-        else:
-            data = weather_data
+        with open(template_file, 'r', encoding='utf-8') as f:
+            return f.read()
     except Exception as e:
-        print(f"❌ Error llegint dades: {e}")
-        return
-    
-    # CANVI CRÍTIC: 'stations' en lloc de 'estacions'
-    stations = data.get('stations', {})
-    
-    # Obtenir data d'actualització
-    last_updated = data.get('metadata', {}).get('last_updated', '')
-    if last_updated:
-        try:
-            dt = datetime.fromisoformat(last_updated.replace('Z', '+00:00'))
-            update_time = dt.strftime("%H:%M:%S")
-            update_date = dt.strftime("%Y-%m-%d")
-        except:
-            update_time = ""
-            update_date = ""
-    else:
-        update_time = ""
-        update_date = ""
-    
-    # HTML template (el mateix que teníem)
-    html_template = """<!DOCTYPE html>
-<html lang="ca">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MeteoCat Banner</title>
-    <style>
-        body {{
-            margin: 0;
-            padding: 0;
-            background-color: #000;
-            color: #fff;
-            font-family: 'Arial', sans-serif;
-            width: 1920px;
-            overflow: hidden;
-        }}
-        
-        .banner-container {{
-            display: flex;
-            flex-wrap: nowrap;
-            padding: 10px;
-            background: linear-gradient(90deg, #1a237e, #0d47a1);
-            border-bottom: 3px solid #ff9800;
-        }}
-        
-        .station {{
-            flex: 0 0 auto;
-            width: 320px;
-            padding: 15px;
-            margin-right: 10px;
-            background-color: rgba(255, 255, 255, 0.1);
-            border-radius: 8px;
-            border-left: 4px solid #ff9800;
-        }}
-        
-        .station-name {{
-            font-size: 18px;
-            font-weight: bold;
-            margin-bottom: 10px;
-            color: #ff9800;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }}
-        
-        .data-row {{
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 5px;
-            font-size: 16px;
-        }}
-        
-        .data-label {{
-            color: #bbdefb;
-        }}
-        
-        .data-value {{
-            font-weight: bold;
-            color: #fff;
-        }}
-        
-        .footer {{
-            position: absolute;
-            bottom: 5px;
-            right: 10px;
-            font-size: 12px;
-            color: #90a4ae;
-        }}
-    </style>
-</head>
-<body>
-    <div class="banner-container">
-        {stations_html}
-    </div>
-    <div class="footer">
-        Actualitzat: {update_time} - Data: {update_date} | Font: MeteoCat
-    </div>
-</body>
-</html>"""
-    
-    # Generar HTML per a cada estació
-    stations_html = ""
-    station_count = 0
-    
-    for station_id, station_data in stations.items():
-        # SOLS si l'estació té èxit
-        if station_data.get('success'):
-            # CANVI: Accedir correctament a les dades
-            station_name = station_data['metadata']['name']
-            values = station_data['values']
-            
-            tmx = format_temperature(values.get('TX'))
-            tmn = format_temperature(values.get('TN'))
-            ppt = format_rain(values.get('PPT'))
-            
-            station_html = f"""
-        <div class="station">
-            <div class="station-name">{station_name}</div>
-            <div class="data-row">
-                <span class="data-label">Temp. màx:</span>
-                <span class="data-value">{tmx}</span>
-            </div>
-            <div class="data-row">
-                <span class="data-label">Temp. mín:</span>
-                <span class="data-value">{tmn}</span>
-            </div>
-            <div class="data-row">
-                <span class="data-label">Pluja:</span>
-                <span class="data-value">{ppt}</span>
-            </div>
-        </div>"""
-            
-            stations_html += station_html
-            station_count += 1
-    
-    # Si no hi ha estacions, mostra missatge
-    if station_count == 0:
-        stations_html = """
-        <div class="station" style="width: 100%; text-align: center;">
-            <div class="station-name">⏳ No hi ha dades disponibles</div>
-            <div class="data-row">Esperant actualització de dades...</div>
-        </div>"""
-    
-    # Generar HTML final
-    html_content = html_template.format(
-        stations_html=stations_html,
-        update_time=update_time,
-        update_date=update_date
-    )
-    
-    # Guardar fitxer
-    with open(output_file, 'w', encoding='utf-8') as f:
-        f.write(html_content)
-    
-    print(f"✅ Banner generat amb {station_count} estacions")
-    return output_file
+        print(f"❌ Error carregant template: {e}")
+        return None
 
+def generate_station_html(station_data):
+    """
+    Genera el HTML per una estació individual
+    """
+    if not station_data.get('success'):
+        return ""
+    
+    metadata = station_data['metadata']
+    values = station_data['values']
+    
+    station_name = metadata['name']
+    tx = values.get('TX', '-')
+    tn = values.get('TN', '-')
+    ppt = values.get('PPT', '-')
+    
+    # Formatejar valors (ja venen arrodonits del scraper)
+    tx_display = f"{tx}" if tx != '-' else "-"
+    tn_display = f"{tn}" if tn != '-' else "-"
+    ppt_display = f"{ppt}" if ppt != '-' else "-"
+    
+    return f"""
+            <div class="content-group">
+                <div class="location-header">
+                    <div class="location-name">{station_name}</div>
+                </div>
+                <div class="data-container">
+                    <div class="data-box">
+                        <div class="data-title">Temp. màxima</div>
+                        <div class="data-value">{tx_display}<span class="data-unit">°C</span></div>
+                    </div>
+                    <div class="data-box">
+                        <div class="data-title">Temp. mínima</div>
+                        <div class="data-value">{tn_display}<span class="data-unit">°C</span></div>
+                    </div>
+                    <div class="data-box">
+                        <div class="data-title">Pluja acumulada</div>
+                        <div class="data-value">{ppt_display}<span class="data-unit">mm</span></div>
+                    </div>
+                </div>
+                <div class="footer">
+                    <div class="update-info">Actualització: {datetime.now().strftime("%H:%M")}</div>
+                    <div class="source">Font: MeteoCat</div>
+                </div>
+            </div>
+    """
 
 def main():
     """Funció principal"""
     print("🎨 Generant banner meteorològic...")
     
-    # Ruta al fitxer de dades
-    data_file = "data/latest_weather.json"
+    # 1. Carregar template
+    template = load_template()
+    if not template:
+        return
     
-    # Verificar que el fitxer existeix
+    # 2. Carregar dades meteorològiques
+    data_file = "data/latest_weather.json"
     if not os.path.exists(data_file):
         print(f"❌ El fitxer {data_file} no existeix")
         print("   Executa primer meteo_scraper.py per obtenir dades")
         return
     
-    # Generar el banner
-    output_file = generate_banner_html(data_file)
+    try:
+        with open(data_file, 'r', encoding='utf-8') as f:
+            data = json.load(f)
+    except Exception as e:
+        print(f"❌ Error llegint dades: {e}")
+        return
     
-    if output_file:
-        print(f"🏁 Banner creat correctament a: {output_file}")
-        print(f"   Obre {output_file} al navegador per visualitzar-lo")
-
+    stations = data.get('stations', {})
+    
+    # 3. Generar HTML per a cada estació
+    stations_html = ""
+    station_count = 0
+    
+    for station_id, station_data in stations.items():
+        if station_data.get('success'):
+            station_html = generate_station_html(station_data)
+            if station_html:
+                stations_html += station_html
+                station_count += 1
+    
+    # 4. Si no hi ha dades, mostrar missatge
+    if station_count == 0:
+        stations_html = """
+            <div class="content-group active">
+                <div class="location-header">
+                    <div class="location-name">SENSE DADES</div>
+                </div>
+                <div class="data-container">
+                    <div class="data-box">
+                        <div class="data-title">Temperatura màxima</div>
+                        <div class="data-value">-<span class="data-unit">°C</span></div>
+                    </div>
+                    <div class="data-box">
+                        <div class="data-title">Temperatura mínima</div>
+                        <div class="data-value">-<span class="data-unit">°C</span></div>
+                    </div>
+                    <div class="data-box">
+                        <div class="data-title">Pluja acumulada</div>
+                        <div class="data-value">-<span class="data-unit">mm</span></div>
+                    </div>
+                </div>
+                <div class="footer">
+                    <div class="update-info">Esperant dades meteorològiques...</div>
+                    <div class="source">Font: MeteoCat</div>
+                </div>
+            </div>
+        """
+    
+    # 5. Injectar stations_html al template
+    # Buscar el div.scroll-container i reemplaçar el seu contingut
+    start_marker = '<div class="scroll-container">'
+    end_marker = '</div>\n    </div>'  # Tancament de .scroll-container + .weather-container
+    
+    start_idx = template.find(start_marker)
+    end_idx = template.find(end_marker, start_idx)
+    
+    if start_idx != -1 and end_idx != -1:
+        # Mantenir el div.scroll-container obert i tancat
+        new_content = f'{start_marker}\n            {stations_html}\n        </div>'
+        updated_template = template[:start_idx] + new_content + template[end_idx:]
+    else:
+        # Fallback: reemplaçar manualment
+        placeholder = '<!-- EL CONTINGUT D\'AQUÍ ES REEMPLAÇARÀ COMPLETAMENT PER update_banner.py -->'
+        updated_template = template.replace(placeholder, stations_html)
+    
+    # 6. Guardar fitxer
+    output_file = "banner_output.html"
+    with open(output_file, 'w', encoding='utf-8') as f:
+        f.write(updated_template)
+    
+    print(f"✅ Banner generat amb {station_count} estacions")
+    print(f"🏁 Fitxer: {output_file}")
+    
+    # 7. També generar index.html (per GitHub Pages)
+    with open("index.html", 'w', encoding='utf-8') as f:
+        f.write(updated_template)
+    print("📄 index.html actualitzat")
 
 if __name__ == "__main__":
     main()
