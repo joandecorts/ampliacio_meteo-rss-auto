@@ -93,9 +93,22 @@ def generate_banner_html(weather_data, output_file="banner_output.html"):
         print(f"❌ Error llegint dades: {e}")
         return
     
-    stations = data.get('estacions', {})
-    update_time = data.get('ultima_actualitzacio', '')
-    update_date = data.get('data_actualitzacio', '')
+    # CANVI CRÍTIC: 'stations' en lloc de 'estacions'
+    stations = data.get('stations', {})
+    
+    # Obtenir data d'actualització del metadata
+    last_updated = data.get('metadata', {}).get('last_updated', '')
+    if last_updated:
+        try:
+            dt = datetime.fromisoformat(last_updated.replace('Z', '+00:00'))
+            update_time = dt.strftime("%H:%M:%S")
+            update_date = dt.strftime("%Y-%m-%d")
+        except:
+            update_time = ""
+            update_date = ""
+    else:
+        update_time = ""
+        update_date = ""
     
     # HTML template
     html_template = """<!DOCTYPE html>
@@ -180,12 +193,20 @@ def generate_banner_html(weather_data, output_file="banner_output.html"):
     
     # Generar HTML per a cada estació
     stations_html = ""
-    for station_name, station_data in stations.items():
-        tmx = format_temperature(station_data.get('tmx'))
-        tmn = format_temperature(station_data.get('tmn'))
-        ppt = format_rain(station_data.get('ppt'))
-        
-        station_html = f"""
+    station_count = 0
+    
+    for station_id, station_data in stations.items():
+        # CANVI: Comprovar si l'estació té dades vàlides
+        if station_data.get('success'):
+            # CANVI: Accedir correctament a les dades
+            station_name = station_data['metadata']['name']
+            values = station_data['values']
+            
+            tmx = format_temperature(values.get('TX'))
+            tmn = format_temperature(values.get('TN'))
+            ppt = format_rain(values.get('PPT'))
+            
+            station_html = f"""
         <div class="station">
             <div class="station-name">{station_name}</div>
             <div class="data-row">
@@ -201,8 +222,17 @@ def generate_banner_html(weather_data, output_file="banner_output.html"):
                 <span class="data-value">{ppt}</span>
             </div>
         </div>"""
-        
-        stations_html += station_html
+            
+            stations_html += station_html
+            station_count += 1
+    
+    # Si no hi ha estacions, mostra missatge
+    if station_count == 0:
+        stations_html = """
+        <div class="station" style="width: 100%; text-align: center;">
+            <div class="station-name">⏳ No hi ha dades disponibles</div>
+            <div class="data-row">Esperant actualització de dades...</div>
+        </div>"""
     
     # Generar HTML final
     html_content = html_template.format(
@@ -215,7 +245,7 @@ def generate_banner_html(weather_data, output_file="banner_output.html"):
     with open(output_file, 'w', encoding='utf-8') as f:
         f.write(html_content)
     
-    print(f"✅ Banner generat: {output_file}")
+    print(f"✅ Banner generat amb {station_count} estacions")
     return output_file
 
 
