@@ -1,10 +1,11 @@
 """
 Genera el fitxer HTML amb el banner meteorològic - VERSIÓ DEFINITIVA
 Utilitza banner_news_channel.html com a template
+AMB HORA LOCAL I DATA dd/mm/yyyy
 """
 
 import json
-from datetime import datetime
+from datetime import datetime, timezone, timedelta
 import os
 
 def load_template(template_file="banner_news_channel.html"):
@@ -36,6 +37,12 @@ def generate_station_html(station_data):
     tn_display = f"{tn}" if tn != '-' else "-"
     ppt_display = f"{ppt}" if ppt != '-' else "-"
     
+    # HORA LOCAL (Catalunya, UTC+1) i DATA dd/mm/yyyy
+    utc_time = datetime.now(timezone.utc)
+    local_time = utc_time + timedelta(hours=1)  # UTC+1 per Catalunya
+    hora_local = local_time.strftime("%H:%M")
+    data_local = local_time.strftime("%d/%m/%Y")
+    
     return f"""
             <div class="content-group">
                 <div class="location-header">
@@ -55,9 +62,10 @@ def generate_station_html(station_data):
                         <div class="data-value">{ppt_display}<span class="data-unit">mm</span></div>
                     </div>
                 </div>
+                <!-- CANVIS AQUÍ: Hora local i data dd/mm/yyyy -->
                 <div class="footer">
-                    <div class="update-info">Actualització: {datetime.now().strftime("%H:%M")}</div>
-                    <div class="source">Font: MeteoCat</div>
+                    <div class="update-info">Actualitzat: {hora_local} - Data: {data_local}</div>
+                    <div class="source">Font: https://www.meteo.cat/</div>
                 </div>
             </div>
     """
@@ -98,9 +106,15 @@ def main():
                 stations_html += station_html
                 station_count += 1
     
-    # 4. Si no hi ha dades, mostrar missatge
+    # 4. Si no hi ha dades, mostrar missatge (AMB HORA LOCAL)
     if station_count == 0:
-        stations_html = """
+        # Hora local també per a sense dades
+        utc_time = datetime.now(timezone.utc)
+        local_time = utc_time + timedelta(hours=1)
+        hora_local = local_time.strftime("%H:%M")
+        data_local = local_time.strftime("%d/%m/%Y")
+        
+        stations_html = f"""
             <div class="content-group active">
                 <div class="location-header">
                     <div class="location-name">SENSE DADES</div>
@@ -119,9 +133,10 @@ def main():
                         <div class="data-value">-<span class="data-unit">mm</span></div>
                     </div>
                 </div>
+                <!-- CANVIS AQUÍ també -->
                 <div class="footer">
-                    <div class="update-info">Esperant dades meteorològiques...</div>
-                    <div class="source">Font: MeteoCat</div>
+                    <div class="update-info">Actualitzat: {hora_local} - Data: {data_local}</div>
+                    <div class="source">Font: https://www.meteo.cat/</div>
                 </div>
             </div>
         """
