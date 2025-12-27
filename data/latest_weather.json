@@ -1,0 +1,269 @@
+{
+  "metadata": {
+    "last_updated": "2025-12-27T10:53:49.688215",
+    "source": "meteocat_web_scraping",
+    "stations_count": 20
+  },
+  "stations": {
+    "XJ": {
+      "success": true,
+      "values": {
+        "TX": 12.3,
+        "TN": 10.5,
+        "PPT": 6.0
+      },
+      "metadata": {
+        "name": "GIRONA",
+        "last_fetched": "2025-12-27T10:53:51.329096",
+        "url": "https://www.meteo.cat/observacions/xema/dades?codi=XJ"
+      }
+    },
+    "UO": {
+      "success": true,
+      "values": {
+        "TX": 12.6,
+        "TN": 10.8,
+        "PPT": 2.7
+      },
+      "metadata": {
+        "name": "FORNELLS DE LA SELVA",
+        "last_fetched": "2025-12-27T10:53:52.899874",
+        "url": "https://www.meteo.cat/observacions/xema/dades?codi=UO"
+      }
+    },
+    "D4": {
+      "success": true,
+      "values": {
+        "TX": 13.4,
+        "TN": 11.4,
+        "PPT": 2.7
+      },
+      "metadata": {
+        "name": "ROSES",
+        "last_fetched": "2025-12-27T10:53:54.562254",
+        "url": "https://www.meteo.cat/observacions/xema/dades?codi=D4"
+      }
+    },
+    "CD": {
+      "success": true,
+      "values": {
+        "TX": 4.2,
+        "TN": 1.9,
+        "PPT": 0.1
+      },
+      "metadata": {
+        "name": "LA SEU D'URGELL - BELLESTAR",
+        "last_fetched": "2025-12-27T10:53:56.102937",
+        "url": "https://www.meteo.cat/observacions/xema/dades?codi=CD"
+      }
+    },
+    "YP": {
+      "success": true,
+      "values": {
+        "TX": 13.8,
+        "TN": 12.1,
+        "PPT": 0.2
+      },
+      "metadata": {
+        "name": "PALAFRUGELL",
+        "last_fetched": "2025-12-27T10:53:57.643821",
+        "url": "https://www.meteo.cat/observacions/xema/dades?codi=YP"
+      }
+    },
+    "XL": {
+      "success": true,
+      "values": {
+        "TX": 13.8,
+        "TN": 11.9,
+        "PPT": 0.4
+      },
+      "metadata": {
+        "name": "EL PRAT DE LLOBREGAT",
+        "last_fetched": "2025-12-27T10:53:59.211292",
+        "url": "https://www.meteo.cat/observacions/xema/dades?codi=XL"
+      }
+    },
+    "DJ": {
+      "success": true,
+      "values": {
+        "TX": 11.2,
+        "TN": 9.7,
+        "PPT": 8.1
+      },
+      "metadata": {
+        "name": "BANYOLES",
+        "last_fetched": "2025-12-27T10:53:59.782717",
+        "url": "https://www.meteo.cat/observacions/xema/dades?codi=DJ"
+      }
+    },
+    "DP": {
+      "success": true,
+      "values": {
+        "TX": 4.7,
+        "TN": 2.0,
+        "PPT": 0.1
+      },
+      "metadata": {
+        "name": "DAS - AERÒDROM",
+        "last_fetched": "2025-12-27T10:54:01.372219",
+        "url": "https://www.meteo.cat/observacions/xema/dades?codi=DP"
+      }
+    },
+    "X4": {
+      "success": true,
+      "values": {
+        "TX": 13.7,
+        "TN": 12.3,
+        "PPT": 1.0
+      },
+      "metadata": {
+        "name": "BARCELONA - EL RAVAL",
+        "last_fetched": "2025-12-27T10:54:02.812965",
+        "url": "https://www.meteo.cat/observacions/xema/dades?codi=X4"
+      }
+    },
+    "VK": {
+      "success": true,
+      "values": {
+        "TX": 8.9,
+        "TN": 4.9,
+        "PPT": 0.2
+      },
+      "metadata": {
+        "name": "LLEIDA - RAIMAT",
+        "last_fetched": "2025-12-27T10:54:04.226397",
+        "url": "https://www.meteo.cat/observacions/xema/dades?codi=VK"
+      }
+    },
+    "XE": {
+      "success": true,
+      "values": {
+        "TX": 11.6,
+        "TN": 10.4,
+        "PPT": 5.2
+      },
+      "metadata": {
+        "name": "TARRAGONA - COMPLEX EDUCATIU",
+        "last_fetched": "2025-12-27T10:54:05.747751",
+        "url": "https://www.meteo.cat/observacions/xema/dades?codi=XE"
+      }
+    },
+    "DG": {
+      "success": true,
+      "values": {
+        "TX": 0.8,
+        "TN": -0.9,
+        "PPT": 5.1
+      },
+      "metadata": {
+        "name": "QUERALBS - NÚRIA (1.971 m)",
+        "last_fetched": "2025-12-27T10:54:07.259521",
+        "url": "https://www.meteo.cat/observacions/xema/dades?codi=DG"
+      }
+    },
+    "ZC": {
+      "success": true,
+      "values": {
+        "TX": -2.7,
+        "TN": -3.7,
+        "PPT": 3.5
+      },
+      "metadata": {
+        "name": "SETCASES - ULLDETER (2.413 m)",
+        "last_fetched": "2025-12-27T10:54:08.934572",
+        "url": "https://www.meteo.cat/observacions/xema/dades?codi=ZC"
+      }
+    },
+    "UN": {
+      "success": true,
+      "values": {
+        "TX": 12.4,
+        "TN": 10.6,
+        "PPT": 4.8
+      },
+      "metadata": {
+        "name": "CASSÀ DE LA SELVA",
+        "last_fetched": "2025-12-27T10:54:10.543087",
+        "url": "https://www.meteo.cat/observacions/xema/dades?codi=UN"
+      }
+    },
+    "D7": {
+      "success": true,
+      "values": {
+        "TX": 7.3,
+        "TN": 5.9,
+        "PPT": 8.5
+      },
+      "metadata": {
+        "name": "VINEBRE",
+        "last_fetched": "2025-12-27T10:54:12.115446",
+        "url": "https://www.meteo.cat/observacions/xema/dades?codi=D7"
+      }
+    },
+    "YB": {
+      "success": true,
+      "values": {
+        "TX": 9.2,
+        "TN": 7.9,
+        "PPT": 25.6
+      },
+      "metadata": {
+        "name": "OLOT",
+        "last_fetched": "2025-12-27T10:54:12.686299",
+        "url": "https://www.meteo.cat/observacions/xema/dades?codi=YB"
+      }
+    },
+    "CI": {
+      "success": true,
+      "values": {
+        "TX": 6.3,
+        "TN": 5.6,
+        "PPT": 16.2
+      },
+      "metadata": {
+        "name": "SANT PAU DE SEGÚRIES",
+        "last_fetched": "2025-12-27T10:54:14.255922",
+        "url": "https://www.meteo.cat/observacions/xema/dades?codi=CI"
+      }
+    },
+    "XK": {
+      "success": true,
+      "values": {
+        "TX": 1.6,
+        "TN": 0.3,
+        "PPT": 15.2
+      },
+      "metadata": {
+        "name": "PUIG SESOLLES (1.668 M)",
+        "last_fetched": "2025-12-27T10:54:15.683086",
+        "url": "https://www.meteo.cat/observacions/xema/dades?codi=XK"
+      }
+    },
+    "VS": {
+      "success": true,
+      "values": {
+        "TX": -0.2,
+        "TN": -2.9,
+        "PPT": 0.2
+      },
+      "metadata": {
+        "name": "LAC REDON (2.247 M)",
+        "last_fetched": "2025-12-27T10:54:17.298036",
+        "url": "https://www.meteo.cat/observacions/xema/dades?codi=VS"
+      }
+    },
+    "DN": {
+      "success": true,
+      "values": {
+        "TX": 11.5,
+        "TN": 10.0,
+        "PPT": 8.2
+      },
+      "metadata": {
+        "name": "ANGLÈS",
+        "last_fetched": "2025-12-27T10:54:18.916487",
+        "url": "https://www.meteo.cat/observacions/xema/dades?codi=DN"
+      }
+    }
+  }
+}
