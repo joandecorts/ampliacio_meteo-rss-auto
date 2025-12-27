@@ -3,764 +3,594 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Meteorologia</title>
-    
+    <title>Meteorologia - Dades en Directe</title>
     <style>
-        * { margin:0; padding:0; box-sizing:border-box; }
         body {
-            background:#fff;
-            display:flex;
-            justify-content:center;
-            align-items:center;
-            min-height:100vh;
-            font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f5f5f5;
+            margin: 0;
+            padding: 20px;
+            color: #333;
         }
-        .weather-container {
-            width:100%;
-            max-width:500px;
-            background:white;
-            overflow:hidden;
-            box-shadow:0 2px 8px rgba(0,0,0,0.08);
-            border-radius:5px;
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
         }
-        .scroll-container {
-            position:relative;
-            height:280px;
-            overflow:hidden;
-        }
-        .content-group {
-            position:absolute;
-            width:100%;
-            height:280px;
-            left:0;
-            transition:transform 0.8s ease;
-            background:white;
-            opacity:0;
-            z-index:1;
-        }
-        .content-group.active {
-            opacity:1;
-            z-index:2;
-            transform:translateY(0);
-        }
-        .content-group.next {
-            opacity:0;
-            transform:translateY(-100%);
-        }
-        .content-group.out {
-            opacity:0;
-            transform:translateY(100%);
-        }
-        .location-header {
-            background:#c00;
-            color:white;
-            padding:0 12px;
-            height:50px;
-            display:flex;
-            align-items:center;
-            justify-content:center;
-        }
-        .location-name {
-            font-size:20px;
-            font-weight:bold;
-            text-transform:uppercase;
-            letter-spacing:0.5px;
-            text-align:center;
-            line-height:1.1;
-        }
-        .data-container {
-            display:flex;
-            padding:10px;
-            gap:8px;
-            height:160px;
-        }
-        .data-box {
-            flex:1;
-            background:#fff;
-            border:1.5px solid #e0e0e0;
-            border-radius:5px;
-            padding:10px 8px;
-            display:flex;
-            flex-direction:column;
-            justify-content:center;
-            text-align:center;
-        }
-        .data-title {
-            font-size:13px;
-            font-weight:600;
-            color:#333;
-            margin-bottom:6px;
-            line-height:1.2;
-        }
-        .data-value {
-            font-size:28px;
-            font-weight:800;
-            color:#000;
-            margin:4px 0;
-        }
-        .data-unit {
-            font-size:18px;
-            font-weight:700;
-            margin-left:2px;
-        }
-        .footer {
-            padding:8px 10px;
-            text-align:center;
-            background:#fff;
-            border-top:1.5px solid #eee;
-            height:70px;
-            display:flex;
-            flex-direction:column;
-            justify-content:center;
-            position:absolute;
-            bottom:0;
-            width:100%;
-        }
-        .update-info {
-            font-size:13px;
-            color:#333;
-            margin-bottom:2px;
-            font-weight:700;
-        }
-        .source {
-            font-size:12px;
-            color:#666;
-            font-weight:600;
-        }
-        @media (max-width: 600px) and (orientation: portrait) {
-            .weather-container { max-width:95vw; }
-            .scroll-container, .content-group { height:280px; }
-            .data-container { 
-                height:120px;
-                padding:8px 10px;
-                gap:6px;
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
             }
-            .data-box { padding:8px 6px; }
-            .data-title { 
-                font-size:11px;
-                margin-bottom:4px;
-                min-height:26px;
-                display:flex;
-                align-items:center;
-                justify-content:center;
+            h1 { font-size: 24px; }
+            h3 { font-size: 16px; }
+            div[style*="font-size: 48px"] {
+                font-size: 36px !important;
             }
-            .data-value { font-size:22px; }
-            .data-unit { font-size:16px; }
-            .data-title.br-2 { display:block; padding:0 2px; }
-            .footer { height:60px; padding:6px 8px; }
-            .update-info { font-size:12px; }
-            .source { font-size:11px; }
-        }
-        @media (max-width: 900px) and (orientation: landscape) {
-            .scroll-container, .content-group { height:230px; }
-            .data-container { height:110px; padding:8px; gap:6px; }
-            .data-box { padding:8px 5px; }
-            .data-title { font-size:11px; min-height:24px; }
-            .data-value { font-size:24px; }
-            .data-unit { font-size:16px; }
-            .footer { height:60px; padding:6px 8px; }
-            .update-info { font-size:12px; }
-            .source { font-size:11px; }
-        }
-        @media (min-width: 1200px) {
-            .weather-container { max-width:550px; }
-            .scroll-container, .content-group { height:300px; }
-            .data-container { height:170px; }
-            .data-title { font-size:14px; }
-            .data-value { font-size:32px; }
-        }
-        @supports (-webkit-touch-callout: none) {
-            .data-title { -webkit-font-smoothing: antialiased; }
         }
     </style>
 </head>
 <body>
-    <div class="weather-container">
-        <div class="scroll-container">
-            
-            <div class="content-group">
-                <div class="location-header">
-                    <div class="location-name">GIRONA</div>
-                </div>
-                <div class="data-container">
-                    <div class="data-box">
-                        <div class="data-title">Temp. màxima</div>
-                        <div class="data-value">13.0<span class="data-unit">°C</span></div>
-                    </div>
-                    <div class="data-box">
-                        <div class="data-title">Temp. mínima</div>
-                        <div class="data-value">10.5<span class="data-unit">°C</span></div>
-                    </div>
-                    <div class="data-box">
-                        <div class="data-title">Pluja acumulada</div>
-                        <div class="data-value">9.2<span class="data-unit">mm</span></div>
-                    </div>
-                </div>
-                <div class="footer">
-                    <div class="update-info">Actualització: 13:35</div>
-                    <div class="source">Font: MeteoCat</div>
-                </div>
-            </div>
-    
-            <div class="content-group">
-                <div class="location-header">
-                    <div class="location-name">FORNELLS DE LA SELVA</div>
-                </div>
-                <div class="data-container">
-                    <div class="data-box">
-                        <div class="data-title">Temp. màxima</div>
-                        <div class="data-value">12.9<span class="data-unit">°C</span></div>
-                    </div>
-                    <div class="data-box">
-                        <div class="data-title">Temp. mínima</div>
-                        <div class="data-value">10.8<span class="data-unit">°C</span></div>
-                    </div>
-                    <div class="data-box">
-                        <div class="data-title">Pluja acumulada</div>
-                        <div class="data-value">7.3<span class="data-unit">mm</span></div>
-                    </div>
-                </div>
-                <div class="footer">
-                    <div class="update-info">Actualització: 13:35</div>
-                    <div class="source">Font: MeteoCat</div>
-                </div>
-            </div>
-    
-            <div class="content-group">
-                <div class="location-header">
-                    <div class="location-name">ROSES</div>
-                </div>
-                <div class="data-container">
-                    <div class="data-box">
-                        <div class="data-title">Temp. màxima</div>
-                        <div class="data-value">14.1<span class="data-unit">°C</span></div>
-                    </div>
-                    <div class="data-box">
-                        <div class="data-title">Temp. mínima</div>
-                        <div class="data-value">11.4<span class="data-unit">°C</span></div>
-                    </div>
-                    <div class="data-box">
-                        <div class="data-title">Pluja acumulada</div>
-                        <div class="data-value">2.7<span class="data-unit">mm</span></div>
-                    </div>
-                </div>
-                <div class="footer">
-                    <div class="update-info">Actualització: 13:35</div>
-                    <div class="source">Font: MeteoCat</div>
-                </div>
-            </div>
-    
-            <div class="content-group">
-                <div class="location-header">
-                    <div class="location-name">LA SEU D'URGELL - BELLESTAR</div>
-                </div>
-                <div class="data-container">
-                    <div class="data-box">
-                        <div class="data-title">Temp. màxima</div>
-                        <div class="data-value">9.0<span class="data-unit">°C</span></div>
-                    </div>
-                    <div class="data-box">
-                        <div class="data-title">Temp. mínima</div>
-                        <div class="data-value">1.9<span class="data-unit">°C</span></div>
-                    </div>
-                    <div class="data-box">
-                        <div class="data-title">Pluja acumulada</div>
-                        <div class="data-value">0.1<span class="data-unit">mm</span></div>
-                    </div>
-                </div>
-                <div class="footer">
-                    <div class="update-info">Actualització: 13:35</div>
-                    <div class="source">Font: MeteoCat</div>
-                </div>
-            </div>
-    
-            <div class="content-group">
-                <div class="location-header">
-                    <div class="location-name">PALAFRUGELL</div>
-                </div>
-                <div class="data-container">
-                    <div class="data-box">
-                        <div class="data-title">Temp. màxima</div>
-                        <div class="data-value">13.8<span class="data-unit">°C</span></div>
-                    </div>
-                    <div class="data-box">
-                        <div class="data-title">Temp. mínima</div>
-                        <div class="data-value">12.1<span class="data-unit">°C</span></div>
-                    </div>
-                    <div class="data-box">
-                        <div class="data-title">Pluja acumulada</div>
-                        <div class="data-value">0.7<span class="data-unit">mm</span></div>
-                    </div>
-                </div>
-                <div class="footer">
-                    <div class="update-info">Actualització: 13:35</div>
-                    <div class="source">Font: MeteoCat</div>
-                </div>
-            </div>
-    
-            <div class="content-group">
-                <div class="location-header">
-                    <div class="location-name">EL PRAT DE LLOBREGAT</div>
-                </div>
-                <div class="data-container">
-                    <div class="data-box">
-                        <div class="data-title">Temp. màxima</div>
-                        <div class="data-value">13.8<span class="data-unit">°C</span></div>
-                    </div>
-                    <div class="data-box">
-                        <div class="data-title">Temp. mínima</div>
-                        <div class="data-value">10.9<span class="data-unit">°C</span></div>
-                    </div>
-                    <div class="data-box">
-                        <div class="data-title">Pluja acumulada</div>
-                        <div class="data-value">11.8<span class="data-unit">mm</span></div>
-                    </div>
-                </div>
-                <div class="footer">
-                    <div class="update-info">Actualització: 13:35</div>
-                    <div class="source">Font: MeteoCat</div>
-                </div>
-            </div>
-    
-            <div class="content-group">
-                <div class="location-header">
-                    <div class="location-name">BANYOLES</div>
-                </div>
-                <div class="data-container">
-                    <div class="data-box">
-                        <div class="data-title">Temp. màxima</div>
-                        <div class="data-value">11.8<span class="data-unit">°C</span></div>
-                    </div>
-                    <div class="data-box">
-                        <div class="data-title">Temp. mínima</div>
-                        <div class="data-value">9.7<span class="data-unit">°C</span></div>
-                    </div>
-                    <div class="data-box">
-                        <div class="data-title">Pluja acumulada</div>
-                        <div class="data-value">10.2<span class="data-unit">mm</span></div>
-                    </div>
-                </div>
-                <div class="footer">
-                    <div class="update-info">Actualització: 13:35</div>
-                    <div class="source">Font: MeteoCat</div>
-                </div>
-            </div>
-    
-            <div class="content-group">
-                <div class="location-header">
-                    <div class="location-name">DAS - AERÒDROM</div>
-                </div>
-                <div class="data-container">
-                    <div class="data-box">
-                        <div class="data-title">Temp. màxima</div>
-                        <div class="data-value">7.3<span class="data-unit">°C</span></div>
-                    </div>
-                    <div class="data-box">
-                        <div class="data-title">Temp. mínima</div>
-                        <div class="data-value">2.0<span class="data-unit">°C</span></div>
-                    </div>
-                    <div class="data-box">
-                        <div class="data-title">Pluja acumulada</div>
-                        <div class="data-value">0.4<span class="data-unit">mm</span></div>
-                    </div>
-                </div>
-                <div class="footer">
-                    <div class="update-info">Actualització: 13:35</div>
-                    <div class="source">Font: MeteoCat</div>
-                </div>
-            </div>
-    
-            <div class="content-group">
-                <div class="location-header">
-                    <div class="location-name">BARCELONA - EL RAVAL</div>
-                </div>
-                <div class="data-container">
-                    <div class="data-box">
-                        <div class="data-title">Temp. màxima</div>
-                        <div class="data-value">13.7<span class="data-unit">°C</span></div>
-                    </div>
-                    <div class="data-box">
-                        <div class="data-title">Temp. mínima</div>
-                        <div class="data-value">10.5<span class="data-unit">°C</span></div>
-                    </div>
-                    <div class="data-box">
-                        <div class="data-title">Pluja acumulada</div>
-                        <div class="data-value">10.4<span class="data-unit">mm</span></div>
-                    </div>
-                </div>
-                <div class="footer">
-                    <div class="update-info">Actualització: 13:35</div>
-                    <div class="source">Font: MeteoCat</div>
-                </div>
-            </div>
-    
-            <div class="content-group">
-                <div class="location-header">
-                    <div class="location-name">LLEIDA - RAIMAT</div>
-                </div>
-                <div class="data-container">
-                    <div class="data-box">
-                        <div class="data-title">Temp. màxima</div>
-                        <div class="data-value">12.5<span class="data-unit">°C</span></div>
-                    </div>
-                    <div class="data-box">
-                        <div class="data-title">Temp. mínima</div>
-                        <div class="data-value">4.9<span class="data-unit">°C</span></div>
-                    </div>
-                    <div class="data-box">
-                        <div class="data-title">Pluja acumulada</div>
-                        <div class="data-value">0.4<span class="data-unit">mm</span></div>
-                    </div>
-                </div>
-                <div class="footer">
-                    <div class="update-info">Actualització: 13:35</div>
-                    <div class="source">Font: MeteoCat</div>
-                </div>
-            </div>
-    
-            <div class="content-group">
-                <div class="location-header">
-                    <div class="location-name">TARRAGONA - COMPLEX EDUCATIU</div>
-                </div>
-                <div class="data-container">
-                    <div class="data-box">
-                        <div class="data-title">Temp. màxima</div>
-                        <div class="data-value">13.8<span class="data-unit">°C</span></div>
-                    </div>
-                    <div class="data-box">
-                        <div class="data-title">Temp. mínima</div>
-                        <div class="data-value">10.4<span class="data-unit">°C</span></div>
-                    </div>
-                    <div class="data-box">
-                        <div class="data-title">Pluja acumulada</div>
-                        <div class="data-value">6.8<span class="data-unit">mm</span></div>
-                    </div>
-                </div>
-                <div class="footer">
-                    <div class="update-info">Actualització: 13:35</div>
-                    <div class="source">Font: MeteoCat</div>
-                </div>
-            </div>
-    
-            <div class="content-group">
-                <div class="location-header">
-                    <div class="location-name">QUERALBS - NÚRIA (1.971 m)</div>
-                </div>
-                <div class="data-container">
-                    <div class="data-box">
-                        <div class="data-title">Temp. màxima</div>
-                        <div class="data-value">2.1<span class="data-unit">°C</span></div>
-                    </div>
-                    <div class="data-box">
-                        <div class="data-title">Temp. mínima</div>
-                        <div class="data-value">-0.9<span class="data-unit">°C</span></div>
-                    </div>
-                    <div class="data-box">
-                        <div class="data-title">Pluja acumulada</div>
-                        <div class="data-value">7.5<span class="data-unit">mm</span></div>
-                    </div>
-                </div>
-                <div class="footer">
-                    <div class="update-info">Actualització: 13:35</div>
-                    <div class="source">Font: MeteoCat</div>
-                </div>
-            </div>
-    
-            <div class="content-group">
-                <div class="location-header">
-                    <div class="location-name">SETCASES - ULLDETER (2.413 m)</div>
-                </div>
-                <div class="data-container">
-                    <div class="data-box">
-                        <div class="data-title">Temp. màxima</div>
-                        <div class="data-value">-2.1<span class="data-unit">°C</span></div>
-                    </div>
-                    <div class="data-box">
-                        <div class="data-title">Temp. mínima</div>
-                        <div class="data-value">-3.7<span class="data-unit">°C</span></div>
-                    </div>
-                    <div class="data-box">
-                        <div class="data-title">Pluja acumulada</div>
-                        <div class="data-value">4.9<span class="data-unit">mm</span></div>
-                    </div>
-                </div>
-                <div class="footer">
-                    <div class="update-info">Actualització: 13:35</div>
-                    <div class="source">Font: MeteoCat</div>
-                </div>
-            </div>
-    
-            <div class="content-group">
-                <div class="location-header">
-                    <div class="location-name">CASSÀ DE LA SELVA</div>
-                </div>
-                <div class="data-container">
-                    <div class="data-box">
-                        <div class="data-title">Temp. màxima</div>
-                        <div class="data-value">12.8<span class="data-unit">°C</span></div>
-                    </div>
-                    <div class="data-box">
-                        <div class="data-title">Temp. mínima</div>
-                        <div class="data-value">10.6<span class="data-unit">°C</span></div>
-                    </div>
-                    <div class="data-box">
-                        <div class="data-title">Pluja acumulada</div>
-                        <div class="data-value">5.1<span class="data-unit">mm</span></div>
-                    </div>
-                </div>
-                <div class="footer">
-                    <div class="update-info">Actualització: 13:35</div>
-                    <div class="source">Font: MeteoCat</div>
-                </div>
-            </div>
-    
-            <div class="content-group">
-                <div class="location-header">
-                    <div class="location-name">VINEBRE</div>
-                </div>
-                <div class="data-container">
-                    <div class="data-box">
-                        <div class="data-title">Temp. màxima</div>
-                        <div class="data-value">8.9<span class="data-unit">°C</span></div>
-                    </div>
-                    <div class="data-box">
-                        <div class="data-title">Temp. mínima</div>
-                        <div class="data-value">5.9<span class="data-unit">°C</span></div>
-                    </div>
-                    <div class="data-box">
-                        <div class="data-title">Pluja acumulada</div>
-                        <div class="data-value">8.6<span class="data-unit">mm</span></div>
-                    </div>
-                </div>
-                <div class="footer">
-                    <div class="update-info">Actualització: 13:35</div>
-                    <div class="source">Font: MeteoCat</div>
-                </div>
-            </div>
-    
-            <div class="content-group">
-                <div class="location-header">
-                    <div class="location-name">OLOT</div>
-                </div>
-                <div class="data-container">
-                    <div class="data-box">
-                        <div class="data-title">Temp. màxima</div>
-                        <div class="data-value">9.7<span class="data-unit">°C</span></div>
-                    </div>
-                    <div class="data-box">
-                        <div class="data-title">Temp. mínima</div>
-                        <div class="data-value">7.9<span class="data-unit">°C</span></div>
-                    </div>
-                    <div class="data-box">
-                        <div class="data-title">Pluja acumulada</div>
-                        <div class="data-value">36.5<span class="data-unit">mm</span></div>
-                    </div>
-                </div>
-                <div class="footer">
-                    <div class="update-info">Actualització: 13:35</div>
-                    <div class="source">Font: MeteoCat</div>
-                </div>
-            </div>
-    
-            <div class="content-group">
-                <div class="location-header">
-                    <div class="location-name">SANT PAU DE SEGÚRIES</div>
-                </div>
-                <div class="data-container">
-                    <div class="data-box">
-                        <div class="data-title">Temp. màxima</div>
-                        <div class="data-value">6.9<span class="data-unit">°C</span></div>
-                    </div>
-                    <div class="data-box">
-                        <div class="data-title">Temp. mínima</div>
-                        <div class="data-value">5.6<span class="data-unit">°C</span></div>
-                    </div>
-                    <div class="data-box">
-                        <div class="data-title">Pluja acumulada</div>
-                        <div class="data-value">22.9<span class="data-unit">mm</span></div>
-                    </div>
-                </div>
-                <div class="footer">
-                    <div class="update-info">Actualització: 13:35</div>
-                    <div class="source">Font: MeteoCat</div>
-                </div>
-            </div>
-    
-            <div class="content-group">
-                <div class="location-header">
-                    <div class="location-name">PUIG SESOLLES (1.668 M)</div>
-                </div>
-                <div class="data-container">
-                    <div class="data-box">
-                        <div class="data-title">Temp. màxima</div>
-                        <div class="data-value">2.2<span class="data-unit">°C</span></div>
-                    </div>
-                    <div class="data-box">
-                        <div class="data-title">Temp. mínima</div>
-                        <div class="data-value">0.3<span class="data-unit">°C</span></div>
-                    </div>
-                    <div class="data-box">
-                        <div class="data-title">Pluja acumulada</div>
-                        <div class="data-value">30.5<span class="data-unit">mm</span></div>
-                    </div>
-                </div>
-                <div class="footer">
-                    <div class="update-info">Actualització: 13:35</div>
-                    <div class="source">Font: MeteoCat</div>
-                </div>
-            </div>
-    
-            <div class="content-group">
-                <div class="location-header">
-                    <div class="location-name">LAC REDON (2.247 M)</div>
-                </div>
-                <div class="data-container">
-                    <div class="data-box">
-                        <div class="data-title">Temp. màxima</div>
-                        <div class="data-value">-0.2<span class="data-unit">°C</span></div>
-                    </div>
-                    <div class="data-box">
-                        <div class="data-title">Temp. mínima</div>
-                        <div class="data-value">-2.9<span class="data-unit">°C</span></div>
-                    </div>
-                    <div class="data-box">
-                        <div class="data-title">Pluja acumulada</div>
-                        <div class="data-value">0.3<span class="data-unit">mm</span></div>
-                    </div>
-                </div>
-                <div class="footer">
-                    <div class="update-info">Actualització: 13:35</div>
-                    <div class="source">Font: MeteoCat</div>
-                </div>
-            </div>
-    
-            <div class="content-group">
-                <div class="location-header">
-                    <div class="location-name">ANGLÈS</div>
-                </div>
-                <div class="data-container">
-                    <div class="data-box">
-                        <div class="data-title">Temp. màxima</div>
-                        <div class="data-value">12.0<span class="data-unit">°C</span></div>
-                    </div>
-                    <div class="data-box">
-                        <div class="data-title">Temp. mínima</div>
-                        <div class="data-value">10.0<span class="data-unit">°C</span></div>
-                    </div>
-                    <div class="data-box">
-                        <div class="data-title">Pluja acumulada</div>
-                        <div class="data-value">14.5<span class="data-unit">mm</span></div>
-                    </div>
-                </div>
-                <div class="footer">
-                    <div class="update-info">Actualització: 13:35</div>
-                    <div class="source">Font: MeteoCat</div>
-                </div>
-            </div>
-    
-        </div></div>
-    </div>
-
-    <script>
-        // SCROLL SIMPLE I ROBUST
-        let currentIndex = 0;
-        let scrollInterval;
-        const DISPLAY_TIME = 5000; // 5 segons per provar
+    <div class="container">
         
-        function initSlider() {
-            const allStations = document.querySelectorAll('.content-group');
-            const total = allStations.length;
-            
-            console.log(`🔍 Estacions trobades: ${total}`);
-            if (total === 0) {
-                console.log('⚠️  No hi ha estacions per mostrar.');
-                return;
-            }
-            
-            // Ocultar totes i posar classes inicials
-            allStations.forEach((station, idx) => {
-                station.classList.remove('active', 'next', 'out');
-                station.style.zIndex = '1';
-                if (idx === 0) {
-                    station.classList.add('active');
-                    station.style.zIndex = '2';
-                } else {
-                    station.classList.add('next');
-                }
-            });
-            
-            currentIndex = 0;
-            startAutoScroll();
-        }
-        
-        function goToNext() {
-            const allStations = document.querySelectorAll('.content-group');
-            const total = allStations.length;
-            if (total < 2) return;
-            
-            const current = allStations[currentIndex];
-            const nextIndex = (currentIndex + 1) % total;
-            const next = allStations[nextIndex];
-            
-            console.log(`🔄 Canviant: ${currentIndex} → ${nextIndex}`);
-            
-            // Transició
-            current.classList.replace('active', 'out');
-            next.classList.replace('next', 'active');
-            
-            // Netejar i preparar per la següent
-            setTimeout(() => {
-                current.classList.remove('out');
-                current.classList.add('next');
-                current.style.zIndex = '1';
-                next.style.zIndex = '2';
+            <div style="margin: 20px; padding: 20px; background: #fff; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+                <h1 style="color: #c00; text-align: center; margin-bottom: 20px;">GIRONA</h1>
                 
-                // La propera després de 'next' també es prepara
-                const followingIndex = (nextIndex + 1) % total;
-                if (followingIndex !== currentIndex) {
-                    allStations[followingIndex].classList.add('next');
-                }
-            }, 800);
+                <div style="display: flex; justify-content: space-between; margin-bottom: 25px;">
+                    <div style="text-align: center; flex: 1;">
+                        <h3 style="color: #333; margin-bottom: 10px;">Temperatura máxima del día</h3>
+                        <div style="font-size: 48px; font-weight: bold; color: #c00;">13.0°c</div>
+                    </div>
+                    
+                    <div style="text-align: center; flex: 1;">
+                        <h3 style="color: #333; margin-bottom: 10px;">Temperatura mínima del día</h3>
+                        <div style="font-size: 48px; font-weight: bold; color: #c00;">10.5°c</div>
+                    </div>
+                    
+                    <div style="text-align: center; flex: 1;">
+                        <h3 style="color: #333; margin-bottom: 10px;">Pluja acumulada</h3>
+                        <div style="font-size: 48px; font-weight: bold; color: #c00;">9.2 mm</div>
+                    </div>
+                </div>
+                
+                <hr style="border: none; border-top: 2px solid #eee; margin: 25px 0;">
+                
+                <div style="text-align: center; color: #666; font-size: 14px;">
+                    <p><strong>Actualitzat: 14:42 - Data: 27/12/2025</strong></p>
+                    <p>Font: https://www.meteo.cat/</p>
+                </div>
+            </div>
             
-            currentIndex = nextIndex;
-        }
-        
-        function startAutoScroll() {
-            if (scrollInterval) clearInterval(scrollInterval);
-            scrollInterval = setInterval(goToNext, DISPLAY_TIME);
-            console.log('▶️  Scroll automàtic iniciat.');
-        }
-        
-        function stopAutoScroll() {
-            if (scrollInterval) clearInterval(scrollInterval);
-            console.log('⏸️  Scroll automàtic aturat.');
-        }
-        
-        // Iniciar quan es carregui la pàgina
-        document.addEventListener('DOMContentLoaded', function() {
-            console.log('📄 DOM carregat. Inicialitzant slider...');
-            // Esperem una mica per si el contingut es carrega dinàmicament
-            setTimeout(initSlider, 100);
-        });
-        
-        // Aturar quan la pestanya no és visible
-        document.addEventListener('visibilitychange', function() {
-            if (document.hidden) {
-                stopAutoScroll();
-            } else {
-                startAutoScroll();
-            }
-        });
-        
-        // Debug: fer clic a la pàgina mostra estat
-        document.addEventListener('click', function() {
-            const all = document.querySelectorAll('.content-group');
-            console.log('--- ESTAT ACTUAL ---');
-            all.forEach((s, i) => {
-                const name = s.querySelector('.location-name')?.textContent || `Estació ${i}`;
-                console.log(`${i}: ${name} - Classes: ${s.className}`);
-            });
-        });
-    </script>
+            <div style="margin: 20px; padding: 20px; background: #fff; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+                <h1 style="color: #c00; text-align: center; margin-bottom: 20px;">FORNELLS DE LA SELVA</h1>
+                
+                <div style="display: flex; justify-content: space-between; margin-bottom: 25px;">
+                    <div style="text-align: center; flex: 1;">
+                        <h3 style="color: #333; margin-bottom: 10px;">Temperatura máxima del día</h3>
+                        <div style="font-size: 48px; font-weight: bold; color: #c00;">12.9°c</div>
+                    </div>
+                    
+                    <div style="text-align: center; flex: 1;">
+                        <h3 style="color: #333; margin-bottom: 10px;">Temperatura mínima del día</h3>
+                        <div style="font-size: 48px; font-weight: bold; color: #c00;">10.8°c</div>
+                    </div>
+                    
+                    <div style="text-align: center; flex: 1;">
+                        <h3 style="color: #333; margin-bottom: 10px;">Pluja acumulada</h3>
+                        <div style="font-size: 48px; font-weight: bold; color: #c00;">7.4 mm</div>
+                    </div>
+                </div>
+                
+                <hr style="border: none; border-top: 2px solid #eee; margin: 25px 0;">
+                
+                <div style="text-align: center; color: #666; font-size: 14px;">
+                    <p><strong>Actualitzat: 14:42 - Data: 27/12/2025</strong></p>
+                    <p>Font: https://www.meteo.cat/</p>
+                </div>
+            </div>
+            
+            <div style="margin: 20px; padding: 20px; background: #fff; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+                <h1 style="color: #c00; text-align: center; margin-bottom: 20px;">ROSES</h1>
+                
+                <div style="display: flex; justify-content: space-between; margin-bottom: 25px;">
+                    <div style="text-align: center; flex: 1;">
+                        <h3 style="color: #333; margin-bottom: 10px;">Temperatura máxima del día</h3>
+                        <div style="font-size: 48px; font-weight: bold; color: #c00;">14.3°c</div>
+                    </div>
+                    
+                    <div style="text-align: center; flex: 1;">
+                        <h3 style="color: #333; margin-bottom: 10px;">Temperatura mínima del día</h3>
+                        <div style="font-size: 48px; font-weight: bold; color: #c00;">11.4°c</div>
+                    </div>
+                    
+                    <div style="text-align: center; flex: 1;">
+                        <h3 style="color: #333; margin-bottom: 10px;">Pluja acumulada</h3>
+                        <div style="font-size: 48px; font-weight: bold; color: #c00;">2.7 mm</div>
+                    </div>
+                </div>
+                
+                <hr style="border: none; border-top: 2px solid #eee; margin: 25px 0;">
+                
+                <div style="text-align: center; color: #666; font-size: 14px;">
+                    <p><strong>Actualitzat: 14:42 - Data: 27/12/2025</strong></p>
+                    <p>Font: https://www.meteo.cat/</p>
+                </div>
+            </div>
+            
+            <div style="margin: 20px; padding: 20px; background: #fff; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+                <h1 style="color: #c00; text-align: center; margin-bottom: 20px;">LA SEU D'URGELL - BELLESTAR</h1>
+                
+                <div style="display: flex; justify-content: space-between; margin-bottom: 25px;">
+                    <div style="text-align: center; flex: 1;">
+                        <h3 style="color: #333; margin-bottom: 10px;">Temperatura máxima del día</h3>
+                        <div style="font-size: 48px; font-weight: bold; color: #c00;">9.0°c</div>
+                    </div>
+                    
+                    <div style="text-align: center; flex: 1;">
+                        <h3 style="color: #333; margin-bottom: 10px;">Temperatura mínima del día</h3>
+                        <div style="font-size: 48px; font-weight: bold; color: #c00;">1.9°c</div>
+                    </div>
+                    
+                    <div style="text-align: center; flex: 1;">
+                        <h3 style="color: #333; margin-bottom: 10px;">Pluja acumulada</h3>
+                        <div style="font-size: 48px; font-weight: bold; color: #c00;">0.1 mm</div>
+                    </div>
+                </div>
+                
+                <hr style="border: none; border-top: 2px solid #eee; margin: 25px 0;">
+                
+                <div style="text-align: center; color: #666; font-size: 14px;">
+                    <p><strong>Actualitzat: 14:42 - Data: 27/12/2025</strong></p>
+                    <p>Font: https://www.meteo.cat/</p>
+                </div>
+            </div>
+            
+            <div style="margin: 20px; padding: 20px; background: #fff; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+                <h1 style="color: #c00; text-align: center; margin-bottom: 20px;">PALAFRUGELL</h1>
+                
+                <div style="display: flex; justify-content: space-between; margin-bottom: 25px;">
+                    <div style="text-align: center; flex: 1;">
+                        <h3 style="color: #333; margin-bottom: 10px;">Temperatura máxima del día</h3>
+                        <div style="font-size: 48px; font-weight: bold; color: #c00;">13.8°c</div>
+                    </div>
+                    
+                    <div style="text-align: center; flex: 1;">
+                        <h3 style="color: #333; margin-bottom: 10px;">Temperatura mínima del día</h3>
+                        <div style="font-size: 48px; font-weight: bold; color: #c00;">12.1°c</div>
+                    </div>
+                    
+                    <div style="text-align: center; flex: 1;">
+                        <h3 style="color: #333; margin-bottom: 10px;">Pluja acumulada</h3>
+                        <div style="font-size: 48px; font-weight: bold; color: #c00;">0.7 mm</div>
+                    </div>
+                </div>
+                
+                <hr style="border: none; border-top: 2px solid #eee; margin: 25px 0;">
+                
+                <div style="text-align: center; color: #666; font-size: 14px;">
+                    <p><strong>Actualitzat: 14:42 - Data: 27/12/2025</strong></p>
+                    <p>Font: https://www.meteo.cat/</p>
+                </div>
+            </div>
+            
+            <div style="margin: 20px; padding: 20px; background: #fff; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+                <h1 style="color: #c00; text-align: center; margin-bottom: 20px;">EL PRAT DE LLOBREGAT</h1>
+                
+                <div style="display: flex; justify-content: space-between; margin-bottom: 25px;">
+                    <div style="text-align: center; flex: 1;">
+                        <h3 style="color: #333; margin-bottom: 10px;">Temperatura máxima del día</h3>
+                        <div style="font-size: 48px; font-weight: bold; color: #c00;">13.8°c</div>
+                    </div>
+                    
+                    <div style="text-align: center; flex: 1;">
+                        <h3 style="color: #333; margin-bottom: 10px;">Temperatura mínima del día</h3>
+                        <div style="font-size: 48px; font-weight: bold; color: #c00;">10.3°c</div>
+                    </div>
+                    
+                    <div style="text-align: center; flex: 1;">
+                        <h3 style="color: #333; margin-bottom: 10px;">Pluja acumulada</h3>
+                        <div style="font-size: 48px; font-weight: bold; color: #c00;">15.3 mm</div>
+                    </div>
+                </div>
+                
+                <hr style="border: none; border-top: 2px solid #eee; margin: 25px 0;">
+                
+                <div style="text-align: center; color: #666; font-size: 14px;">
+                    <p><strong>Actualitzat: 14:42 - Data: 27/12/2025</strong></p>
+                    <p>Font: https://www.meteo.cat/</p>
+                </div>
+            </div>
+            
+            <div style="margin: 20px; padding: 20px; background: #fff; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+                <h1 style="color: #c00; text-align: center; margin-bottom: 20px;">BANYOLES</h1>
+                
+                <div style="display: flex; justify-content: space-between; margin-bottom: 25px;">
+                    <div style="text-align: center; flex: 1;">
+                        <h3 style="color: #333; margin-bottom: 10px;">Temperatura máxima del día</h3>
+                        <div style="font-size: 48px; font-weight: bold; color: #c00;">11.8°c</div>
+                    </div>
+                    
+                    <div style="text-align: center; flex: 1;">
+                        <h3 style="color: #333; margin-bottom: 10px;">Temperatura mínima del día</h3>
+                        <div style="font-size: 48px; font-weight: bold; color: #c00;">9.7°c</div>
+                    </div>
+                    
+                    <div style="text-align: center; flex: 1;">
+                        <h3 style="color: #333; margin-bottom: 10px;">Pluja acumulada</h3>
+                        <div style="font-size: 48px; font-weight: bold; color: #c00;">10.2 mm</div>
+                    </div>
+                </div>
+                
+                <hr style="border: none; border-top: 2px solid #eee; margin: 25px 0;">
+                
+                <div style="text-align: center; color: #666; font-size: 14px;">
+                    <p><strong>Actualitzat: 14:42 - Data: 27/12/2025</strong></p>
+                    <p>Font: https://www.meteo.cat/</p>
+                </div>
+            </div>
+            
+            <div style="margin: 20px; padding: 20px; background: #fff; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+                <h1 style="color: #c00; text-align: center; margin-bottom: 20px;">DAS - AERÒDROM</h1>
+                
+                <div style="display: flex; justify-content: space-between; margin-bottom: 25px;">
+                    <div style="text-align: center; flex: 1;">
+                        <h3 style="color: #333; margin-bottom: 10px;">Temperatura máxima del día</h3>
+                        <div style="font-size: 48px; font-weight: bold; color: #c00;">7.3°c</div>
+                    </div>
+                    
+                    <div style="text-align: center; flex: 1;">
+                        <h3 style="color: #333; margin-bottom: 10px;">Temperatura mínima del día</h3>
+                        <div style="font-size: 48px; font-weight: bold; color: #c00;">2.0°c</div>
+                    </div>
+                    
+                    <div style="text-align: center; flex: 1;">
+                        <h3 style="color: #333; margin-bottom: 10px;">Pluja acumulada</h3>
+                        <div style="font-size: 48px; font-weight: bold; color: #c00;">1.0 mm</div>
+                    </div>
+                </div>
+                
+                <hr style="border: none; border-top: 2px solid #eee; margin: 25px 0;">
+                
+                <div style="text-align: center; color: #666; font-size: 14px;">
+                    <p><strong>Actualitzat: 14:42 - Data: 27/12/2025</strong></p>
+                    <p>Font: https://www.meteo.cat/</p>
+                </div>
+            </div>
+            
+            <div style="margin: 20px; padding: 20px; background: #fff; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+                <h1 style="color: #c00; text-align: center; margin-bottom: 20px;">BARCELONA - EL RAVAL</h1>
+                
+                <div style="display: flex; justify-content: space-between; margin-bottom: 25px;">
+                    <div style="text-align: center; flex: 1;">
+                        <h3 style="color: #333; margin-bottom: 10px;">Temperatura máxima del día</h3>
+                        <div style="font-size: 48px; font-weight: bold; color: #c00;">13.7°c</div>
+                    </div>
+                    
+                    <div style="text-align: center; flex: 1;">
+                        <h3 style="color: #333; margin-bottom: 10px;">Temperatura mínima del día</h3>
+                        <div style="font-size: 48px; font-weight: bold; color: #c00;">10.1°c</div>
+                    </div>
+                    
+                    <div style="text-align: center; flex: 1;">
+                        <h3 style="color: #333; margin-bottom: 10px;">Pluja acumulada</h3>
+                        <div style="font-size: 48px; font-weight: bold; color: #c00;">12.8 mm</div>
+                    </div>
+                </div>
+                
+                <hr style="border: none; border-top: 2px solid #eee; margin: 25px 0;">
+                
+                <div style="text-align: center; color: #666; font-size: 14px;">
+                    <p><strong>Actualitzat: 14:42 - Data: 27/12/2025</strong></p>
+                    <p>Font: https://www.meteo.cat/</p>
+                </div>
+            </div>
+            
+            <div style="margin: 20px; padding: 20px; background: #fff; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+                <h1 style="color: #c00; text-align: center; margin-bottom: 20px;">LLEIDA - RAIMAT</h1>
+                
+                <div style="display: flex; justify-content: space-between; margin-bottom: 25px;">
+                    <div style="text-align: center; flex: 1;">
+                        <h3 style="color: #333; margin-bottom: 10px;">Temperatura máxima del día</h3>
+                        <div style="font-size: 48px; font-weight: bold; color: #c00;">12.5°c</div>
+                    </div>
+                    
+                    <div style="text-align: center; flex: 1;">
+                        <h3 style="color: #333; margin-bottom: 10px;">Temperatura mínima del día</h3>
+                        <div style="font-size: 48px; font-weight: bold; color: #c00;">4.9°c</div>
+                    </div>
+                    
+                    <div style="text-align: center; flex: 1;">
+                        <h3 style="color: #333; margin-bottom: 10px;">Pluja acumulada</h3>
+                        <div style="font-size: 48px; font-weight: bold; color: #c00;">1.0 mm</div>
+                    </div>
+                </div>
+                
+                <hr style="border: none; border-top: 2px solid #eee; margin: 25px 0;">
+                
+                <div style="text-align: center; color: #666; font-size: 14px;">
+                    <p><strong>Actualitzat: 14:42 - Data: 27/12/2025</strong></p>
+                    <p>Font: https://www.meteo.cat/</p>
+                </div>
+            </div>
+            
+            <div style="margin: 20px; padding: 20px; background: #fff; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+                <h1 style="color: #c00; text-align: center; margin-bottom: 20px;">TARRAGONA - COMPLEX EDUCATIU</h1>
+                
+                <div style="display: flex; justify-content: space-between; margin-bottom: 25px;">
+                    <div style="text-align: center; flex: 1;">
+                        <h3 style="color: #333; margin-bottom: 10px;">Temperatura máxima del día</h3>
+                        <div style="font-size: 48px; font-weight: bold; color: #c00;">13.8°c</div>
+                    </div>
+                    
+                    <div style="text-align: center; flex: 1;">
+                        <h3 style="color: #333; margin-bottom: 10px;">Temperatura mínima del día</h3>
+                        <div style="font-size: 48px; font-weight: bold; color: #c00;">10.4°c</div>
+                    </div>
+                    
+                    <div style="text-align: center; flex: 1;">
+                        <h3 style="color: #333; margin-bottom: 10px;">Pluja acumulada</h3>
+                        <div style="font-size: 48px; font-weight: bold; color: #c00;">7.6 mm</div>
+                    </div>
+                </div>
+                
+                <hr style="border: none; border-top: 2px solid #eee; margin: 25px 0;">
+                
+                <div style="text-align: center; color: #666; font-size: 14px;">
+                    <p><strong>Actualitzat: 14:42 - Data: 27/12/2025</strong></p>
+                    <p>Font: https://www.meteo.cat/</p>
+                </div>
+            </div>
+            
+            <div style="margin: 20px; padding: 20px; background: #fff; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+                <h1 style="color: #c00; text-align: center; margin-bottom: 20px;">QUERALBS - NÚRIA (1.971 m)</h1>
+                
+                <div style="display: flex; justify-content: space-between; margin-bottom: 25px;">
+                    <div style="text-align: center; flex: 1;">
+                        <h3 style="color: #333; margin-bottom: 10px;">Temperatura máxima del día</h3>
+                        <div style="font-size: 48px; font-weight: bold; color: #c00;">2.1°c</div>
+                    </div>
+                    
+                    <div style="text-align: center; flex: 1;">
+                        <h3 style="color: #333; margin-bottom: 10px;">Temperatura mínima del día</h3>
+                        <div style="font-size: 48px; font-weight: bold; color: #c00;">-0.9°c</div>
+                    </div>
+                    
+                    <div style="text-align: center; flex: 1;">
+                        <h3 style="color: #333; margin-bottom: 10px;">Pluja acumulada</h3>
+                        <div style="font-size: 48px; font-weight: bold; color: #c00;">7.9 mm</div>
+                    </div>
+                </div>
+                
+                <hr style="border: none; border-top: 2px solid #eee; margin: 25px 0;">
+                
+                <div style="text-align: center; color: #666; font-size: 14px;">
+                    <p><strong>Actualitzat: 14:42 - Data: 27/12/2025</strong></p>
+                    <p>Font: https://www.meteo.cat/</p>
+                </div>
+            </div>
+            
+            <div style="margin: 20px; padding: 20px; background: #fff; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+                <h1 style="color: #c00; text-align: center; margin-bottom: 20px;">SETCASES - ULLDETER (2.413 m)</h1>
+                
+                <div style="display: flex; justify-content: space-between; margin-bottom: 25px;">
+                    <div style="text-align: center; flex: 1;">
+                        <h3 style="color: #333; margin-bottom: 10px;">Temperatura máxima del día</h3>
+                        <div style="font-size: 48px; font-weight: bold; color: #c00;">-2.1°c</div>
+                    </div>
+                    
+                    <div style="text-align: center; flex: 1;">
+                        <h3 style="color: #333; margin-bottom: 10px;">Temperatura mínima del día</h3>
+                        <div style="font-size: 48px; font-weight: bold; color: #c00;">-3.7°c</div>
+                    </div>
+                    
+                    <div style="text-align: center; flex: 1;">
+                        <h3 style="color: #333; margin-bottom: 10px;">Pluja acumulada</h3>
+                        <div style="font-size: 48px; font-weight: bold; color: #c00;">4.9 mm</div>
+                    </div>
+                </div>
+                
+                <hr style="border: none; border-top: 2px solid #eee; margin: 25px 0;">
+                
+                <div style="text-align: center; color: #666; font-size: 14px;">
+                    <p><strong>Actualitzat: 14:42 - Data: 27/12/2025</strong></p>
+                    <p>Font: https://www.meteo.cat/</p>
+                </div>
+            </div>
+            
+            <div style="margin: 20px; padding: 20px; background: #fff; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+                <h1 style="color: #c00; text-align: center; margin-bottom: 20px;">CASSÀ DE LA SELVA</h1>
+                
+                <div style="display: flex; justify-content: space-between; margin-bottom: 25px;">
+                    <div style="text-align: center; flex: 1;">
+                        <h3 style="color: #333; margin-bottom: 10px;">Temperatura máxima del día</h3>
+                        <div style="font-size: 48px; font-weight: bold; color: #c00;">12.8°c</div>
+                    </div>
+                    
+                    <div style="text-align: center; flex: 1;">
+                        <h3 style="color: #333; margin-bottom: 10px;">Temperatura mínima del día</h3>
+                        <div style="font-size: 48px; font-weight: bold; color: #c00;">10.6°c</div>
+                    </div>
+                    
+                    <div style="text-align: center; flex: 1;">
+                        <h3 style="color: #333; margin-bottom: 10px;">Pluja acumulada</h3>
+                        <div style="font-size: 48px; font-weight: bold; color: #c00;">5.1 mm</div>
+                    </div>
+                </div>
+                
+                <hr style="border: none; border-top: 2px solid #eee; margin: 25px 0;">
+                
+                <div style="text-align: center; color: #666; font-size: 14px;">
+                    <p><strong>Actualitzat: 14:42 - Data: 27/12/2025</strong></p>
+                    <p>Font: https://www.meteo.cat/</p>
+                </div>
+            </div>
+            
+            <div style="margin: 20px; padding: 20px; background: #fff; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+                <h1 style="color: #c00; text-align: center; margin-bottom: 20px;">VINEBRE</h1>
+                
+                <div style="display: flex; justify-content: space-between; margin-bottom: 25px;">
+                    <div style="text-align: center; flex: 1;">
+                        <h3 style="color: #333; margin-bottom: 10px;">Temperatura máxima del día</h3>
+                        <div style="font-size: 48px; font-weight: bold; color: #c00;">9.2°c</div>
+                    </div>
+                    
+                    <div style="text-align: center; flex: 1;">
+                        <h3 style="color: #333; margin-bottom: 10px;">Temperatura mínima del día</h3>
+                        <div style="font-size: 48px; font-weight: bold; color: #c00;">5.9°c</div>
+                    </div>
+                    
+                    <div style="text-align: center; flex: 1;">
+                        <h3 style="color: #333; margin-bottom: 10px;">Pluja acumulada</h3>
+                        <div style="font-size: 48px; font-weight: bold; color: #c00;">8.8 mm</div>
+                    </div>
+                </div>
+                
+                <hr style="border: none; border-top: 2px solid #eee; margin: 25px 0;">
+                
+                <div style="text-align: center; color: #666; font-size: 14px;">
+                    <p><strong>Actualitzat: 14:42 - Data: 27/12/2025</strong></p>
+                    <p>Font: https://www.meteo.cat/</p>
+                </div>
+            </div>
+            
+            <div style="margin: 20px; padding: 20px; background: #fff; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+                <h1 style="color: #c00; text-align: center; margin-bottom: 20px;">OLOT</h1>
+                
+                <div style="display: flex; justify-content: space-between; margin-bottom: 25px;">
+                    <div style="text-align: center; flex: 1;">
+                        <h3 style="color: #333; margin-bottom: 10px;">Temperatura máxima del día</h3>
+                        <div style="font-size: 48px; font-weight: bold; color: #c00;">9.9°c</div>
+                    </div>
+                    
+                    <div style="text-align: center; flex: 1;">
+                        <h3 style="color: #333; margin-bottom: 10px;">Temperatura mínima del día</h3>
+                        <div style="font-size: 48px; font-weight: bold; color: #c00;">7.9°c</div>
+                    </div>
+                    
+                    <div style="text-align: center; flex: 1;">
+                        <h3 style="color: #333; margin-bottom: 10px;">Pluja acumulada</h3>
+                        <div style="font-size: 48px; font-weight: bold; color: #c00;">36.5 mm</div>
+                    </div>
+                </div>
+                
+                <hr style="border: none; border-top: 2px solid #eee; margin: 25px 0;">
+                
+                <div style="text-align: center; color: #666; font-size: 14px;">
+                    <p><strong>Actualitzat: 14:42 - Data: 27/12/2025</strong></p>
+                    <p>Font: https://www.meteo.cat/</p>
+                </div>
+            </div>
+            
+            <div style="margin: 20px; padding: 20px; background: #fff; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+                <h1 style="color: #c00; text-align: center; margin-bottom: 20px;">SANT PAU DE SEGÚRIES</h1>
+                
+                <div style="display: flex; justify-content: space-between; margin-bottom: 25px;">
+                    <div style="text-align: center; flex: 1;">
+                        <h3 style="color: #333; margin-bottom: 10px;">Temperatura máxima del día</h3>
+                        <div style="font-size: 48px; font-weight: bold; color: #c00;">7.0°c</div>
+                    </div>
+                    
+                    <div style="text-align: center; flex: 1;">
+                        <h3 style="color: #333; margin-bottom: 10px;">Temperatura mínima del día</h3>
+                        <div style="font-size: 48px; font-weight: bold; color: #c00;">5.6°c</div>
+                    </div>
+                    
+                    <div style="text-align: center; flex: 1;">
+                        <h3 style="color: #333; margin-bottom: 10px;">Pluja acumulada</h3>
+                        <div style="font-size: 48px; font-weight: bold; color: #c00;">23.7 mm</div>
+                    </div>
+                </div>
+                
+                <hr style="border: none; border-top: 2px solid #eee; margin: 25px 0;">
+                
+                <div style="text-align: center; color: #666; font-size: 14px;">
+                    <p><strong>Actualitzat: 14:42 - Data: 27/12/2025</strong></p>
+                    <p>Font: https://www.meteo.cat/</p>
+                </div>
+            </div>
+            
+            <div style="margin: 20px; padding: 20px; background: #fff; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+                <h1 style="color: #c00; text-align: center; margin-bottom: 20px;">PUIG SESOLLES (1.668 M)</h1>
+                
+                <div style="display: flex; justify-content: space-between; margin-bottom: 25px;">
+                    <div style="text-align: center; flex: 1;">
+                        <h3 style="color: #333; margin-bottom: 10px;">Temperatura máxima del día</h3>
+                        <div style="font-size: 48px; font-weight: bold; color: #c00;">2.3°c</div>
+                    </div>
+                    
+                    <div style="text-align: center; flex: 1;">
+                        <h3 style="color: #333; margin-bottom: 10px;">Temperatura mínima del día</h3>
+                        <div style="font-size: 48px; font-weight: bold; color: #c00;">0.3°c</div>
+                    </div>
+                    
+                    <div style="text-align: center; flex: 1;">
+                        <h3 style="color: #333; margin-bottom: 10px;">Pluja acumulada</h3>
+                        <div style="font-size: 48px; font-weight: bold; color: #c00;">32.2 mm</div>
+                    </div>
+                </div>
+                
+                <hr style="border: none; border-top: 2px solid #eee; margin: 25px 0;">
+                
+                <div style="text-align: center; color: #666; font-size: 14px;">
+                    <p><strong>Actualitzat: 14:42 - Data: 27/12/2025</strong></p>
+                    <p>Font: https://www.meteo.cat/</p>
+                </div>
+            </div>
+            
+            <div style="margin: 20px; padding: 20px; background: #fff; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+                <h1 style="color: #c00; text-align: center; margin-bottom: 20px;">LAC REDON (2.247 M)</h1>
+                
+                <div style="display: flex; justify-content: space-between; margin-bottom: 25px;">
+                    <div style="text-align: center; flex: 1;">
+                        <h3 style="color: #333; margin-bottom: 10px;">Temperatura máxima del día</h3>
+                        <div style="font-size: 48px; font-weight: bold; color: #c00;">-0.2°c</div>
+                    </div>
+                    
+                    <div style="text-align: center; flex: 1;">
+                        <h3 style="color: #333; margin-bottom: 10px;">Temperatura mínima del día</h3>
+                        <div style="font-size: 48px; font-weight: bold; color: #c00;">-2.9°c</div>
+                    </div>
+                    
+                    <div style="text-align: center; flex: 1;">
+                        <h3 style="color: #333; margin-bottom: 10px;">Pluja acumulada</h3>
+                        <div style="font-size: 48px; font-weight: bold; color: #c00;">0.3 mm</div>
+                    </div>
+                </div>
+                
+                <hr style="border: none; border-top: 2px solid #eee; margin: 25px 0;">
+                
+                <div style="text-align: center; color: #666; font-size: 14px;">
+                    <p><strong>Actualitzat: 14:42 - Data: 27/12/2025</strong></p>
+                    <p>Font: https://www.meteo.cat/</p>
+                </div>
+            </div>
+            
+            <div style="margin: 20px; padding: 20px; background: #fff; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+                <h1 style="color: #c00; text-align: center; margin-bottom: 20px;">ANGLÈS</h1>
+                
+                <div style="display: flex; justify-content: space-between; margin-bottom: 25px;">
+                    <div style="text-align: center; flex: 1;">
+                        <h3 style="color: #333; margin-bottom: 10px;">Temperatura máxima del día</h3>
+                        <div style="font-size: 48px; font-weight: bold; color: #c00;">12.0°c</div>
+                    </div>
+                    
+                    <div style="text-align: center; flex: 1;">
+                        <h3 style="color: #333; margin-bottom: 10px;">Temperatura mínima del día</h3>
+                        <div style="font-size: 48px; font-weight: bold; color: #c00;">10.0°c</div>
+                    </div>
+                    
+                    <div style="text-align: center; flex: 1;">
+                        <h3 style="color: #333; margin-bottom: 10px;">Pluja acumulada</h3>
+                        <div style="font-size: 48px; font-weight: bold; color: #c00;">15.0 mm</div>
+                    </div>
+                </div>
+                
+                <hr style="border: none; border-top: 2px solid #eee; margin: 25px 0;">
+                
+                <div style="text-align: center; color: #666; font-size: 14px;">
+                    <p><strong>Actualitzat: 14:42 - Data: 27/12/2025</strong></p>
+                    <p>Font: https://www.meteo.cat/</p>
+                </div>
+            </div>
+            
+    </div>
 </body>
 </html>
