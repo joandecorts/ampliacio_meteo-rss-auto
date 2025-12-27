@@ -1,10 +1,17 @@
 name: Update Banner
 
 on:
+  # 1. PER CRON-JOB.ORG (EXTERN)
+  repository_dispatch:
+    types: [trigger_update]
+  
+  # 2. PER EXECUCIÓ MANUAL (GITHUB UI)
+  workflow_dispatch:
+  
+  # 3. PER CRON INTERN (GITHUB)
   schedule:
     - cron: '15 * * * *'
     - cron: '45 * * * *'
-  workflow_dispatch:
 
 jobs:
   update-banner:
@@ -13,28 +20,52 @@ jobs:
       contents: write
     
     steps:
+      # 0. IDENTIFICA ORIGEN (OPCIONAL, PER LOGS)
+      - name: Identificar origen de l'execució
+        run: |
+          echo "🔍 ORIGEN DE L'EXECUCIÓ: ${{ github.event_name }}"
+          if [ "${{ github.event_name }}" = "repository_dispatch" ]; then
+            echo "🚀 DISPARAT PER: CRON-JOB.ORG"
+            echo "📌 Event type: ${{ github.event.action || 'trigger_update' }}"
+            echo "👤 Client: ${{ github.event.client_payload.trigger || 'Desconegut' }}"
+          elif [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "🖱️ DISPARAT PER: Manual (GitHub UI)"
+            echo "👤 Usuari: ${{ github.actor }}"
+          elif [ "${{ github.event_name }}" = "schedule" ]; then
+            echo "⏰ DISPARAT PER: Programació interna (GitHub Actions)"
+          fi
+      
+      # 1. DESCARREGA REPOSITORI
       - name: Checkout repository
         uses: actions/checkout@v3
         with:
           fetch-depth: 0
 
+      # 2. CONFIGURA PYTHON
       - name: Setup Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.9'
 
+      # 3. INSTAL·LA DEPENDÈNCIES
       - name: Install dependencies
         run: |
           if [ -f "requirements.txt" ]; then
             pip install -r requirements.txt
+          else
+            echo "⚠️  requirements.txt no trobat, instal·lant dependències bàsiques..."
+            pip install requests beautifulsoup4
           fi
 
+      # 4. OBTÉ DADES METEOROLÒGIQUES
       - name: Get weather data
         run: python meteo_scraper.py
 
+      # 5. GENERA BANNER
       - name: Generate banner
         run: python generate_banner.py
 
+      # 6. ACTUALITZA INDEX.HTML
       - name: Update only index.html
         run: |
           cp banner_output.html index.html
@@ -45,8 +76,31 @@ jobs:
           git add index.html
           
           if git diff --staged --quiet; then
-            echo "No hi ha canvis a index.html"
+            echo "✅ No hi ha canvis a index.html (dades ja actualitzades)"
           else
-            git commit -m "🔄 Actualitzat banner meteorològic $(date -u +'%H:%M UTC')"
+            # Missatge diferent segons l'origen
+            if [ "${{ github.event_name }}" = "repository_dispatch" ]; then
+              COMMIT_MSG="🔄 Actualització automàtica (cron-job.org) $(date -u +'%H:%M UTC')"
+            elif [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+              COMMIT_MSG="🖱️ Actualització manual (${{ github.actor }}) $(date -u +'%H:%M UTC')"
+            else
+              COMMIT_MSG="⏰ Actualització programada $(date -u +'%H:%M UTC')"
+            fi
+            
+            git commit -m "$COMMIT_MSG"
             git push
+            echo "✅ index.html actualitzat i pujat"
           fi
+      
+      # 7. MISSATGE FINAL (OPCIONAL)
+      - name: Confirmació final
+        if: always()
+        run: |
+          echo ""
+          echo "========================================"
+          echo "✅ EXECUCIÓ COMPLETADA"
+          echo "========================================"
+          echo "Origen: ${{ github.event_name }}"
+          echo "Data: $(date -u +'%Y-%m-%d %H:%M:%S UTC')"
+          echo "SHA: ${{ github.sha }}"
+          echo "========================================"
