@@ -7,30 +7,29 @@ import os
 from datetime import datetime, timedelta
 
 # ============================================================================
-# CONFIGURACIÓ DE LES 15 ESTACIONS (codis verificats)
+# CONFIGURACIÓ DE LES ESTACIONS (codis verificats)
 # ============================================================================
 STATIONS = [
-    # Primera tanda (3 estacions per provar)
     {'code': 'XJ', 'name': 'GIRONA', 'display_name': 'GIRONA'},
     {'code': 'UO', 'name': 'FORNELLS', 'display_name': 'FORNELLS DE LA SELVA'},
-    {'code': 'D4', 'name': 'ROSES', 'display_name': 'ROSES'},
-    {'code': 'CD', 'name': 'SEU_URGELL', 'display_name': 'LA SEU D\'URGELL - BELLESTAR'},
-    {'code': 'YP', 'name': 'PALAFRUGELL', 'display_name': 'PALAFRUGELL'},
-    {'code': 'XL', 'name': 'PRAT_LLOBREGAT', 'display_name': 'EL PRAT DE LLOBREGAT'},
+    {'code': 'DN', 'name': 'ANGLES', 'display_name': 'ANGLÈS'},
     {'code': 'DJ', 'name': 'BANYOLES', 'display_name': 'BANYOLES'},
+    {'code': 'X4', 'name': 'PRAT_LLOBREGAT', 'display_name': 'EL PRAT DE LLOBREGAT'},
+    {'code': 'UN', 'name': 'CASSÀ_DE_LA_SELVA', 'display_name': 'CASSÀ DE LA SELVA'},
     {'code': 'DP', 'name': 'DAS', 'display_name': 'DAS - AERÒDROM'},
-    {'code': 'X4', 'name': 'BARCELONA_RAVAL', 'display_name': 'BARCELONA - EL RAVAL'},
+    {'code': 'XL', 'name': 'PRAT_LLOBREGAT', 'display_name': 'EL PRAT DE LLOBREGAT'},
+    {'code': 'XK', 'name': 'PUIG_SESOLLES', 'display_name': 'PUIG SESOLLES (1.668 m)'},
+    {'code': 'CD', 'name': 'SEU_URGELL', 'display_name': 'LA SEU D\'URGELL - BELLESTAR'},
     {'code': 'VK', 'name': 'LLEIDA_RAIMAT', 'display_name': 'LLEIDA - RAIMAT'},
-    {'code': 'XE', 'name': 'TARRAGONA', 'display_name': 'TARRAGONA - COMPLEX EDUCATIU'},
-    {'code': 'DG', 'name': 'QUERALBS_NURIA', 'display_name': 'QUERALBS - NÚRIA (1.971 m)'},
-    {'code': 'ZC', 'name': 'SETCASES_ULLDETER', 'display_name': 'SETCASES - ULLDETER (2.413 m)'},
-    {'code': 'UN', 'name': 'CASSÀ DE LA SELVA', 'display_name': 'CASSÀ DE LA SELVA'},
-    {'code': 'D7', 'name': 'VINEBRE', 'display_name': 'VINEBRE'},
     {'code': 'YB', 'name': 'OLOT', 'display_name': 'OLOT'},
-    {'code': 'CI', 'name': 'SANT PAU DE SEGÚRIES', 'display_name': 'SANT PAU DE SEGÚRIES'},
-    {'code': 'XK', 'name': 'PUIG SESOLLES', 'display_name': 'PUIG SESOLLES (1.668 M)'},  
-    {'code': 'VS', 'name': 'LAC REDON', 'display_name': 'LAC REDON (2.247 M)'}, 
-    {'code': 'DN', 'name': 'ANGLÈS', 'display_name': 'ANGLÈS'}
+    {'code': 'YP', 'name': 'PALAFRUGELL', 'display_name': 'PALAFRUGELL'},
+    {'code': 'DG', 'name': 'QUERALBS_NURIA', 'display_name': 'QUERALBS - NÚRIA (1.971 m)'},
+    {'code': 'D4', 'name': 'ROSES', 'display_name': 'ROSES'},
+    {'code': 'CI', 'name': 'SANT_PAU_SEGURIES', 'display_name': 'SANT PAU DE SEGÚRIES'},
+    {'code': 'ZC', 'name': 'SETCASES_ULLDETER', 'display_name': 'SETCASES - ULLDETER (2.413 m)'},
+    {'code': 'XE', 'name': 'TARRAGONA', 'display_name': 'TARRAGONA - COMPLEX EDUCATIU'},
+    {'code': 'VS', 'name': 'LAC_REDON', 'display_name': 'LAC REDON (2.247 m)'},
+    {'code': 'D7', 'name': 'VINEBRE', 'display_name': 'VINEBRE'},
 ]
 
 # ============================================================================
@@ -121,3 +120,21 @@ DEFAULT_VALUES = {
     'TN': '--',  # Temperatura mínima
     'PPT': '--'  # Precipitació
 }
+
+# ============================================================================
+# INFORMACIÓ DE GENERACIÓ
+# ============================================================================
+GENERATION_INFO = {
+    'generated_at': '2025-12-29 11:03:41',
+    'total_stations': 20,
+    'active_stations': 20,
+    'commented_stations': 0,
+    'false_stations': 0,
+    'config_banner_version': 'v2.0 - Lògica: Op+CERT+Activa'
+}
+
+if __name__ == "__main__":
+    print(f"Configuració carregada correctament")
+    print(f"Total estacions: {len(STATIONS)}")
+    for i, station in enumerate(STATIONS, 1):
+        print(f"  {i:2}. {station['code']} - {station['display_name']}")
