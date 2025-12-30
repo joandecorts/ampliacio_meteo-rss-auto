@@ -1,6 +1,7 @@
 """
-MeteoCat Web Scraper - VERSIÓ DEFINITIVA
+MeteoCat Web Scraper - VERSIÓ ACTUALITZADA
 Extreu dades meteorològiques de https://www.meteo.cat/observacions/xema
+AMB DETECCIÓ AUTOMÀTICA DE L'ESTRUCTURA HTML
 """
 
 import requests
@@ -11,6 +12,7 @@ import logging
 from datetime import datetime, timezone
 import os
 import sys
+import re
 
 # Configurar logging
 logging.basicConfig(
@@ -56,98 +58,82 @@ def scrape_station_data(station_code, station_name, max_retries=3):
                 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
                 'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
                 'Accept-Language': 'ca,en-US;q=0.7,en;q=0.3',
-                'Accept-Encoding': 'gzip, deflate, br',
                 'DNT': '1',
                 'Connection': 'keep-alive',
-                'Upgrade-Insecure-Requests': '1',
-                'Sec-Fetch-Dest': 'document',
-                'Sec-Fetch-Mode': 'navigate',
-                'Sec-Fetch-Site': 'none',
-                'Sec-Fetch-User': '?1',
-                'Cache-Control': 'max-age=0'
+                'Upgrade-Insecure-Requests': '1'
             }
             
             logger.info(f"Intent {attempt + 1}/{max_retries}: Scraping {station_code} - {station_name}")
             
             # Fer la petició amb timeout
-            response = requests.get(url, headers=headers, timeout=15)
-            response.raise_for_status()  # Llença excepció per a codis HTTP dolents
+            response = requests.get(url, headers=headers, timeout=20)
+            response.raise_for_status()
             
-            # Verificar que la resposta tingui contingut
+            # Verificar contingut
             if not response.content:
                 logger.warning(f"Resposta buida per a {station_code}")
                 if attempt < max_retries - 1:
-                    time.sleep(2)  # Esperar abans de reintentar
+                    time.sleep(2)
                     continue
                 return None
             
             # Analitzar HTML
             soup = BeautifulSoup(response.content, 'html.parser')
             
-            # Buscar la taula de dades
-            table = soup.find('table', {'class': 'table-dades'})
-            if not table:
-                logger.warning(f"No s'ha trobat la taula per a {station_code}")
-                # Intentar trobar dades d'una altra manera
-                return extract_data_fallback(soup, station_code, station_name)
+            # DEBUG: Guardar HTML per inspeccionar (opcional)
+            if station_code in ['XJ', 'VK']:  # Per a debug
+                with open(f'debug_{station_code}.html', 'w', encoding='utf-8') as f:
+                    f.write(soup.prettify())
+                logger.info(f"DEBUG: HTML guardat a debug_{station_code}.html")
             
-            # Buscar files de dades
-            rows = table.find_all('tr')
+            # INTENT 1: Buscar per múltiples patrons de taula
+            table = None
+            table_patterns = [
+                {'class': 'table-dades'},
+                {'class': 'taula-dades'},
+                {'class': 'dades-table'},
+                {'id': 'taula-dades'},
+                {'id': 'table-dades'},
+                {'class': 'table'},
+                {'class': 'taula'}
+            ]
             
-            # Diccionari per emmagatzemar valors
-            values = {}
+            for pattern in table_patterns:
+                table = soup.find('table', pattern)
+                if table:
+                    logger.debug(f"✅ Taula trobada amb patró: {pattern}")
+                    break
             
-            for row in rows:
-                cells = row.find_all('td')
-                if len(cells) >= 2:
-                    variable = cells[0].get_text(strip=True)
-                    valor_cell = cells[1]
-                    
-                    # Extreure el valor numèric
-                    valor_text = valor_cell.get_text(strip=True)
-                    
-                    # Netejar i convertir
-                    if valor_text and valor_text != '-':
-                        try:
-                            # Eliminar unitats i espais
-                            valor_net = valor_text.split()[0].replace(',', '.')
-                            valor_float = float(valor_net)
-                            
-                            # Identificar la variable
-                            if 'Màxima' in variable or 'TEMPERATURA MÀXIMA' in variable.upper():
-                                values['TX'] = round(valor_float, 1)
-                            elif 'Mínima' in variable or 'TEMPERATURA MÍNIMA' in variable.upper():
-                                values['TN'] = round(valor_float, 1)
-                            elif 'Acumulada' in variable or 'PPT' in variable.upper() or 'PRECIPITACIÓ' in variable.upper():
-                                values['PPT'] = round(valor_float, 1)
-                        except (ValueError, IndexError) as e:
-                            logger.debug(f"Error convertint valor per {station_code}, variable {variable}: {e}")
+            if table:
+                values = extract_from_table(table)
+            else:
+                # INTENT 2: Buscar dades per text
+                logger.warning(f"No s'ha trobat taula per {station_code}, buscant per text...")
+                values = extract_from_text(soup.get_text())
             
-            # Verificar que tenim les dades mínimes
-            required_vars = ['TX', 'TN', 'PPT']
-            missing = [var for var in required_vars if var not in values]
-            
-            if missing:
-                logger.warning(f"Falten variables per {station_code}: {missing}")
-                # Posar valors per defecte per a les que falten
-                for var in missing:
-                    values[var] = '-'
-            
-            logger.info(f"✅ {station_code}: TX={values.get('TX', '-')}°C, TN={values.get('TN', '-')}°C, PPT={values.get('PPT', '-')}mm")
-            return {
-                'success': True,
-                'values': values,
-                'metadata': {
-                    'name': station_name,
-                    'last_fetched': datetime.now(timezone.utc).isoformat(),
-                    'url': url
+            # Verificar que tenim algun valor
+            if any(v != '-' for v in values.values()):
+                logger.info(f"✅ {station_code}: TX={values.get('TX', '-')}°C, TN={values.get('TN', '-')}°C, PPT={values.get('PPT', '-')}mm")
+                return {
+                    'success': True,
+                    'values': values,
+                    'metadata': {
+                        'name': station_name,
+                        'last_fetched': datetime.now(timezone.utc).isoformat(),
+                        'url': url
+                    }
                 }
-            }
-            
+            else:
+                logger.warning(f"No s'han trobat dades per {station_code}")
+                if attempt < max_retries - 1:
+                    time.sleep(3)
+                    continue
+                return None
+                
         except requests.exceptions.Timeout:
             logger.warning(f"Timeout per a {station_code} (intent {attempt + 1})")
             if attempt < max_retries - 1:
-                time.sleep(3)  # Esperar més abans de reintentar
+                time.sleep(3)
                 continue
             return None
             
@@ -167,72 +153,98 @@ def scrape_station_data(station_code, station_name, max_retries=3):
     
     return None
 
-def extract_data_fallback(soup, station_code, station_name):
-    """Intent alternatiu d'extreure dades si no es troba la taula normal"""
+def extract_from_table(table):
+    """Extreu dades d'una taula HTML"""
+    values = {'TX': '-', 'TN': '-', 'PPT': '-'}
+    
     try:
-        values = {'TX': '-', 'TN': '-', 'PPT': '-'}
+        # Buscar totes les files
+        rows = table.find_all('tr')
         
-        # Buscar valors per altres mètodes
-        all_text = soup.get_text()
+        for row in rows:
+            cells = row.find_all(['td', 'th'])
+            if len(cells) >= 2:
+                # Text de la cel·la d'esquerra (variable)
+                var_text = cells[0].get_text(strip=True).upper()
+                val_text = cells[1].get_text(strip=True)
+                
+                # Buscar números amb regex
+                numbers = re.findall(r'[-+]?\d*[.,]?\d+', val_text)
+                if numbers:
+                    try:
+                        num = float(numbers[0].replace(',', '.'))
+                        
+                        # Assignar a la variable correcta
+                        if 'MÀXIMA' in var_text or 'TX' in var_text or 'TEMPERATURA MÀXIMA' in var_text:
+                            values['TX'] = round(num, 1)
+                        elif 'MÍNIMA' in var_text or 'TN' in var_text or 'TEMPERATURA MÍNIMA' in var_text:
+                            values['TN'] = round(num, 1)
+                        elif 'ACUMULADA' in var_text or 'PPT' in var_text or 'PRECIPITACIÓ' in var_text or 'PLUJA' in var_text:
+                            values['PPT'] = round(num, 1)
+                    except ValueError:
+                        pass
+    except Exception as e:
+        logger.debug(f"Error extreient de taula: {e}")
+    
+    return values
+
+def extract_from_text(full_text):
+    """Extreu dades del text brut (fallback)"""
+    values = {'TX': '-', 'TN': '-', 'PPT': '-'}
+    
+    try:
+        # Buscar patrons amb regex
+        # Temperatura màxima
+        tx_match = re.search(r'(?:Temperatura|Temp\.?)\s*(?:[Mm]àxima|MAX)\s*[:=]?\s*([-+]?\d*[.,]?\d+)', full_text, re.IGNORECASE)
+        if tx_match:
+            try:
+                values['TX'] = round(float(tx_match.group(1).replace(',', '.')), 1)
+            except:
+                pass
         
-        # Buscar temperatura màxima
-        if 'Màxima' in all_text or 'TEMPERATURA MÀXIMA' in all_text.upper():
-            # Intentar trobar el valor després de la paraula clau
-            lines = all_text.split('\n')
-            for i, line in enumerate(lines):
-                if 'Màxima' in line or 'TEMPERATURA MÀXIMA' in line.upper():
-                    # Buscar números a les línies següents
-                    for j in range(i, min(i+5, len(lines))):
-                        import re
-                        numbers = re.findall(r'[-+]?\d*\.\d+|\d+', lines[j])
-                        if numbers:
-                            try:
-                                values['TX'] = round(float(numbers[0].replace(',', '.')), 1)
-                                break
-                            except:
-                                pass
+        # Temperatura mínima
+        tn_match = re.search(r'(?:Temperatura|Temp\.?)\s*(?:[Mm]ínima|MIN)\s*[:=]?\s*([-+]?\d*[.,]?\d+)', full_text, re.IGNORECASE)
+        if tn_match:
+            try:
+                values['TN'] = round(float(tn_match.group(1).replace(',', '.')), 1)
+            except:
+                pass
         
-        # Similar per temperatura mínima i precipitació
-        # (podries afegir més lògica aquí)
-        
-        logger.info(f"⚠️  {station_code}: Dades fallback - TX={values['TX']}°C, TN={values['TN']}°C, PPT={values['PPT']}mm")
-        
-        return {
-            'success': True if any(v != '-' for v in values.values()) else False,
-            'values': values,
-            'metadata': {
-                'name': station_name,
-                'last_fetched': datetime.now(timezone.utc).isoformat(),
-                'url': f"https://www.meteo.cat/observacions/xema/dades?codi={station_code}",
-                'note': 'Dades obtingudes amb mètode fallback'
-            }
-        }
+        # Precipitació
+        ppt_match = re.search(r'(?:Precipitació|Pluja|PPT)\s*(?:[Aa]cumulada|ACUM)?\s*[:=]?\s*([-+]?\d*[.,]?\d+)', full_text, re.IGNORECASE)
+        if ppt_match:
+            try:
+                values['PPT'] = round(float(ppt_match.group(1).replace(',', '.')), 1)
+            except:
+                pass
         
     except Exception as e:
-        logger.error(f"Error en mètode fallback per {station_code}: {e}")
-        return None
+        logger.debug(f"Error extreient de text: {e}")
+    
+    return values
 
 def main():
     """Funció principal"""
     logger.info("=" * 60)
-    logger.info("🚀 INICIANT METEO SCRAPER")
+    logger.info("🚀 INICIANT METEO SCRAPER - VERSIÓ ACTUALITZADA")
     logger.info(f"📊 Estacions a processar: {len(STATIONS)}")
     logger.info("=" * 60)
     
-    # Crear directori de dades si no existeix
+    # Crear directori de dades
     os.makedirs('data', exist_ok=True)
     
-    # Diccionari per emmagatzemar totes les dades
+    # Diccionari per dades
     all_data = {
         'metadata': {
             'last_updated': datetime.now(timezone.utc).isoformat(),
             'source': 'meteocat_web_scraping',
-            'stations_count': len(STATIONS)
+            'stations_count': len(STATIONS),
+            'version': '2.0'
         },
         'stations': {}
     }
     
-    # Processar cada estació
+    # Processar estacions
     success_count = 0
     failed_stations = []
     
@@ -242,14 +254,14 @@ def main():
         
         logger.info(f"[{i}/{len(STATIONS)}] Processant {station_code} - {station_name}")
         
-        # Scraping de l'estació
+        # Scraping
         station_data = scrape_station_data(station_code, station_name)
         
         if station_data and station_data['success']:
             all_data['stations'][station_code] = station_data
             success_count += 1
         else:
-            # Estació fallida, afegir amb dades buides
+            # Estació fallida
             all_data['stations'][station_code] = {
                 'success': False,
                 'values': {'TX': '-', 'TN': '-', 'PPT': '-'},
@@ -262,15 +274,20 @@ def main():
             }
             failed_stations.append(station_code)
         
-        # Esperar entre peticions per no sobrecarregar el servidor
-        time.sleep(1.5)
+        # Esperar entre peticions
+        time.sleep(2)  # Augmentat per evitar bloqueig
     
-    # Guardar dades en fitxer JSON
+    # Guardar dades
     output_file = 'data/latest_weather.json'
     try:
         with open(output_file, 'w', encoding='utf-8') as f:
             json.dump(all_data, f, indent=2, ensure_ascii=False)
         logger.info(f"✅ Dades guardades a {output_file}")
+        
+        # Mostrar data actual
+        file_time = datetime.fromtimestamp(os.path.getmtime(output_file))
+        logger.info(f"📅 Data del fitxer: {file_time.strftime('%Y-%m-%d %H:%M:%S')}")
+        
     except Exception as e:
         logger.error(f"❌ Error guardant fitxer: {e}")
         return
@@ -279,25 +296,26 @@ def main():
     logger.info("=" * 60)
     logger.info("📊 RESUM DE L'EXECUCIÓ")
     logger.info(f"✅ Estacions amb èxit: {success_count}/{len(STATIONS)}")
+    logger.info(f"❌ Estacions fallides: {len(failed_stations)}")
     
     if failed_stations:
-        logger.info(f"❌ Estacions fallides: {len(failed_stations)}")
+        logger.info("Llista d'estacions fallides:")
         for failed in failed_stations:
             station_name = next((s['display_name'] for s in STATIONS if s['code'] == failed), failed)
             logger.info(f"   - {failed}: {station_name}")
     
-    logger.info(f"💾 Fitxer de sortida: {output_file}")
     logger.info("=" * 60)
     
-    # Mostrar algunes dades d'exemple
+    # Mostrar dades d'exemple
     if success_count > 0:
-        logger.info("📈 DADES D'EXEMPLE (primeres 3 estacions amb èxit):")
+        logger.info("📈 DADES D'EXEMPLE (3 estacions):")
         sample_count = 0
         for station_code, data in all_data['stations'].items():
             if data['success'] and sample_count < 3:
                 values = data['values']
                 name = data['metadata']['name']
-                logger.info(f"   {station_code} - {name}: TX={values.get('TX', '-')}°C, TN={values.get('TN', '-')}°C, PPT={values.get('PPT', '-')}mm")
+                logger.info(f"   {station_code} - {name}:")
+                logger.info(f"     TX: {values.get('TX', '-')}°C | TN: {values.get('TN', '-')}°C | PPT: {values.get('PPT', '-')}mm")
                 sample_count += 1
 
 if __name__ == "__main__":
