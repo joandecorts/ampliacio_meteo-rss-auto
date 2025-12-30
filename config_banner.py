@@ -1,6 +1,6 @@
 """
 CONFIGURACIÓ BANNER - GENERAT AMB CONFIGURADOR
-Data de generació: 2025-12-30 14:50:11
+Data de generació: 2025-12-30 21:06:04
 """
 
 STATIONS = [
@@ -14,7 +14,7 @@ STATIONS = [
     {'code': 'J5', 'name': 'DARNIUS', 'display_name': 'PANTA DE DARNIUS - BOADELLA'},
     {'code': 'DP', 'name': 'DAS', 'display_name': 'DAS - AERODROM'},
     {'code': 'XL', 'name': 'EL_PRAT_DE_LLOBREGAT', 'display_name': 'EL PRAT DE LLOBREGAT'},
-    {'code': 'XK', 'name': 'FOGARS_DE_MONTCLÚS', 'display_name': 'FOGARS DE MONTCLUS - PUIG SESOLLES (1.668 M)'},
+    {'code': 'VZ', 'name': 'ESPOLLA', 'display_name': 'ESPOLLA'},
     {'code': 'CD', 'name': 'LA_SEU_DURGELL', 'display_name': 'LA SEU D\'URGELL - BELLESTAR'},
     {'code': 'VK', 'name': 'LLEIDA', 'display_name': 'LLEIDA - RAIMAT'},
     {'code': 'Z3', 'name': 'MERANGES', 'display_name': 'MERANGES - MALNIU (2.230 M)'},
@@ -33,7 +33,7 @@ STATIONS = [
 
 CONFIG = {
     'version': 'v2.0',
-    'generated_date': '2025-12-30 14:50:11',
+    'generated_date': '2025-12-30 21:06:04',
     'total_stations': 25
 }
 
