@@ -30,6 +30,11 @@ STATIONS = [
     {'code': 'XE', 'name': 'TARRAGONA', 'display_name': 'TARRAGONA - COMPLEX EDUCATIU'},
     {'code': 'VS', 'name': 'LAC_REDON', 'display_name': 'LAC REDON (2.247 m)'},
     {'code': 'D7', 'name': 'VINEBRE', 'display_name': 'VINEBRE'},
+    {'code': 'MS', 'name': 'FORNELLS', 'display_name': 'FORNELLS DE LA SELVA'},
+    {'code': 'J5', 'name': 'DARNIUS', 'display_name': 'Darnius'},
+    {'code': 'Z3', 'name': 'LAC_REDON', 'display_name': 'LAC REDON (2.247 m)'},
+    {'code': 'XH', 'name': 'SORT', 'display_name': 'Sort'},
+    {'code': 'XO', 'name': 'VIC', 'display_name': 'Vic'},
 ]
 
 # ============================================================================
@@ -125,10 +130,10 @@ DEFAULT_VALUES = {
 # INFORMACIÓ DE GENERACIÓ
 # ============================================================================
 GENERATION_INFO = {
-    'generated_at': '2025-12-29 11:03:41',
-    'total_stations': 20,
+    'generated_at': '2025-12-30 09:05:53',
+    'total_stations': 25,
     'active_stations': 20,
-    'commented_stations': 0,
+    'commented_stations': 5,
     'false_stations': 0,
     'config_banner_version': 'v2.0 - Lògica: Op+CERT+Activa'
 }
