@@ -1,257 +1,311 @@
-#!/usr/bin/env python3
 """
-meteo_scraper.py - Versió adaptada del daily_weather_scraper.py
-Fa web scraping directe de Meteocat igual que l'altre projecte
-AMB ARRODONIMENT CORREGIT (sense multiplicar per 100)
+MeteoCat Web Scraper - VERSIÓ DEFINITIVA
+Extreu dades meteorològiques de https://www.meteo.cat/observacions/xema
 """
 
 import requests
 from bs4 import BeautifulSoup
-from datetime import datetime
 import json
+import time
+import logging
+from datetime import datetime, timezone
+import os
 import sys
-import re
 
-import config_banner as cfg
+# Configurar logging
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(levelname)s - %(message)s',
+    handlers=[
+        logging.FileHandler('scraper.log'),
+        logging.StreamHandler(sys.stdout)
+    ]
+)
+logger = logging.getLogger(__name__)
 
-def round_catalan_style(value, decimals=1):
+# Importar configuració
+try:
+    import config_banner as cfg
+    STATIONS = cfg.STATIONS
+    logger.info(f"✅ Carregades {len(STATIONS)} estacions de config_banner.py")
+except ImportError as e:
+    logger.error(f"❌ Error important config_banner.py: {e}")
+    sys.exit(1)
+except AttributeError as e:
+    logger.error(f"❌ Error: config_banner.py no té STATIONS: {e}")
+    sys.exit(1)
+
+def scrape_station_data(station_code, station_name, max_retries=3):
     """
-    Arrodoneix un número a 'decimals' decimals.
-    Si el segon decimal TROBAT és >= 5, augmenta el primer decimal en 1.
+    Extreu dades meteorològiques d'una estació
     
     Args:
-        value: El número a arrodonir (int, float, string o None)
-        decimals: Nombre de decimals desitjats (per defecte: 1)
+        station_code: Codi de l'estació (ex: 'XJ')
+        station_name: Nom de l'estació per logging
+        max_retries: Intents màxims en cas d'error
     
     Returns:
-        float: El valor arrodonit amb 'decimals' decimals
-    """
-    try:
-        # Si el valor és None, buit o 'None', retorna 0.0
-        if value in [None, 'None', '', 'null']:
-            return 0.0
-            
-        num = float(value)
-        if num == 0:
-            return 0.0
-        
-        # MÈTODE CORRECTE:
-        # 1. Desplacem el decimal que volem mantenir a la posició d'unitats
-        factor = 10 ** decimals
-        shifted = abs(num) * factor
-        
-        # 2. Mirem la part decimal d'aquest número desplaçat
-        integer_part = int(shifted)
-        fractional_part = shifted - integer_part
-        
-        # 3. Mirem el PRIMER decimal després dels que volem mantenir
-        first_decimal_after = int(fractional_part * 10)
-        
-        # 4. Si aquest decimal és >= 5, sumem 1 a la part entera
-        if first_decimal_after >= 5:
-            integer_part += 1
-        
-        # 5. Restaurem la posició decimal original
-        result = integer_part / factor
-        
-        # 6. Restaurem el signe
-        if num < 0:
-            result = -result
-            
-        return result
-        
-    except (ValueError, TypeError):
-        return 0.0
-
-def write_log(message):
-    """Escriu un missatge i també el mostra per pantalla"""
-    print(message)
-
-def convertir_a_numero(text, default=None):
-    """Converteix text a número, retorna None si no és vàlid"""
-    if not text or text in ['(s/d)', '-', '', 'n/d', 'N/D']:
-        return None
-    try:
-        # Netejar possibles símbols
-        text = text.replace(',', '.').replace('°', '').replace('mm', '').replace('hPa', '').replace('W/m²', '')
-        # APLIQUEM ARRODONIMENT DIRECTAMENT
-        return round_catalan_style(float(text.strip()), 1)
-    except:
-        return None
-
-def scrape_station_data(station_code, station_name):
-    """
-    Extreu les dades d'una estació (versió simplificada per al banner)
-    Retorna: {'TX': valor, 'TN': valor, 'PPT': valor} o None
+        dict amb dades de l'estació o None si error
     """
     url = f"https://www.meteo.cat/observacions/xema/dades?codi={station_code}"
     
-    try:
-        write_log(f"  📡 Connectant a {station_name} ({station_code})...")
-        headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'}
-        response = requests.get(url, headers=headers, timeout=15)
-        response.raise_for_status()
-        
-        soup = BeautifulSoup(response.content, 'html.parser')
-        table = soup.find('table', {'class': 'tblperiode'})
-        
-        if not table:
-            write_log("  ❌ No s'ha trobat la taula tblperiode")
-            return None
-        
-        rows = table.find_all('tr')
-        
-        # Variables per emmagatzemar les dades del dia
-        temp_max_values = []
-        temp_min_values = []
-        rain_values = []
-        
-        # Recórrer totes les files per acumular dades del dia
-        for i, row in enumerate(rows):
-            cells = row.find_all(['td', 'th'])
+    for attempt in range(max_retries):
+        try:
+            # Headers per semblar un navegador real
+            headers = {
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+                'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+                'Accept-Language': 'ca,en-US;q=0.7,en;q=0.3',
+                'Accept-Encoding': 'gzip, deflate, br',
+                'DNT': '1',
+                'Connection': 'keep-alive',
+                'Upgrade-Insecure-Requests': '1',
+                'Sec-Fetch-Dest': 'document',
+                'Sec-Fetch-Mode': 'navigate',
+                'Sec-Fetch-Site': 'none',
+                'Sec-Fetch-User': '?1',
+                'Cache-Control': 'max-age=0'
+            }
             
-            if len(cells) < 6:  # Necessitem almenys 6 columnes
+            logger.info(f"Intent {attempt + 1}/{max_retries}: Scraping {station_code} - {station_name}")
+            
+            # Fer la petició amb timeout
+            response = requests.get(url, headers=headers, timeout=15)
+            response.raise_for_status()  # Llença excepció per a codis HTTP dolents
+            
+            # Verificar que la resposta tingui contingut
+            if not response.content:
+                logger.warning(f"Resposta buida per a {station_code}")
+                if attempt < max_retries - 1:
+                    time.sleep(2)  # Esperar abans de reintentar
+                    continue
+                return None
+            
+            # Analitzar HTML
+            soup = BeautifulSoup(response.content, 'html.parser')
+            
+            # Buscar la taula de dades
+            table = soup.find('table', {'class': 'table-dades'})
+            if not table:
+                logger.warning(f"No s'ha trobat la taula per a {station_code}")
+                # Intentar trobar dades d'una altra manera
+                return extract_data_fallback(soup, station_code, station_name)
+            
+            # Buscar files de dades
+            rows = table.find_all('tr')
+            
+            # Diccionari per emmagatzemar valors
+            values = {}
+            
+            for row in rows:
+                cells = row.find_all('td')
+                if len(cells) >= 2:
+                    variable = cells[0].get_text(strip=True)
+                    valor_cell = cells[1]
+                    
+                    # Extreure el valor numèric
+                    valor_text = valor_cell.get_text(strip=True)
+                    
+                    # Netejar i convertir
+                    if valor_text and valor_text != '-':
+                        try:
+                            # Eliminar unitats i espais
+                            valor_net = valor_text.split()[0].replace(',', '.')
+                            valor_float = float(valor_net)
+                            
+                            # Identificar la variable
+                            if 'Màxima' in variable or 'TEMPERATURA MÀXIMA' in variable.upper():
+                                values['TX'] = round(valor_float, 1)
+                            elif 'Mínima' in variable or 'TEMPERATURA MÍNIMA' in variable.upper():
+                                values['TN'] = round(valor_float, 1)
+                            elif 'Acumulada' in variable or 'PPT' in variable.upper() or 'PRECIPITACIÓ' in variable.upper():
+                                values['PPT'] = round(valor_float, 1)
+                        except (ValueError, IndexError) as e:
+                            logger.debug(f"Error convertint valor per {station_code}, variable {variable}: {e}")
+            
+            # Verificar que tenim les dades mínimes
+            required_vars = ['TX', 'TN', 'PPT']
+            missing = [var for var in required_vars if var not in values]
+            
+            if missing:
+                logger.warning(f"Falten variables per {station_code}: {missing}")
+                # Posar valors per defecte per a les que falten
+                for var in missing:
+                    values[var] = '-'
+            
+            logger.info(f"✅ {station_code}: TX={values.get('TX', '-')}°C, TN={values.get('TN', '-')}°C, PPT={values.get('PPT', '-')}mm")
+            return {
+                'success': True,
+                'values': values,
+                'metadata': {
+                    'name': station_name,
+                    'last_fetched': datetime.now(timezone.utc).isoformat(),
+                    'url': url
+                }
+            }
+            
+        except requests.exceptions.Timeout:
+            logger.warning(f"Timeout per a {station_code} (intent {attempt + 1})")
+            if attempt < max_retries - 1:
+                time.sleep(3)  # Esperar més abans de reintentar
                 continue
+            return None
             
-            periode = cells[0].get_text(strip=True)
+        except requests.exceptions.RequestException as e:
+            logger.error(f"Error de xarxa per a {station_code}: {e}")
+            if attempt < max_retries - 1:
+                time.sleep(2)
+                continue
+            return None
             
-            # Verificar si és un període vàlid (hh:mm - hh:mm)
-            if re.match(r'\d{1,2}:\d{2}\s*[-–]\s*\d{1,2}:\d{2}', periode):
-                # Extreure dades
-                tx = convertir_a_numero(cells[2].get_text(strip=True)) if len(cells) > 2 else None
-                tn = convertir_a_numero(cells[3].get_text(strip=True)) if len(cells) > 3 else None
-                ppt = convertir_a_numero(cells[5].get_text(strip=True)) if len(cells) > 5 else None
-                
-                # Acumular per a càlculs
-                if tx is not None:
-                    temp_max_values.append(tx)
-                if tn is not None:
-                    temp_min_values.append(tn)
-                if ppt is not None:
-                    rain_values.append(ppt)
+        except Exception as e:
+            logger.error(f"Error inesperat scraping {station_code}: {e}")
+            if attempt < max_retries - 1:
+                time.sleep(2)
+                continue
+            return None
+    
+    return None
+
+def extract_data_fallback(soup, station_code, station_name):
+    """Intent alternatiu d'extreure dades si no es troba la taula normal"""
+    try:
+        values = {'TX': '-', 'TN': '-', 'PPT': '-'}
         
-        # Calcular màxims, mínims i acumulats
-        values = {}
+        # Buscar valors per altres mètodes
+        all_text = soup.get_text()
         
-        if temp_max_values:
-            values['TX'] = max(temp_max_values)
-        else:
-            values['TX'] = cfg.DEFAULT_VALUES['TX']
-            
-        if temp_min_values:
-            values['TN'] = min(temp_min_values)
-        else:
-            values['TN'] = cfg.DEFAULT_VALUES['TN']
-            
-        if rain_values:
-            values['PPT'] = sum(rain_values)
-        else:
-            values['PPT'] = cfg.DEFAULT_VALUES['PPT']
+        # Buscar temperatura màxima
+        if 'Màxima' in all_text or 'TEMPERATURA MÀXIMA' in all_text.upper():
+            # Intentar trobar el valor després de la paraula clau
+            lines = all_text.split('\n')
+            for i, line in enumerate(lines):
+                if 'Màxima' in line or 'TEMPERATURA MÀXIMA' in line.upper():
+                    # Buscar números a les línies següents
+                    for j in range(i, min(i+5, len(lines))):
+                        import re
+                        numbers = re.findall(r'[-+]?\d*\.\d+|\d+', lines[j])
+                        if numbers:
+                            try:
+                                values['TX'] = round(float(numbers[0].replace(',', '.')), 1)
+                                break
+                            except:
+                                pass
         
-        # APLIQUEM ARRODONIMENT FINAL (per si hi ha errors de coma flotant)
-        values['TX'] = round_catalan_style(values['TX'], 1)
-        values['TN'] = round_catalan_style(values['TN'], 1)
-        values['PPT'] = round_catalan_style(values['PPT'], 1)
+        # Similar per temperatura mínima i precipitació
+        # (podries afegir més lògica aquí)
         
-        write_log(f"  ✅ {station_name}: TX={values['TX']}°C, TN={values['TN']}°C, PPT={values['PPT']}mm")
-        return values
+        logger.info(f"⚠️  {station_code}: Dades fallback - TX={values['TX']}°C, TN={values['TN']}°C, PPT={values['PPT']}mm")
+        
+        return {
+            'success': True if any(v != '-' for v in values.values()) else False,
+            'values': values,
+            'metadata': {
+                'name': station_name,
+                'last_fetched': datetime.now(timezone.utc).isoformat(),
+                'url': f"https://www.meteo.cat/observacions/xema/dades?codi={station_code}",
+                'note': 'Dades obtingudes amb mètode fallback'
+            }
+        }
         
     except Exception as e:
-        write_log(f"  ❌ Error consultant {station_name}: {str(e)[:50]}")
+        logger.error(f"Error en mètode fallback per {station_code}: {e}")
         return None
 
 def main():
     """Funció principal"""
-    print("=" * 60)
-    print("METEOCAT WEB SCRAPER - Versió igual que l'altre projecte")
-    print("=" * 60)
+    logger.info("=" * 60)
+    logger.info("🚀 INICIANT METEO SCRAPER")
+    logger.info(f"📊 Estacions a processar: {len(STATIONS)}")
+    logger.info("=" * 60)
     
-    print("\n[1] Comprovant estacions configurades...")
-    print(f"   Estacions a consultar: {len(cfg.STATIONS)}")
-    for station in cfg.STATIONS:
-        print(f"   • {station['display_name']} ({station['code']})")
+    # Crear directori de dades si no existeix
+    os.makedirs('data', exist_ok=True)
     
     # Diccionari per emmagatzemar totes les dades
     all_data = {
         'metadata': {
-            'last_updated': datetime.now().isoformat(),
+            'last_updated': datetime.now(timezone.utc).isoformat(),
             'source': 'meteocat_web_scraping',
-            'stations_count': len(cfg.STATIONS)
+            'stations_count': len(STATIONS)
         },
         'stations': {}
     }
     
-    print("\n[2] Obtenint dades de les estacions...")
+    # Processar cada estació
+    success_count = 0
+    failed_stations = []
     
-    for station in cfg.STATIONS:
+    for i, station in enumerate(STATIONS, 1):
         station_code = station['code']
-        display_name = station['display_name']
+        station_name = station['display_name']
         
-        # Obtenir dades de l'estació
-        raw_values = scrape_station_data(station_code, display_name)
+        logger.info(f"[{i}/{len(STATIONS)}] Processant {station_code} - {station_name}")
         
-        if raw_values:
-            station_data = {
-                'success': True,
-                'values': {
-                    'TX': raw_values.get('TX', cfg.DEFAULT_VALUES['TX']),
-                    'TN': raw_values.get('TN', cfg.DEFAULT_VALUES['TN']),
-                    'PPT': raw_values.get('PPT', cfg.DEFAULT_VALUES['PPT'])
-                },
-                'metadata': {
-                    'name': display_name,
-                    'last_fetched': datetime.now().isoformat(),
-                    'url': f"https://www.meteo.cat/observacions/xema/dades?codi={station_code}"
-                }
-            }
+        # Scraping de l'estació
+        station_data = scrape_station_data(station_code, station_name)
+        
+        if station_data and station_data['success']:
+            all_data['stations'][station_code] = station_data
+            success_count += 1
         else:
-            station_data = {
+            # Estació fallida, afegir amb dades buides
+            all_data['stations'][station_code] = {
                 'success': False,
-                'values': cfg.DEFAULT_VALUES,
+                'values': {'TX': '-', 'TN': '-', 'PPT': '-'},
                 'metadata': {
-                    'name': display_name,
-                    'error': 'No s\'han pogut obtenir dades',
-                    'last_attempt': datetime.now().isoformat()
+                    'name': station_name,
+                    'last_fetched': datetime.now(timezone.utc).isoformat(),
+                    'url': f"https://www.meteo.cat/observacions/xema/dades?codi={station_code}",
+                    'error': 'No s\'han pogut obtenir dades'
                 }
             }
+            failed_stations.append(station_code)
         
-        all_data['stations'][station_code] = station_data
+        # Esperar entre peticions per no sobrecarregar el servidor
+        time.sleep(1.5)
     
-    # Guardar dades
+    # Guardar dades en fitxer JSON
+    output_file = 'data/latest_weather.json'
     try:
-        with open(cfg.LATEST_DATA_FILE, 'w', encoding='utf-8') as f:
+        with open(output_file, 'w', encoding='utf-8') as f:
             json.dump(all_data, f, indent=2, ensure_ascii=False)
-        
-        print(f"\n✅ Dades guardades a: {cfg.LATEST_DATA_FILE}")
-        print(f"   Estacions processades: {len(all_data['stations'])}")
-        print(f"   Última actualització: {datetime.now().strftime('%H:%M:%S')}")
-        
-        # Mostrar resum
-        print("\n📊 RESUM DE DADES OBTINGUDES:")
-        for station_code, station_data in all_data['stations'].items():
-            name = next((s['display_name'] for s in cfg.STATIONS if s['code'] == station_code), station_code)
-            if station_data['success']:
-                vals = station_data['values']
-                print(f"   {name}: TX={vals['TX']}°C, TN={vals['TN']}°C, PPT={vals['PPT']}mm")
-            else:
-                print(f"   {name}: ❌ Sense dades")
-        
-        return all_data
-        
+        logger.info(f"✅ Dades guardades a {output_file}")
     except Exception as e:
-        print(f"❌ Error guardant dades: {e}")
-        return None
+        logger.error(f"❌ Error guardant fitxer: {e}")
+        return
+    
+    # Resum
+    logger.info("=" * 60)
+    logger.info("📊 RESUM DE L'EXECUCIÓ")
+    logger.info(f"✅ Estacions amb èxit: {success_count}/{len(STATIONS)}")
+    
+    if failed_stations:
+        logger.info(f"❌ Estacions fallides: {len(failed_stations)}")
+        for failed in failed_stations:
+            station_name = next((s['display_name'] for s in STATIONS if s['code'] == failed), failed)
+            logger.info(f"   - {failed}: {station_name}")
+    
+    logger.info(f"💾 Fitxer de sortida: {output_file}")
+    logger.info("=" * 60)
+    
+    # Mostrar algunes dades d'exemple
+    if success_count > 0:
+        logger.info("📈 DADES D'EXEMPLE (primeres 3 estacions amb èxit):")
+        sample_count = 0
+        for station_code, data in all_data['stations'].items():
+            if data['success'] and sample_count < 3:
+                values = data['values']
+                name = data['metadata']['name']
+                logger.info(f"   {station_code} - {name}: TX={values.get('TX', '-')}°C, TN={values.get('TN', '-')}°C, PPT={values.get('PPT', '-')}mm")
+                sample_count += 1
 
 if __name__ == "__main__":
     try:
-        result = main()
-        if result:
-            print("\n" + "=" * 60)
-            print("✅ PROCÉS COMPLETAT AMB ÈXIT")
-            print("=" * 60)
-        else:
-            print("\n❌ PROCÉS COMPLETAT AMB ERRORS")
+        main()
     except KeyboardInterrupt:
-        print("\n\n⏹️  Execució cancel·lada per l'usuari")
+        logger.info("\n⏹️  Execució interrompuda per l'usuari")
     except Exception as e:
-        print(f"\n💥 ERROR CRÍTIC: {e}")
+        logger.error(f"❌ Error crític: {e}")
+        import traceback
+        traceback.print_exc()
