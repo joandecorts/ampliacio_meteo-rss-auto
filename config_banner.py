@@ -21,7 +21,7 @@ STATIONS = [
     {'code': 'XE', 'name': 'TARRAGONA', 'display_name': 'TARRAGONA - COMPLEX EDUCATIU'},
     {'code': 'XO', 'name': 'VIC', 'display_name': 'VIC'},
     {'code': 'VS', 'name': 'VIELHA_E_MIJARAN', 'display_name': 'VIELHA E MIJARAN - LAC REDON (2.247 M)'},
-    {'code': 'D7', 'name': 'VINEBRE', 'display_name': 'VINEBRE'},
+    {'code': 'D7', 'name': 'VINEBRE', 'display_name': 'VINEBRE'}
 ]
 
 CONFIG = {
