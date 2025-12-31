@@ -25,7 +25,7 @@ STATIONS = [
     {'code': 'DG', 'name': 'QUERALBS_NURIA', 'display_name': 'QUERALBS - NÚRIA (1.971 m)'},
     {'code': 'ZC', 'name': 'SETCASES_ULLDETER', 'display_name': 'SETCASES - ULLDETER (2.413 m)'},
     {'code': 'UN', 'name': 'CASSÀ DE LA SELVA', 'display_name': 'CASSÀ DE LA SELVA'},
-    {'code': 'D7', 'name': 'VINEBRE', 'display_name': 'VINEBRE'},
+    {'code': 'X5', 'name': 'PN DELS PORTS', 'display_name': 'ROQUETES - PN DELS PORTS'},
     {'code': 'YB', 'name': 'OLOT', 'display_name': 'OLOT'},
     {'code': 'CI', 'name': 'SANT PAU DE SEGÚRIES', 'display_name': 'SANT PAU DE SEGÚRIES'},
     {'code': 'XK', 'name': 'PUIG SESOLLES', 'display_name': 'PUIG SESOLLES (1.668 M)'},  
