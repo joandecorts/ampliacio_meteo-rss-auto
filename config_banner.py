@@ -1,7 +1,7 @@
 """
 CONFIGURACIÓ BANNER NEWS CHANNEL - VERSIÓ DADES REALS
 Configuració per al sistema de banner meteorològic amb dades reals de Meteocat
-Fitxer generat automàticament: 2026-01-06 19:13:40
+Fitxer generat automàticament: 2026-01-06 20:17:57
 Total estacions: 25 (Actives: 25, Comentades: 0)
 """
 
@@ -16,8 +16,8 @@ STATIONS = [
     {'code': 'DJ', 'name': 'BANYOLES', 'display_name': 'BANYOLES'},
     {'code': 'X4', 'name': 'BARCELONA_RAVAL', 'display_name': 'BARCELONA - EL RAVAL'},
     {'code': 'UN', 'name': 'CASSÀ_DE_LA_SELVA', 'display_name': 'CASSÀ DE LA SELVA'},
-    {'code': 'MS', 'name': 'CASTELLAR_DE_NHUG', 'display_name': 'Castellar de n\'Hug'},
-    {'code': 'J5', 'name': 'DARNIUS', 'display_name': 'Darnius - Pantà de Darnius - Boadella'},
+    {'code': 'MS', 'name': 'CASTELLAR_DE_NHUG', 'display_name': 'CASTELLAR DE N\'HUG'},
+    {'code': 'J5', 'name': 'DARNIUS', 'display_name': 'DARNIUS - PANTÀ DE DARNIUS - BOADELLA'},
     {'code': 'DP', 'name': 'DAS', 'display_name': 'DAS - AERÒDROM'},
     {'code': 'XL', 'name': 'PRAT_LLOBREGAT', 'display_name': 'EL PRAT DE LLOBREGAT'},
     {'code': 'XK', 'name': 'PUIG_SESOLLES', 'display_name': 'PUIG SESOLLES (1.668 m)'},
@@ -25,16 +25,16 @@ STATIONS = [
     {'code': 'XJ', 'name': 'GIRONA', 'display_name': 'GIRONA'},
     {'code': 'CD', 'name': 'SEU_URGELL', 'display_name': 'LA SEU D\'URGELL - BELLESTAR'},
     {'code': 'VK', 'name': 'LLEIDA_RAIMAT', 'display_name': 'LLEIDA - RAIMAT'},
-    {'code': 'Z3', 'name': 'MERANGES', 'display_name': 'Meranges - Malniu (2.230 m)'},
+    {'code': 'Z3', 'name': 'MERANGES', 'display_name': 'MERANGES - MALNIU (2.230 m)'},
     {'code': 'YB', 'name': 'OLOT', 'display_name': 'OLOT'},
     {'code': 'YP', 'name': 'PALAFRUGELL', 'display_name': 'PALAFRUGELL'},
     {'code': 'DG', 'name': 'QUERALBS_NURIA', 'display_name': 'QUERALBS - NÚRIA (1.971 m)'},
     {'code': 'D4', 'name': 'ROSES', 'display_name': 'ROSES'},
     {'code': 'CI', 'name': 'SANT_PAU_SEGURIES', 'display_name': 'SANT PAU DE SEGÚRIES'},
-    {'code': 'ZC', 'name': 'SETCASES_ULLDETER', 'display_name': 'SETCASES - ULLDETER (2.413 m)'},
-    {'code': 'XH', 'name': 'SORT', 'display_name': 'Sort'},
+    {'code': 'ZC', 'name': 'SETCASES_ULLDETER', 'display_name': 'SETCASES-ULLDETER (2.413 m)'},
+    {'code': 'XH', 'name': 'SORT', 'display_name': 'SORT'},
     {'code': 'XE', 'name': 'TARRAGONA', 'display_name': 'TARRAGONA - COMPLEX EDUCATIU'},
-    {'code': 'XO', 'name': 'VIC', 'display_name': 'Vic'},
+    {'code': 'XO', 'name': 'VIC', 'display_name': 'VIC'},
     {'code': 'VS', 'name': 'LAC_REDON', 'display_name': 'LAC REDON (2.247 m)'},
     {'code': 'D7', 'name': 'VINEBRE', 'display_name': 'VINEBRE'},
 ]
@@ -126,7 +126,7 @@ DEFAULT_VALUES = {
 # INFORMACIÓ DE GENERACIÓ
 # ============================================================================
 GENERATION_INFO = {
-    'generated_at': '2026-01-06 19:13:40',
+    'generated_at': '2026-01-06 20:17:57',
     'total_stations': 25,
     'active_stations': 25,
     'commented_stations': 0,
@@ -149,7 +149,6 @@ if __name__ == "__main__":
     print("=" * 70)
     
     for i, station in enumerate(STATIONS, 1):
-        # Determinar icona segon la posició
         if i <= GENERATION_INFO['active_stations']:
             status = "✅"
         elif i <= GENERATION_INFO['active_stations'] + GENERATION_INFO['commented_stations']:
