@@ -1,36 +1,41 @@
 """
 CONFIGURACIÓ BANNER NEWS CHANNEL - VERSIÓ DADES REALS
 Configuració per al sistema de banner meteorològic amb dades reals de Meteocat
+Fitxer generat automàticament: 2026-01-06 17:50:10
 """
 
 import os
 from datetime import datetime, timedelta
 
 # ============================================================================
-# CONFIGURACIÓ DE LES 15 ESTACIONS (codis verificats)
+# CONFIGURACIÓ DE LES ESTACIONS (25 estacions)
 # ============================================================================
 STATIONS = [
-    # 20 Estacions
     {'code': 'XJ', 'name': 'GIRONA', 'display_name': 'GIRONA'},
     {'code': 'UO', 'name': 'FORNELLS', 'display_name': 'FORNELLS DE LA SELVA'},
-    {'code': 'D4', 'name': 'ROSES', 'display_name': 'ROSES'},
-    {'code': 'CD', 'name': 'SEU_URGELL', 'display_name': 'LA SEU D\'URGELL - BELLESTAR'},
-    {'code': 'YP', 'name': 'PALAFRUGELL', 'display_name': 'PALAFRUGELL'},
-    {'code': 'XL', 'name': 'PRAT_LLOBREGAT', 'display_name': 'EL PRAT DE LLOBREGAT'},
+    {'code': 'DN', 'name': 'ANGLES', 'display_name': 'ANGLÈS'},
     {'code': 'DJ', 'name': 'BANYOLES', 'display_name': 'BANYOLES'},
+    {'code': 'X4', 'name': 'PRAT_LLOBREGAT', 'display_name': 'EL PRAT DE LLOBREGAT'},
+    {'code': 'UN', 'name': 'CASSÀ_DE_LA_SELVA', 'display_name': 'CASSÀ DE LA SELVA'},
+    {'code': 'MS', 'name': 'FORNELLS', 'display_name': 'FORNELLS DE LA SELVA'},
+    {'code': 'J5', 'name': 'DARNIUS', 'display_name': 'Darnius'},
     {'code': 'DP', 'name': 'DAS', 'display_name': 'DAS - AERÒDROM'},
-    {'code': 'X4', 'name': 'BARCELONA_RAVAL', 'display_name': 'BARCELONA - EL RAVAL'},
+    {'code': 'XL', 'name': 'PRAT_LLOBREGAT', 'display_name': 'EL PRAT DE LLOBREGAT'},
+    {'code': 'XK', 'name': 'PUIG_SESOLLES', 'display_name': 'PUIG SESOLLES (1.668 m)'},
+    {'code': 'CD', 'name': 'SEU_URGELL', 'display_name': 'LA SEU D\'URGELL - BELLESTAR'},
     {'code': 'VK', 'name': 'LLEIDA_RAIMAT', 'display_name': 'LLEIDA - RAIMAT'},
-    {'code': 'XE', 'name': 'TARRAGONA', 'display_name': 'TARRAGONA - COMPLEX EDUCATIU'},
-    {'code': 'DG', 'name': 'QUERALBS_NURIA', 'display_name': 'QUERALBS - NÚRIA (1.971 m)'},
-    {'code': 'ZC', 'name': 'SETCASES_ULLDETER', 'display_name': 'SETCASES - ULLDETER (2.413 m)'},
-    {'code': 'UN', 'name': 'CASSÀ DE LA SELVA', 'display_name': 'CASSÀ DE LA SELVA'},
-    {'code': 'X5', 'name': 'PN DELS PORTS', 'display_name': 'ROQUETES - PN DELS PORTS'},
+    {'code': 'Z3', 'name': 'LAC_REDON', 'display_name': 'LAC REDON (2.247 m)'},
     {'code': 'YB', 'name': 'OLOT', 'display_name': 'OLOT'},
-    {'code': 'CI', 'name': 'SANT PAU DE SEGÚRIES', 'display_name': 'SANT PAU DE SEGÚRIES'},
-    {'code': 'XK', 'name': 'PUIG SESOLLES', 'display_name': 'PUIG SESOLLES (1.668 M)'},  
-    {'code': 'VS', 'name': 'LAC REDON', 'display_name': 'LAC REDON (2.247 M)'}, 
-    {'code': 'DN', 'name': 'ANGLÈS', 'display_name': 'ANGLÈS'}
+    {'code': 'YP', 'name': 'PALAFRUGELL', 'display_name': 'PALAFRUGELL'},
+    {'code': 'DG', 'name': 'QUERALBS_NURIA', 'display_name': 'QUERALBS - NÚRIA (1.971 m)'},
+    {'code': 'D4', 'name': 'ROSES', 'display_name': 'ROSES'},
+    {'code': 'CI', 'name': 'SANT_PAU_SEGURIES', 'display_name': 'SANT PAU DE SEGÚRIES'},
+    {'code': 'ZC', 'name': 'SETCASES_ULLDETER', 'display_name': 'SETCASES - ULLDETER (2.413 m)'},
+    {'code': 'XH', 'name': 'SORT', 'display_name': 'Sort'},
+    {'code': 'XE', 'name': 'TARRAGONA', 'display_name': 'TARRAGONA - COMPLEX EDUCATIU'},
+    {'code': 'XO', 'name': 'VIC', 'display_name': 'Vic'},
+    {'code': 'VS', 'name': 'LAC_REDON', 'display_name': 'LAC REDON (2.247 m)'},
+    {'code': 'D7', 'name': 'VINEBRE', 'display_name': 'VINEBRE'},
 ]
 
 # ============================================================================
@@ -57,10 +62,10 @@ os.makedirs(HISTORICAL_DIR, exist_ok=True)
 
 # Fitxers HTML
 HTML_TEMPLATE = os.path.join(BASE_DIR, 'banner_news_channel.html')
-OUTPUT_HTML = os.path.join(BASE_DIR, 'banner_output.html')  # Aquest usarà OBS
+OUTPUT_HTML = os.path.join(BASE_DIR, 'banner_output.html')
 
 # ============================================================================
-# CONFIGURACIÓ API METEOCAT (COMENTADA - NO LA NECESSITEM ARA)
+# CONFIGURACIÓ API METEOCAT
 # ============================================================================
 METEOcat_CONFIG = {
     'api_base': 'https://api.meteo.cat/v1',
@@ -69,13 +74,7 @@ METEOcat_CONFIG = {
     'backoff_factor': 2
 }
 
-# MODIFICACIÓ: No comprovem la clau API, no la necessitem per a web scraping
-# Si en un futur vols utilitzar l'API, descomenta això:
-# API_KEY = os.environ.get('METEOcat_API_KEY', '')
-# if not API_KEY:
-#     print("⚠️  MODE WEB SCRAPING: No s'ha trobat clau API.")
-
-API_KEY = None  # El deixem com a None per no causar errors
+API_KEY = None  # Modo web scraping
 
 # ============================================================================
 # CONFIGURACIÓ DE TEMPS
@@ -88,7 +87,7 @@ YESTERDAY = TODAY - timedelta(days=1)
 SCROLL_CONFIG = {
     'transition_duration': 0.8,
     'display_duration': 15,
-    'stations_per_view': 2  # Quantes estacions es mostren alhora
+    'stations_per_view': 2
 }
 
 # ============================================================================
@@ -114,10 +113,50 @@ def get_station_file_path(station_code):
     return os.path.join(HISTORICAL_DIR, f"{station_code}.json")
 
 # ============================================================================
-# VALORS PER DEFECTE (si no hi ha dades)
+# VALORS PER DEFECTE
 # ============================================================================
 DEFAULT_VALUES = {
-    'TX': '--',  # Temperatura màxima
-    'TN': '--',  # Temperatura mínima
-    'PPT': '--'  # Precipitació
+    'TX': '--',
+    'TN': '--',
+    'PPT': '--'
 }
+
+# ============================================================================
+# INFORMACIÓ DE GENERACIÓ - CORREGIT: definida correctament
+# ============================================================================
+GENERATION_INFO = {
+    'generated_at': '2026-01-06 17:50:10',
+    'total_stations': 25,
+    'active_stations': 25,
+    'commented_stations': 0,
+    'false_stations': 0,
+    'config_banner_version': 'v2.0 - Lògica: Op+CERT+Activa',
+    'generator': 'ConfiguradorEstacions v2.0'
+}
+
+# ============================================================================
+# COMPROVACIÓ INICIAL - CORREGIT: correctament aniuat
+# ============================================================================
+if __name__ == "__main__":
+    print("=" * 60)
+    print(f"CONFIG_BANNER.PY - VERSIÓ {GENERATION_INFO['config_banner_version']}")
+    print("=" * 60)
+    print(f"📊 Total estacions: {len(STATIONS)}")
+    print(f"✅ Actives: {GENERATION_INFO['active_stations']}")
+    print(f"💬 Comentades: {GENERATION_INFO['commented_stations']}")
+    print(f"🗑️ Desmantellades: {GENERATION_INFO['false_stations']}")
+    print("=" * 60)
+    
+    for i, station in enumerate(STATIONS, 1):
+        # Determinar icona segon la posició
+        if i <= GENERATION_INFO['active_stations']:
+            status = "✅"
+        elif i <= GENERATION_INFO['active_stations'] + GENERATION_INFO['commented_stations']:
+            status = "💬"
+        else:
+            status = "🗑️"
+        
+        print(f"  {status} {i:2}. {station['code']} - {station['display_name']}")
+    
+    print("=" * 60)
+    print(f"🚀 Configuració carregada correctament!")
