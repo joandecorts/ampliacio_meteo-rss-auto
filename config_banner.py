@@ -1,7 +1,8 @@
 """
 CONFIGURACIÓ BANNER NEWS CHANNEL - VERSIÓ DADES REALS
 Configuració per al sistema de banner meteorològic amb dades reals de Meteocat
-Fitxer generat automàticament: 2026-01-06 17:50:10
+Fitxer generat automàticament: 2026-01-06 19:13:40
+Total estacions: 25 (Actives: 25, Comentades: 0)
 """
 
 import os
@@ -11,20 +12,20 @@ from datetime import datetime, timedelta
 # CONFIGURACIÓ DE LES ESTACIONS (25 estacions)
 # ============================================================================
 STATIONS = [
-    {'code': 'XJ', 'name': 'GIRONA', 'display_name': 'GIRONA'},
-    {'code': 'UO', 'name': 'FORNELLS', 'display_name': 'FORNELLS DE LA SELVA'},
     {'code': 'DN', 'name': 'ANGLES', 'display_name': 'ANGLÈS'},
     {'code': 'DJ', 'name': 'BANYOLES', 'display_name': 'BANYOLES'},
-    {'code': 'X4', 'name': 'PRAT_LLOBREGAT', 'display_name': 'EL PRAT DE LLOBREGAT'},
+    {'code': 'X4', 'name': 'BARCELONA_RAVAL', 'display_name': 'BARCELONA - EL RAVAL'},
     {'code': 'UN', 'name': 'CASSÀ_DE_LA_SELVA', 'display_name': 'CASSÀ DE LA SELVA'},
-    {'code': 'MS', 'name': 'FORNELLS', 'display_name': 'FORNELLS DE LA SELVA'},
-    {'code': 'J5', 'name': 'DARNIUS', 'display_name': 'Darnius'},
+    {'code': 'MS', 'name': 'CASTELLAR_DE_NHUG', 'display_name': 'Castellar de n\'Hug'},
+    {'code': 'J5', 'name': 'DARNIUS', 'display_name': 'Darnius - Pantà de Darnius - Boadella'},
     {'code': 'DP', 'name': 'DAS', 'display_name': 'DAS - AERÒDROM'},
     {'code': 'XL', 'name': 'PRAT_LLOBREGAT', 'display_name': 'EL PRAT DE LLOBREGAT'},
     {'code': 'XK', 'name': 'PUIG_SESOLLES', 'display_name': 'PUIG SESOLLES (1.668 m)'},
+    {'code': 'UO', 'name': 'FORNELLS', 'display_name': 'FORNELLS DE LA SELVA'},
+    {'code': 'XJ', 'name': 'GIRONA', 'display_name': 'GIRONA'},
     {'code': 'CD', 'name': 'SEU_URGELL', 'display_name': 'LA SEU D\'URGELL - BELLESTAR'},
     {'code': 'VK', 'name': 'LLEIDA_RAIMAT', 'display_name': 'LLEIDA - RAIMAT'},
-    {'code': 'Z3', 'name': 'LAC_REDON', 'display_name': 'LAC REDON (2.247 m)'},
+    {'code': 'Z3', 'name': 'MERANGES', 'display_name': 'Meranges - Malniu (2.230 m)'},
     {'code': 'YB', 'name': 'OLOT', 'display_name': 'OLOT'},
     {'code': 'YP', 'name': 'PALAFRUGELL', 'display_name': 'PALAFRUGELL'},
     {'code': 'DG', 'name': 'QUERALBS_NURIA', 'display_name': 'QUERALBS - NÚRIA (1.971 m)'},
@@ -122,10 +123,10 @@ DEFAULT_VALUES = {
 }
 
 # ============================================================================
-# INFORMACIÓ DE GENERACIÓ - CORREGIT: definida correctament
+# INFORMACIÓ DE GENERACIÓ
 # ============================================================================
 GENERATION_INFO = {
-    'generated_at': '2026-01-06 17:50:10',
+    'generated_at': '2026-01-06 19:13:40',
     'total_stations': 25,
     'active_stations': 25,
     'commented_stations': 0,
@@ -135,17 +136,17 @@ GENERATION_INFO = {
 }
 
 # ============================================================================
-# COMPROVACIÓ INICIAL - CORREGIT: correctament aniuat
+# COMPROVACIÓ INICIAL
 # ============================================================================
 if __name__ == "__main__":
-    print("=" * 60)
+    print("=" * 70)
     print(f"CONFIG_BANNER.PY - VERSIÓ {GENERATION_INFO['config_banner_version']}")
-    print("=" * 60)
+    print("=" * 70)
     print(f"📊 Total estacions: {len(STATIONS)}")
     print(f"✅ Actives: {GENERATION_INFO['active_stations']}")
     print(f"💬 Comentades: {GENERATION_INFO['commented_stations']}")
     print(f"🗑️ Desmantellades: {GENERATION_INFO['false_stations']}")
-    print("=" * 60)
+    print("=" * 70)
     
     for i, station in enumerate(STATIONS, 1):
         # Determinar icona segon la posició
@@ -158,5 +159,7 @@ if __name__ == "__main__":
         
         print(f"  {status} {i:2}. {station['code']} - {station['display_name']}")
     
-    print("=" * 60)
+    print("=" * 70)
     print(f"🚀 Configuració carregada correctament!")
+    print(f"💾 Dades actualitzades: {GENERATION_INFO['generated_at']}")
+    print("=" * 70)
