@@ -74,7 +74,7 @@ STATIONS = [
     # {'code': 'Z7', 'name': 'ESPOT_2519_M_Z7', 'display_name': 'Espot (2.519 m)'},  # COM
     # {'code': 'X1', 'name': 'FALSET_X1', 'display_name': 'Falset'},  # COM
     # {'code': 'KP', 'name': 'FOGARS_DE_LA_SELVA_KP', 'display_name': 'Fogars de la Selva'},  # COM
-    {'code': 'XK', 'name': 'FOGARS_DE_MONTCLUS___PUIG_SESOLLES_1668_M_XK', 'display_name': 'Fogars de Montclús - Puig Sesolles (1668 m)'},
+    {'code': 'XK', 'name': 'FOGARS_DE_MONTCLUS___PUIG_SESOLLES_1668_M_XK', 'display_name': 'Fogars de Montclús - Puig Sesolles (1.668m)'},
     # {'code': 'DI', 'name': 'FONT_RUBI_DI', 'display_name': 'Font-rubí'},  # COM
     {'code': 'UO', 'name': 'FORNELLS_DE_LA_SELVA_UO', 'display_name': 'Fornells de la Selva'},
     # {'code': 'Y4', 'name': 'FIGOLS_I_ALINYA___ALINYA_Y4', 'display_name': 'Fígols i Alinyà - Alinyà'},  # COM
