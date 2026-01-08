@@ -1,8 +1,8 @@
 """
 CONFIGURACIÓ BANNER NEWS CHANNEL - VERSIÓ DADES REALS
 Configuració per al sistema de banner meteorològic amb dades reals de Meteocat
-Fitxer generat automàticament: 2026-01-07 11:22:10
-Total estacions: 189 (Actives: 30, Comentades: 159)
+Fitxer generat automàticament: 2026-01-08 11:16:53
+Total estacions: 189 (Actives: 31, Comentades: 158)
 """
 
 import os
@@ -51,7 +51,7 @@ STATIONS = [
     # {'code': 'XC', 'name': 'CASTELLBISBAL_XC', 'display_name': 'Castellbisbal'},  # COM
     # {'code': 'U4', 'name': 'CASTELLNOU_DE_BAGES_U4', 'display_name': 'Castellnou de Bages'},  # COM
     # {'code': 'C6', 'name': 'CASTELLNOU_DE_SEANA_C6', 'display_name': 'Castellnou de Seana'},  # COM
-    # {'code': 'W1', 'name': 'CASTELLO_DEMPURIES_W1', 'display_name': 'Castelló D\'empúries'},  # COM
+    {'code': 'W1', 'name': 'CASTELLO_DEMPURIES_W1', 'display_name': 'Castelló D\'empúries'},
     # {'code': 'C8', 'name': 'CERVERA_C8', 'display_name': 'Cervera'},  # COM
     # {'code': 'VQ', 'name': 'CONSTANTI_VQ', 'display_name': 'Constantí'},  # COM
     # {'code': 'MR', 'name': 'CORNUDELLA_DE_MONTSANT___PANTA_DE_SIURANA_MR', 'display_name': 'Cornudella de Montsant - Pantà de Siurana'},  # COM
@@ -74,7 +74,7 @@ STATIONS = [
     # {'code': 'Z7', 'name': 'ESPOT_2519_M_Z7', 'display_name': 'Espot (2.519 m)'},  # COM
     # {'code': 'X1', 'name': 'FALSET_X1', 'display_name': 'Falset'},  # COM
     # {'code': 'KP', 'name': 'FOGARS_DE_LA_SELVA_KP', 'display_name': 'Fogars de la Selva'},  # COM
-    {'code': 'XK', 'name': 'FOGARS_DE_MONTCLUS___PUIG_SESOLLES_1668_M_XK', 'display_name': 'Fogars de Montclús - Puig Sesolles (1.668m)'},
+    {'code': 'XK', 'name': 'FOGARS_DE_MONTCLUS___PUIG_SESOLLES_1668_M_XK', 'display_name': 'Fogars de Montclús - Puig Sesolles (1668 m)'},
     # {'code': 'DI', 'name': 'FONT_RUBI_DI', 'display_name': 'Font-rubí'},  # COM
     {'code': 'UO', 'name': 'FORNELLS_DE_LA_SELVA_UO', 'display_name': 'Fornells de la Selva'},
     # {'code': 'Y4', 'name': 'FIGOLS_I_ALINYA___ALINYA_Y4', 'display_name': 'Fígols i Alinyà - Alinyà'},  # COM
@@ -291,10 +291,10 @@ DEFAULT_VALUES = {
 # INFORMACIÓ DE GENERACIÓ
 # ============================================================================
 GENERATION_INFO = {
-    'generated_at': '2026-01-07 11:22:10',
+    'generated_at': '2026-01-08 11:16:53',
     'total_stations': 189,
-    'active_stations': 30,
-    'comented_stations': 159,
+    'active_stations': 31,
+    'comented_stations': 158,
     'false_stations': 0,
     'config_banner_version': 'v2.0 - Lògica: Op+CERT+Activa',
     'generator': 'ConfiguradorEstacions v2.1'
