@@ -1,8 +1,8 @@
 """
 CONFIGURACIÓ BANNER NEWS CHANNEL - VERSIÓ DADES REALS
 Configuració per al sistema de banner meteorològic amb dades reals de Meteocat
-Fitxer generat automàticament: 2026-01-08 11:16:53
-Total estacions: 189 (Actives: 31, Comentades: 158)
+Fitxer generat automàticament: 2026-01-08 18:07:32
+Total estacions: 189 (Actives: 33, Comentades: 156)
 """
 
 import os
@@ -71,10 +71,10 @@ STATIONS = [
     # {'code': 'CE', 'name': 'ELS_HOSTALETS_DE_PIEROLA___ELS_HOSTALETS_DE_PIEROL', 'display_name': 'Els Hostalets de Pierola - els Hostalets de Pierola'},  # COM
     # {'code': 'VD', 'name': 'ELS_PLANS_DE_SIO___EL_CANOS_VD', 'display_name': 'Els Plans de Sió - el Canós'},  # COM
     # {'code': 'VZ', 'name': 'ESPOLLA_VZ', 'display_name': 'Espolla'},  # COM
-    # {'code': 'Z7', 'name': 'ESPOT_2519_M_Z7', 'display_name': 'Espot (2.519 m)'},  # COM
+    {'code': 'Z7', 'name': 'ESPOT_2519_M_Z7', 'display_name': 'Espot (2.519 m)'},
     # {'code': 'X1', 'name': 'FALSET_X1', 'display_name': 'Falset'},  # COM
     # {'code': 'KP', 'name': 'FOGARS_DE_LA_SELVA_KP', 'display_name': 'Fogars de la Selva'},  # COM
-    {'code': 'XK', 'name': 'FOGARS_DE_MONTCLUS___PUIG_SESOLLES_1668_M_XK', 'display_name': 'Fogars de Montclús - Puig Sesolles (1.668m)'},
+    # {'code': 'XK', 'name': 'FOGARS_DE_MONTCLUS___PUIG_SESOLLES_1668_M_XK', 'display_name': 'Fogars de Montclús - Puig Sesolles (1.668 m)'},  # COM
     # {'code': 'DI', 'name': 'FONT_RUBI_DI', 'display_name': 'Font-rubí'},  # COM
     {'code': 'UO', 'name': 'FORNELLS_DE_LA_SELVA_UO', 'display_name': 'Fornells de la Selva'},
     # {'code': 'Y4', 'name': 'FIGOLS_I_ALINYA___ALINYA_Y4', 'display_name': 'Fígols i Alinyà - Alinyà'},  # COM
@@ -144,7 +144,7 @@ STATIONS = [
     # {'code': 'VP', 'name': 'PINOS_VP', 'display_name': 'Pinós'},  # COM
     # {'code': 'D6', 'name': 'PORTBOU___COLL_DELS_BELITRES_D6', 'display_name': 'Portbou - Coll dels Belitres'},  # COM
     # {'code': 'XR', 'name': 'PRADES_XR', 'display_name': 'Prades'},  # COM
-    # {'code': 'YA', 'name': 'PUIGCERDA_YA', 'display_name': 'Puigcerdà'},  # COM
+    {'code': 'YA', 'name': 'PUIGCERDA_YA', 'display_name': 'Puigcerdà'},
     # {'code': 'YH', 'name': 'PUJALT_YH', 'display_name': 'Pujalt'},  # COM
     {'code': 'DG', 'name': 'QUERALBS___NURIA_1971_M_DG', 'display_name': 'Queralbs - Núria (1.971 m)'},
     # {'code': 'VU', 'name': 'RELLINARS_VU', 'display_name': 'Rellinars'},  # COM
@@ -165,7 +165,7 @@ STATIONS = [
     # {'code': 'U2', 'name': 'SANT_PERE_PESCADOR_U2', 'display_name': 'Sant Pere Pescador'},  # COM
     # {'code': 'YO', 'name': 'SANT_SADURNI_DANOIA_YO', 'display_name': 'Sant Sadurní D\'anoia'},  # COM
     # {'code': 'CL', 'name': 'SANT_SALVADOR_DE_GUARDIOLA_CL', 'display_name': 'Sant Salvador de Guardiola'},  # COM
-    # {'code': 'XS', 'name': 'SANTA_COLOMA_DE_FARNERS_XS', 'display_name': 'Santa Coloma de Farners'},  # COM
+    {'code': 'XS', 'name': 'SANTA_COLOMA_DE_FARNERS_XS', 'display_name': 'Santa Coloma de Farners'},
     # {'code': 'UJ', 'name': 'SANTA_COLOMA_DE_QUERALT_UJ', 'display_name': 'Santa Coloma de Queralt'},  # COM
     # {'code': 'XN', 'name': 'SEROS_XN', 'display_name': 'Seròs'},  # COM
     {'code': 'ZC', 'name': 'SETCASES___ULLDETER_2413_M_ZC', 'display_name': 'Setcases - Ulldeter (2.413 m)'},
@@ -291,10 +291,10 @@ DEFAULT_VALUES = {
 # INFORMACIÓ DE GENERACIÓ
 # ============================================================================
 GENERATION_INFO = {
-    'generated_at': '2026-01-08 11:16:53',
+    'generated_at': '2026-01-08 18:07:32',
     'total_stations': 189,
-    'active_stations': 31,
-    'comented_stations': 158,
+    'active_stations': 33,
+    'comented_stations': 156,
     'false_stations': 0,
     'config_banner_version': 'v2.0 - Lògica: Op+CERT+Activa',
     'generator': 'ConfiguradorEstacions v2.1'
