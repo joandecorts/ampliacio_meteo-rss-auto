@@ -54,11 +54,11 @@ def generate_station_html(station_data):
                         <div class="data-value">{tx_display}<span class="data-unit">°C</span></div>
                     </div>
                     <div class="data-box">
-                        <div class="data-title">Temp. mínima</div>
+                        <div class="data-title">Temperatura mínima del dia</div>
                         <div class="data-value">{tn_display}<span class="data-unit">°C</span></div>
                     </div>
                     <div class="data-box">
-                        <div class="data-title">Pluja acumulada</div>
+                        <div class="data-title">Pluja acumulada durant el dia</div>
                         <div class="data-value">{ppt_display}<span class="data-unit">mm</span></div>
                     </div>
                 </div>
