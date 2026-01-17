@@ -50,7 +50,7 @@ def generate_station_html(station_data):
                 </div>
                 <div class="data-container">
                     <div class="data-box">
-                        <div class="data-title">Temp. màxima</div>
+                        <div class="data-title">Temperatura màxima del dia</div>
                         <div class="data-value">{tx_display}<span class="data-unit">°C</span></div>
                     </div>
                     <div class="data-box">
