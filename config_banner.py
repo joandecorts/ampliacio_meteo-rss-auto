@@ -76,7 +76,7 @@ STATIONS = [
     # {'code': 'KP', 'name': 'FOGARS_DE_LA_SELVA_KP', 'display_name': 'Fogars de la Selva'},  # COM
     # {'code': 'XK', 'name': 'FOGARS_DE_MONTCLUS___PUIG_SESOLLES_1668_M_XK', 'display_name': 'Fogars de Montclús - Puig Sesolles (1.668 m)'},  # COM
     # {'code': 'DI', 'name': 'FONT_RUBI_DI', 'display_name': 'Font-rubí'},  # COM
-    {'code': 'UO', 'name': 'FORNELLS_DE_LA_SELVA_UO', 'display_name': 'Fornells de la Selva'},
+    # {'code': 'UO', 'name': 'FORNELLS_DE_LA_SELVA_UO', 'display_name': 'Fornells de la Selva'},
     # {'code': 'Y4', 'name': 'FIGOLS_I_ALINYA___ALINYA_Y4', 'display_name': 'Fígols i Alinyà - Alinyà'},  # COM
     # {'code': 'XP', 'name': 'GANDESA_XP', 'display_name': 'Gandesa'},  # COM
     # {'code': 'VH', 'name': 'GIMENELLS_I_EL_PLA_DE_LA_FONT___GIMENELLS_VH', 'display_name': 'Gimenells i el Pla de la Font - Gimenells'},  # COM
