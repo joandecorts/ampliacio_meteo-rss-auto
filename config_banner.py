@@ -33,7 +33,7 @@ STATIONS = [
     {'code': 'DJ', 'name': 'BANYOLES_DJ', 'display_name': 'Banyoles'},
     {'code': 'X4', 'name': 'BARCELONA___EL_RAVAL_X4', 'display_name': 'Barcelona - el Raval'},
     # {'code': 'D5', 'name': 'BARCELONA___OBSERVATORI_FABRA_D5', 'display_name': 'Barcelona - Observatori Fabra'},  # COM
-    # {'code': 'X8', 'name': 'BARCELONA___ZONA_UNIVERSITARIA_X8', 'display_name': 'Barcelona - Zona Universitària'},  # COM
+    {'code': 'X8', 'name': 'BARCELONA___ZONA_UNIVERSITARIA_X8', 'display_name': 'Barcelona - Zona Universitària'},  # COM
     # {'code': 'YX', 'name': 'BATEA_YX', 'display_name': 'Batea'},  # COM
     # {'code': 'UF', 'name': 'BEGUES___PN_DEL_GARRAF___EL_RASCLER_UF', 'display_name': 'Begues - Pn del Garraf - el Rascler'},  # COM
     # {'code': 'VB', 'name': 'BENISSANET_VB', 'display_name': 'Benissanet'},  # COM
