@@ -142,7 +142,7 @@ STATIONS = [
     # {'code': 'XG', 'name': 'PARETS_DEL_VALLES_XG', 'display_name': 'Parets del Vallès'},  # COM
     # {'code': 'V5', 'name': 'PERAFITA_V5', 'display_name': 'Perafita'},  # COM
     # {'code': 'VP', 'name': 'PINOS_VP', 'display_name': 'Pinós'},  # COM
-    # {'code': 'D6', 'name': 'PORTBOU___COLL_DELS_BELITRES_D6', 'display_name': 'Portbou - Coll dels Belitres'},  # COM
+    {'code': 'D6', 'name': 'PORTBOU___COLL_DELS_BELITRES_D6', 'display_name': 'Portbou - Coll dels Belitres'},  # COM
     # {'code': 'XR', 'name': 'PRADES_XR', 'display_name': 'Prades'},  # COM
     {'code': 'YA', 'name': 'PUIGCERDA_YA', 'display_name': 'Puigcerdà'},
     # {'code': 'YH', 'name': 'PUJALT_YH', 'display_name': 'Pujalt'},  # COM
