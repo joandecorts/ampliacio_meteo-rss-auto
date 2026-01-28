@@ -70,7 +70,7 @@ STATIONS = [
     # {'code': 'XM', 'name': 'ELS_ALAMUS___ELS_ALAMUS_XM', 'display_name': 'Els Alamús - els Alamús'},  # COM
     # {'code': 'CE', 'name': 'ELS_HOSTALETS_DE_PIEROLA___ELS_HOSTALETS_DE_PIEROL', 'display_name': 'Els Hostalets de Pierola - els Hostalets de Pierola'},  # COM
     # {'code': 'VD', 'name': 'ELS_PLANS_DE_SIO___EL_CANOS_VD', 'display_name': 'Els Plans de Sió - el Canós'},  # COM
-    # {'code': 'VZ', 'name': 'ESPOLLA_VZ', 'display_name': 'Espolla'},  # COM
+    {'code': 'VZ', 'name': 'ESPOLLA_VZ', 'display_name': 'Espolla'},  # COM
     {'code': 'Z7', 'name': 'ESPOT_2519_M_Z7', 'display_name': 'Espot (2.519 m)'},
     # {'code': 'X1', 'name': 'FALSET_X1', 'display_name': 'Falset'},  # COM
     # {'code': 'KP', 'name': 'FOGARS_DE_LA_SELVA_KP', 'display_name': 'Fogars de la Selva'},  # COM
