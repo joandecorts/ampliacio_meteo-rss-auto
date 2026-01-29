@@ -8,10 +8,10 @@ on:
   # 2. PER EXECUCIÓ MANUAL (GITHUB UI)
   workflow_dispatch:
   
-  # 3. PER CRON INTERN (GITHUB)
-  schedule:
-    - cron: '15 * * * *'
-    - cron: '45 * * * *'
+  # 3. PER CRON INTERN (GITHUB) - DESACTIVAT PER EVITAR CONFLICTES
+  # schedule:
+  #   - cron: '15 * * * *'  # (COMENTAT)
+  #   - cron: '45 * * * *'  # (COMENTAT)
 
 jobs:
   update-banner:
