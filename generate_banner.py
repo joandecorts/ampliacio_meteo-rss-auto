@@ -7,7 +7,6 @@ AMB HORA LOCAL I DATA dd/mm/yyyy
 import json
 from datetime import datetime, timezone, timedelta
 import os
-import pytz
 
 def load_template(template_file="banner_news_channel.html"):
     """Carrega el template HTML"""
@@ -20,12 +19,40 @@ def load_template(template_file="banner_news_channel.html"):
 
 def get_local_time():
     """Retorna l'hora i data local de Catalunya (CET/CEST) segons l'horari d'estiu"""
-    utc_now = datetime.now(pytz.utc)
-    local_tz = pytz.timezone('Europe/Madrid')
-    local_now = utc_now.astimezone(local_tz)
+    utc_now = datetime.now(timezone.utc)
     
-    hora_local = local_now.strftime("%H:%M")
-    data_local = local_now.strftime("%d/%m/%Y")
+    # Determinar si estem en horari d'estiu (CEST) o d'hivern (CET)
+    # L'horari d'estiu a Europa: últim diumenge de març a 01:00 UTC fins últim diumenge d'octubre a 01:00 UTC
+    year = utc_now.year
+    
+    # Calcular últim diumenge de març
+    last_sunday_march = None
+    for day in range(31, 24, -1):
+        dt = datetime(year, 3, day, 1, 0, 0, tzinfo=timezone.utc)
+        if dt.weekday() == 6:  # Diumenge
+            last_sunday_march = dt
+            break
+    
+    # Calcular últim diumenge d'octubre
+    last_sunday_october = None
+    for day in range(31, 24, -1):
+        dt = datetime(year, 10, day, 1, 0, 0, tzinfo=timezone.utc)
+        if dt.weekday() == 6:  # Diumenge
+            last_sunday_october = dt
+            break
+    
+    # Determinar si estem en horari d'estiu
+    if last_sunday_march and last_sunday_october:
+        if last_sunday_march <= utc_now < last_sunday_october:
+            offset_hours = 2  # CEST (UTC+2)
+        else:
+            offset_hours = 1  # CET (UTC+1)
+    else:
+        offset_hours = 1  # Per defecte CET
+    
+    local_time = utc_now + timedelta(hours=offset_hours)
+    hora_local = local_time.strftime("%H:%M")
+    data_local = local_time.strftime("%d/%m/%Y")
     
     return hora_local, data_local
 
