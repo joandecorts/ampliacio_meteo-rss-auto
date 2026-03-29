@@ -7,6 +7,7 @@ AMB HORA LOCAL I DATA dd/mm/yyyy
 import json
 from datetime import datetime, timezone, timedelta
 import os
+import pytz
 
 def load_template(template_file="banner_news_channel.html"):
     """Carrega el template HTML"""
@@ -16,6 +17,17 @@ def load_template(template_file="banner_news_channel.html"):
     except Exception as e:
         print(f"❌ Error carregant template: {e}")
         return None
+
+def get_local_time():
+    """Retorna l'hora i data local de Catalunya (CET/CEST) segons l'horari d'estiu"""
+    utc_now = datetime.now(pytz.utc)
+    local_tz = pytz.timezone('Europe/Madrid')
+    local_now = utc_now.astimezone(local_tz)
+    
+    hora_local = local_now.strftime("%H:%M")
+    data_local = local_now.strftime("%d/%m/%Y")
+    
+    return hora_local, data_local
 
 def generate_station_html(station_data):
     """
@@ -37,11 +49,8 @@ def generate_station_html(station_data):
     tn_display = f"{tn}" if tn != '-' else "-"
     ppt_display = f"{ppt}" if ppt != '-' else "-"
     
-    # HORA LOCAL (Catalunya, UTC+1) i DATA dd/mm/yyyy
-    utc_time = datetime.now(timezone.utc)
-    local_time = utc_time + timedelta(hours=1)  # UTC+1 per Catalunya
-    hora_local = local_time.strftime("%H:%M")
-    data_local = local_time.strftime("%d/%m/%Y")
+    # HORA LOCAL (Catalunya, amb horari d'estiu automàtic) i DATA dd/mm/yyyy
+    hora_local, data_local = get_local_time()
     
     return f"""
             <div class="content-group">
@@ -109,10 +118,7 @@ def main():
     # 4. Si no hi ha dades, mostrar missatge (AMB HORA LOCAL)
     if station_count == 0:
         # Hora local també per a sense dades
-        utc_time = datetime.now(timezone.utc)
-        local_time = utc_time + timedelta(hours=1)
-        hora_local = local_time.strftime("%H:%M")
-        data_local = local_time.strftime("%d/%m/%Y")
+        hora_local, data_local = get_local_time()
         
         stations_html = f"""
             <div class="content-group active">
