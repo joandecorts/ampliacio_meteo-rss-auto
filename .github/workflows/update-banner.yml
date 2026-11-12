@@ -94,7 +94,7 @@ jobs:
       
       # 7. MISSATGE FINAL (OPCIONAL)
       - name: Confirmació final
-        if: always()
+        if: success()
         run: |
           echo ""
           echo "========================================"
