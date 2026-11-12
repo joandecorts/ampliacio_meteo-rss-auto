@@ -13,14 +13,15 @@ on:
   #   - cron: '15 * * * *'  # (COMENTAT)
   #   - cron: '45 * * * *'  # (COMENTAT)
 
+concurrency:
+  group: update-banner-main
+  cancel-in-progress: false
+
 jobs:
   update-banner:
     runs-on: ubuntu-24.04
     permissions:
       contents: write
-  concurrency:
-  group: update-banner-main
-  cancel-in-progress: false
     
     steps:
       # 0. IDENTIFICA ORIGEN (OPCIONAL, PER LOGS)
